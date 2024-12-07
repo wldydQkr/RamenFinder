@@ -37,16 +37,16 @@ struct TabBar: View {
                     VStack(spacing: 4) {
                         Image(systemName: tab.icon)
                             .font(.system(size: 22))
-                            .foregroundColor(selectedTab == tab ? .white : .gray)
+                            .foregroundColor(selectedTab == tab ? CustomColor.background : CustomColor.text) // 수정
                         if selectedTab == tab {
                             Text(tab.rawValue)
                                 .font(.footnote)
-                                .foregroundColor(.white)
+                                .foregroundColor(CustomColor.background) // 수정
                         }
                     }
                     .padding(.vertical, 10)
                     .frame(maxWidth: 80)
-                    .background(selectedTab == tab ? Color.teal : Color.clear)
+                    .background(selectedTab == tab ? CustomColor.primary : Color.clear) // 수정
                     .clipShape(Capsule())
                 }
             }
@@ -54,13 +54,13 @@ struct TabBar: View {
         .padding(.horizontal, 16)
         .padding(.vertical, 4)
         .background(
-            Color.white
+            CustomColor.background // 수정
                 .clipShape(Capsule())
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
+                .shadow(color: CustomColor.text.opacity(0.1), radius: 5, x: 0, y: -2) // 수정
         )
     }
 }
 
 //#Preview {
-//    TabBar()
+//    TabBar(selectedTab: .constant(.home))
 //}

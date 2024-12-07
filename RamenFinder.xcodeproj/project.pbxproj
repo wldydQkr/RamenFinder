@@ -6,17 +6,28 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2152D04853C00528F24 /* ContentView.swift */; };
+		C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2162D04853C00528F24 /* HomeView.swift */; };
+		C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2172D04853C00528F24 /* HomeViewModel.swift */; };
+		C0DDB21E2D04853C00528F24 /* RamenFinderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */; };
+		C0DDB21F2D04853C00528F24 /* TabBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2192D04853C00528F24 /* TabBar.swift */; };
+		C0DDB2212D04853C00528F24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DDB2142D04853C00528F24 /* Assets.xcassets */; };
+		C0DDB2272D04856200528F24 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DDB2252D04856200528F24 /* Preview Assets.xcassets */; };
+		C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB22A2D04934400528F24 /* CustomColor.swift */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0DDB2142D04853C00528F24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C0DDB2152D04853C00528F24 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		C0DDB2162D04853C00528F24 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		C0DDB2172D04853C00528F24 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
+		C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RamenFinderApp.swift; sourceTree = "<group>"; };
+		C0DDB2192D04853C00528F24 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
+		C0DDB2252D04856200528F24 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		C0DDB22A2D04934400528F24 /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
-
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		C091004C2D046F8D006394C4 /* RamenFinder */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = RamenFinder;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		C09100472D046F8D006394C4 /* Frameworks */ = {
@@ -32,7 +43,7 @@
 		C09100412D046F8D006394C4 = {
 			isa = PBXGroup;
 			children = (
-				C091004C2D046F8D006394C4 /* RamenFinder */,
+				C0DDB21A2D04853C00528F24 /* RamenFinder */,
 				C091004B2D046F8D006394C4 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -43,6 +54,53 @@
 				C091004A2D046F8D006394C4 /* RamenFinder.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		C0DDB2112D04853C00528F24 /* Feature */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2292D04858D00528F24 /* Tab */,
+				C0DDB2282D04858300528F24 /* Home */,
+			);
+			path = Feature;
+			sourceTree = "<group>";
+		};
+		C0DDB21A2D04853C00528F24 /* RamenFinder */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB22A2D04934400528F24 /* CustomColor.swift */,
+				C0DDB2262D04856200528F24 /* Preview Content */,
+				C0DDB2142D04853C00528F24 /* Assets.xcassets */,
+				C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */,
+				C0DDB2152D04853C00528F24 /* ContentView.swift */,
+				C0DDB2112D04853C00528F24 /* Feature */,
+			);
+			path = RamenFinder;
+			sourceTree = "<group>";
+		};
+		C0DDB2262D04856200528F24 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2252D04856200528F24 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		C0DDB2282D04858300528F24 /* Home */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2162D04853C00528F24 /* HomeView.swift */,
+				C0DDB2172D04853C00528F24 /* HomeViewModel.swift */,
+			);
+			path = Home;
+			sourceTree = "<group>";
+		};
+		C0DDB2292D04858D00528F24 /* Tab */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2192D04853C00528F24 /* TabBar.swift */,
+			);
+			path = Tab;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -59,9 +117,6 @@
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				C091004C2D046F8D006394C4 /* RamenFinder */,
 			);
 			name = RamenFinder;
 			packageProductDependencies = (
@@ -109,6 +164,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0DDB2272D04856200528F24 /* Preview Assets.xcassets in Resources */,
+				C0DDB2212D04853C00528F24 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +176,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */,
+				C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */,
+				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
+				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
+				C0DDB21E2D04853C00528F24 /* RamenFinderApp.swift in Sources */,
+				C0DDB21F2D04853C00528F24 /* TabBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -258,8 +321,10 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -267,9 +332,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.kr.jiyongppark.RamenFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
@@ -287,8 +356,10 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UIStatusBarStyle = UIStatusBarStyleLightContent;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
+				INFOPLIST_KEY_UIUserInterfaceStyle = light;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -296,9 +367,13 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = co.kr.jiyongppark.RamenFinder;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
