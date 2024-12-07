@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  RamenFinder
 //
 //  Created by 박지용 on 12/7/24.
@@ -15,6 +15,9 @@ struct HomeView: View {
             NavigationView {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 20) {
+                        Text("Where do you want to go?")
+                            .font(.largeTitle)
+                            .fontWeight(.bold)
                         // 검색창
                         HStack {
                             TextField("Search for places...", text: .constant(""))
@@ -77,9 +80,6 @@ struct HomeView: View {
                             Text("Hi, Jennifer!")
                                 .font(.headline)
                                 .fontWeight(.semibold)
-                            Text("Where do you want to go?")
-                                .font(.title2)
-                                .fontWeight(.bold)
                         }
                     }
                     
