@@ -69,6 +69,7 @@ final class SearchViewModel: ObservableObject {
                         roadAddress: $0.roadAddress,
                         address: $0.address,
                         category: $0.category,
+                        link: $0.link,
                         latitude: 0,
                         longitude: 0
                     )

@@ -15,6 +15,7 @@ struct RamenShop: Identifiable, Equatable {
     let roadAddress: String
     let address: String
     let category: String
+    let link: String?
     let latitude: Double
     let longitude: Double
 
@@ -89,6 +90,7 @@ final class HomeViewModel: ObservableObject {
                         roadAddress: item.roadAddress,
                         address: item.address,
                         category: item.category,
+                        link: item.link,
                         latitude: 0,
                         longitude: 0
                     )
@@ -117,6 +119,7 @@ struct RamenShopResponse: Codable {
     let roadAddress: String
     let address: String
     let category: String
+    let link: String
 }
 
 struct RamenSearchResponse: Codable {

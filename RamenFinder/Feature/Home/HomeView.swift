@@ -17,13 +17,8 @@ struct HomeView: View {
             NavigationView {
                 ScrollView(showsIndicators: false) {
                     VStack(alignment: .leading, spacing: 20) {
-                        // 상단 인사말 섹션
                         greetingSection
-
-                        // 검색창 섹션
                         searchSection
-
-                        // 지역 카테고리 섹션
                         categorySection
 
                         // 추천 라멘 섹션
@@ -41,16 +36,18 @@ struct HomeView: View {
                                     roadAddress: "합정동",
                                     address: "",
                                     category: "",
-                                    latitude: 0,
-                                    longitude: 0
+                                    link: "https://naver.com",
+                                    latitude: 37.549902,
+                                    longitude: 126.913705
                                 ),
                                 RamenShop(
                                     name: "무메노",
                                     roadAddress: "연남동",
                                     address: "",
                                     category: "",
-                                    latitude: 0,
-                                    longitude: 0
+                                    link: "https://naver.com",
+                                    latitude: 37.561632,
+                                    longitude: 126.923739
                                 )
                             ]
                         )
@@ -173,9 +170,14 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         ShopCardView(
-                            imageURL: URL(string: "https://via.placeholder.com/150"),
+                            imageURL: URL(string: "https://i.ytimg.com/vi/h-ccx94lXSE/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDuCs5orHjNXdXnBLARfzedQTwMEA"),
                             title: shop.name,
-                            subtitle: shop.roadAddress
+                            subtitle: shop.roadAddress,
+                            link: shop.link ?? "https://naver.com",
+                            address: shop.address,
+                            roadAddress: shop.roadAddress,
+                            mapX: shop.longitude,
+                            mapY: shop.latitude
                         )
                     }
 
@@ -212,7 +214,7 @@ struct CategoryView: View {
             }
             .padding(.vertical, 10)
             .padding(.horizontal, 16)
-            .background(CustomColor.primary) // 수정
+            .background(CustomColor.primary)
             .cornerRadius(999)
         }
         .padding(.bottom, 5)
@@ -224,75 +226,66 @@ struct ShopCardView: View {
     let imageURL: URL?
     let title: String
     let subtitle: String
-    @State private var isLiked: Bool = false
+    let link: String
+    let address: String
+    let roadAddress: String
+    let mapX: Double
+    let mapY: Double
 
     var body: some View {
-        VStack(alignment: .leading) {
-            ZStack(alignment: .bottomTrailing) {
-                if let imageURL = imageURL {
-                    // AsyncImage for loading image from URL
-                    AsyncImage(url: imageURL) { phase in
-                        switch phase {
-                        case .empty:
-                            // Placeholder while loading
+        NavigationLink(destination: RamenDetailView(
+            title: title,
+            link: link,
+            address: address,
+            roadAddress: roadAddress,
+            mapX: mapX,
+            mapY: mapY
+        )) {
+            VStack(alignment: .leading) {
+                ZStack(alignment: .bottomTrailing) {
+                    if let imageURL = imageURL {
+                        AsyncImage(url: imageURL) { image in
+                            image.resizable()
+                                .scaledToFill()
+                                .frame(width: 150, height: 100)
+                                .cornerRadius(10)
+                                .clipped()
+                        } placeholder: {
                             ProgressView()
                                 .frame(width: 150, height: 100)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                        case .success(let image):
-                            // Loaded successfully
-                            image
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 150, height: 100)
-                                .cornerRadius(10)
-                                .clipped()
-                        case .failure:
-                            // Error loading image
-                            Image(systemName: "photo")
-                                .resizable()
-                                .scaledToFill()
-                                .frame(width: 150, height: 100)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                                .clipped()
-                        @unknown default:
-                            EmptyView()
                         }
+                    } else {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 150, height: 100)
+                            .background(Color.gray.opacity(0.2))
+                            .cornerRadius(10)
+                            .clipped()
                     }
-                } else {
-                    // Fallback for nil URL
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 150, height: 100)
-                        .background(Color.gray.opacity(0.2))
-                        .cornerRadius(10)
-                        .clipped()
+
+                    Button(action: {
+                        // 좋아요 로직
+                    }) {
+                        Image(systemName: "heart")
+                            .font(.title2)
+                            .foregroundColor(.white)
+                            .padding(8)
+                    }
                 }
 
-                // 좋아요 버튼
-                Button(action: {
-                    isLiked.toggle()
-                }) {
-                    Image(systemName: isLiked ? "heart.fill" : "heart")
-                        .font(.title2)
-                        .foregroundColor(isLiked ? .pink : .white)
-                        .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-                        .padding(8)
-                }
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.primary)
+
+                Text(subtitle)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
             }
-
-            // 텍스트
-            Text(title)
-                .font(.headline)
-                .fontWeight(.semibold)
-
-            Text(subtitle)
-                .font(.subheadline)
-                .foregroundColor(CustomColor.text) // 수정
+            .frame(width: 150)
         }
-        .frame(width: 150)
+        .buttonStyle(PlainButtonStyle())
     }
 }
 

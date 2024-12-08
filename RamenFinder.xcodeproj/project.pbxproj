@@ -17,6 +17,7 @@
 		C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB22A2D04934400528F24 /* CustomColor.swift */; };
 		C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2302D05505A00528F24 /* SearchView.swift */; };
 		C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2322D05506F00528F24 /* SearchViewModel.swift */; };
+		C0DDB2362D05BE6600528F24 /* RamenDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2352D05BE6600528F24 /* RamenDetailView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -31,6 +32,7 @@
 		C0DDB22A2D04934400528F24 /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
 		C0DDB2302D05505A00528F24 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
 		C0DDB2322D05506F00528F24 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
+		C0DDB2352D05BE6600528F24 /* RamenDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RamenDetailView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,7 @@
 		C0DDB2282D04858300528F24 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C0DDB2342D05BE5100528F24 /* Detail */,
 				C0DDB22D2D05504000528F24 /* Search */,
 				C0DDB2162D04853C00528F24 /* HomeView.swift */,
 				C0DDB2172D04853C00528F24 /* HomeViewModel.swift */,
@@ -123,6 +126,14 @@
 				C0DDB2302D05505A00528F24 /* SearchView.swift */,
 			);
 			path = Search;
+			sourceTree = "<group>";
+		};
+		C0DDB2342D05BE5100528F24 /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2352D05BE6600528F24 /* RamenDetailView.swift */,
+			);
+			path = Detail;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -200,6 +211,7 @@
 			files = (
 				C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */,
 				C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */,
+				C0DDB2362D05BE6600528F24 /* RamenDetailView.swift in Sources */,
 				C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */,
 				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
 				C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */,
