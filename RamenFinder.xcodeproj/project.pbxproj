@@ -15,6 +15,8 @@
 		C0DDB2212D04853C00528F24 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DDB2142D04853C00528F24 /* Assets.xcassets */; };
 		C0DDB2272D04856200528F24 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0DDB2252D04856200528F24 /* Preview Assets.xcassets */; };
 		C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB22A2D04934400528F24 /* CustomColor.swift */; };
+		C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2302D05505A00528F24 /* SearchView.swift */; };
+		C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2322D05506F00528F24 /* SearchViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +29,8 @@
 		C0DDB2192D04853C00528F24 /* TabBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBar.swift; sourceTree = "<group>"; };
 		C0DDB2252D04856200528F24 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		C0DDB22A2D04934400528F24 /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
+		C0DDB2302D05505A00528F24 /* SearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		C0DDB2322D05506F00528F24 /* SearchViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +94,7 @@
 		C0DDB2282D04858300528F24 /* Home */ = {
 			isa = PBXGroup;
 			children = (
+				C0DDB22D2D05504000528F24 /* Search */,
 				C0DDB2162D04853C00528F24 /* HomeView.swift */,
 				C0DDB2172D04853C00528F24 /* HomeViewModel.swift */,
 			);
@@ -109,6 +114,15 @@
 			children = (
 			);
 			path = Model;
+			sourceTree = "<group>";
+		};
+		C0DDB22D2D05504000528F24 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				C0DDB2322D05506F00528F24 /* SearchViewModel.swift */,
+				C0DDB2302D05505A00528F24 /* SearchView.swift */,
+			);
+			path = Search;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,7 +200,9 @@
 			files = (
 				C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */,
 				C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */,
+				C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */,
 				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
+				C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */,
 				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
 				C0DDB21E2D04853C00528F24 /* RamenFinderApp.swift in Sources */,
 				C0DDB21F2D04853C00528F24 /* TabBar.swift in Sources */,

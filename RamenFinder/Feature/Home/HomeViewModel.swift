@@ -24,78 +24,74 @@ struct RamenShop: Identifiable, Equatable {
     }
 }
 
-class HomeViewModel: ObservableObject {
+final class HomeViewModel: ObservableObject {
+    @Published var searchText: String = ""
     @Published var ramenShops: [RamenShop] = []
     @Published var isLoading: Bool = false
-    @Published var errorMessage: String?
 
-    private var currentPage = 1
     private var cancellables = Set<AnyCancellable>()
     private let baseURL = "https://openapi.naver.com/v1/search/local.json"
-    private let clientID = "NZmzvNuQwqMF1dFh9YmL"
-    private let clientSecret = "UL5R8sDcrz"
+    private let clientId = "NZmzvNuQwqMF1dFh9YmL" // 네이버 API 클라이언트 ID
+    private let clientSecret = "UL5R8sDcrz" // 네이버 API 클라이언트 시크릿
 
-    func fetchRamenShops(isNextPage: Bool = false) {
-        print("fetchRamenShops 호출됨. isNextPage: \(isNextPage)")
-        guard !isLoading else { return }
+    init() {
+        // 실시간 검색어를 토대로 데이터 업데이트
+        $searchText
+            .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] text in
+                if !text.isEmpty {
+                    self?.fetchRamenShops(query: text)
+                } else {
+                    self?.ramenShops = [] // 검색어가 비어있으면 초기화
+                }
+            }
+            .store(in: &cancellables)
+    }
 
+    func fetchRamenShops(query: String) {
+        guard !query.isEmpty else { return }
+        
         isLoading = true
-        errorMessage = nil
 
-        // 다음 페이지를 요청할 경우 페이지 증가
-        if isNextPage {
-            currentPage += 1
-        }
-
-        let queryItems = [
-            URLQueryItem(name: "query", value: "서울 라멘"),
-            URLQueryItem(name: "display", value: "5"),
-            URLQueryItem(name: "start", value: "\(currentPage * 5 - 4)"), // 시작 지점 계산
+        // URL 구성
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "query", value: query),
+            URLQueryItem(name: "display", value: "20"), // 최대 20개 결과
+            URLQueryItem(name: "start", value: "1"),
             URLQueryItem(name: "sort", value: "random")
         ]
-
-        var urlComponents = URLComponents(string: baseURL)!
-        urlComponents.queryItems = queryItems
-
-        guard let url = urlComponents.url else {
-            self.errorMessage = "잘못된 URL입니다."
-            self.isLoading = false
-            return
-        }
-
-        var request = URLRequest(url: url)
+        
+        var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.addValue(clientID, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
         request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTaskPublisher(for: request)
-            .map(\.data)
-            .decode(type: NaverSearchResponse.self, decoder: JSONDecoder())
-            .map { response in
-                response.items.map { item in
+            .tryMap { output -> Data in
+                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
+                    throw URLError(.badServerResponse)
+                }
+                return output.data
+            }
+            .decode(type: RamenSearchResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    print("Error fetching shops: \(error)")
+                }
+            }, receiveValue: { [weak self] response in
+                self?.ramenShops = response.items.map { item in
                     RamenShop(
                         name: item.title.stripHTML(),
                         roadAddress: item.roadAddress,
                         address: item.address,
                         category: item.category,
-                        latitude: Double(item.mapy) ?? 0.0, // 위도
-                        longitude: Double(item.mapx) ?? 0.0 // 경도
+                        latitude: 0,
+                        longitude: 0
                     )
-                }
-            }
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case let .failure(error) = completion {
-                    self?.errorMessage = error.localizedDescription
-                }
-            }, receiveValue: { [weak self] shops in
-                if isNextPage {
-                    // 중복 제거 후 추가
-                    let newShops = shops.filter { !self!.ramenShops.contains($0) }
-                    self?.ramenShops.append(contentsOf: newShops)
-                } else {
-                    self?.ramenShops = shops
                 }
             })
             .store(in: &cancellables)
@@ -115,6 +111,18 @@ struct ShopItem: Codable {
     let mapx: String
     let mapy: String
 }
+
+struct RamenShopResponse: Codable {
+    let title: String
+    let roadAddress: String
+    let address: String
+    let category: String
+}
+
+struct RamenSearchResponse: Codable {
+    let items: [RamenShopResponse]
+}
+
 // HTML 태그 제거 메서드
 extension String {
     func stripHTML() -> String {

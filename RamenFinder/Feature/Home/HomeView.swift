@@ -9,6 +9,7 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
+    @State private var isSearchViewActive = false
     @StateObject private var viewModel = HomeViewModel()
 
     var body: some View {
@@ -19,7 +20,7 @@ struct HomeView: View {
                         // 상단 인사말 섹션
                         greetingSection
 
-                        // 검색창
+                        // 검색창 섹션
                         searchSection
 
                         // 지역 카테고리 섹션
@@ -57,8 +58,7 @@ struct HomeView: View {
                     .padding()
                 }
                 .onAppear {
-                    print("onAppear 호출됨.")
-                    viewModel.fetchRamenShops()
+                    viewModel.fetchRamenShops(query: "서울 라멘")
                 }
                 .navigationBarTitleDisplayMode(.inline)
             }
@@ -69,9 +69,14 @@ struct HomeView: View {
                 .padding(.bottom, 20)
         }
         .edgesIgnoringSafeArea(.bottom)
+        .fullScreenCover(isPresented: $isSearchViewActive) {
+            NavigationView {
+                SearchView()
+            }
+        }
     }
 
-    // Greeting Section
+    // 상단 인사말 섹션
     private var greetingSection: some View {
         HStack {
             VStack(alignment: .leading) {
@@ -80,9 +85,9 @@ struct HomeView: View {
                     .fontWeight(.semibold)
                     .padding(.leading)
             }
-            
+
             Spacer()
-            
+
             Image(systemName: "person.circle.fill")
                 .font(.title)
                 .foregroundColor(CustomColor.text)
@@ -90,7 +95,7 @@ struct HomeView: View {
         }
     }
 
-    // Search Section
+    // 검색창 섹션
     private var searchSection: some View {
         VStack(alignment: .leading) {
             Text("🍜 식당 찾기")
@@ -98,13 +103,17 @@ struct HomeView: View {
                 .fontWeight(.bold)
 
             HStack {
-                TextField("찾으시는 라멘집을 입력해주세요.", text: .constant(""))
-                    .padding()
-                    .background(CustomColor.background)
-                    .cornerRadius(999)
-                
+                TextField(
+                    "찾으시는 라멘집을 입력해주세요.",
+                    text: .constant("")
+                )
+                .padding()
+                .background(CustomColor.background)
+                .cornerRadius(999)
+                .disabled(true)
+
                 Button(action: {
-                    print("Search button tapped")
+                    isSearchViewActive = true
                 }) {
                     Image(systemName: "magnifyingglass")
                         .font(.title3)
@@ -115,10 +124,13 @@ struct HomeView: View {
                 }
                 .shadow(color: CustomColor.text.opacity(0.2), radius: 4, x: 0, y: 2)
             }
+            .onTapGesture {
+                isSearchViewActive = true
+            }
         }
     }
 
-    // Category Section
+    // 지역 카테고리 섹션
     private var categorySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("지역")
@@ -137,7 +149,7 @@ struct HomeView: View {
         }
     }
 
-    // Ramen Section
+    // 라멘 섹션
     private func ramenSection(title: String, items: [RamenShop]) -> some View {
         VStack(alignment: .leading, spacing: 16) {
             HStack {
@@ -159,17 +171,12 @@ struct HomeView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    ForEach(viewModel.ramenShops) { shop in
+                    ForEach(items) { shop in
                         ShopCardView(
-                            imageURL: URL(string: "https://i.ytimg.com/vi/Ngrety1u_Tk/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDoV99texdogOwObr3Elyyt8L9xCA"),
+                            imageURL: URL(string: "https://via.placeholder.com/150"),
                             title: shop.name,
                             subtitle: shop.roadAddress
                         )
-                        .onAppear {
-                            if shop == viewModel.ramenShops.last && !viewModel.isLoading {
-                                viewModel.fetchRamenShops(isNextPage: true)
-                            }
-                        }
                     }
 
                     if viewModel.isLoading {
@@ -177,11 +184,11 @@ struct HomeView: View {
                             .frame(width: 150, height: 100)
                     }
                 }
-//                .padding(.horizontal)
             }
         }
     }
 }
+
 struct CategoryView: View {
     let icon: String
     let title: String
@@ -193,14 +200,14 @@ struct CategoryView: View {
                 Image(systemName: icon)
                     .font(.title3)
                     .foregroundColor(.white)
-                    .frame(height: 25)
+                    .frame(height: 15)
                     .fixedSize(horizontal: true, vertical: false)
 
                 Text(title)
                     .font(.body)
                     .fontWeight(.medium)
                     .foregroundColor(.white)
-                    .frame(height: 25)
+                    .frame(height: 15)
                     .fixedSize(horizontal: true, vertical: false)
             }
             .padding(.vertical, 10)
