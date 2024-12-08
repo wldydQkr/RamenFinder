@@ -9,117 +9,56 @@ import SwiftUI
 
 struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
+    @StateObject private var viewModel = HomeViewModel()
 
     var body: some View {
         VStack(spacing: 0) {
             NavigationView {
                 ScrollView(showsIndicators: false) {
-                    HStack {
-                        VStack(alignment: .leading) {
-                            Text("안녕하세요, 홍길동님")
-                                .font(.title2)
-                                .fontWeight(.semibold)
-                                .padding(.leading)
-                        }
-                        
-                        Spacer()
-                        
-                        Image(systemName: "person.circle.fill")
-                            .font(.title)
-                            .foregroundColor(CustomColor.text) // 수정
-                            .padding(.trailing)
-                    }
                     VStack(alignment: .leading, spacing: 20) {
-                        Text("🍜 식당 찾기")
-                            .font(.largeTitle)
-                            .fontWeight(.bold)
-                        // 검색창
-                        HStack {
-                            TextField("찾으시는 라멘집을 입력해주세요.", text: .constant(""))
-                                .padding()
-                                .background(CustomColor.background) // 수정
-                                .cornerRadius(999)
-                            
-                            Button(action: {
-                                print("Search button tapped")
-                            }) {
-                                Image(systemName: "magnifyingglass")
-                                    .font(.title3)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .background(CustomColor.primary)
-                                    .cornerRadius(999)
-                            }
-                            .shadow(color: CustomColor.text.opacity(0.2), radius: 4, x: 0, y: 2) // 수정
-                        }
+                        // 상단 인사말 섹션
+                        greetingSection
 
-                        // 카테고리
-                        Text("지역")
-                            .font(.headline)
-                            .foregroundColor(CustomColor.text) // 수정
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                CategoryView(icon: "figure.walk", title: "동대문구") {}
-                                CategoryView(icon: "mountain.2.fill", title: "성동구") {}
-                                CategoryView(icon: "leaf.fill", title: "마포구") {}
-                                CategoryView(icon: "building.2.fill", title: "강남구") {}
-                                CategoryView(icon: "house.fill", title: "서초구") {}
-                            }
-                        }
+                        // 검색창
+                        searchSection
+
+                        // 지역 카테고리 섹션
+                        categorySection
 
                         // 추천 라멘 섹션
-                        HStack {
-                            Text("추천 라멘")
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(CustomColor.text)
-
-                            Spacer()
-
-                            Button(action: {
-                                print("Explore more tapped")
-                            }) {
-                                Text("더보기 →")
-                                    .font(.subheadline)
-                                    .foregroundColor(CustomColor.secondary)
-                            }
-                        }
-                        
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                ShopCardView(imageURL: URL(string: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240529_153%2F1716962503577skV9y_PNG%2FE-label_round_Bib.png"), title: "오레노 라멘", subtitle: "합정동")
-                                ShopCardView(imageURL: URL(string: "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDEyMDdfMTQx%2FMDAxNzMzNTc5NzQ5NDM5.Rkvpb4U3IoWhG5ddhQQJbOz7rqwO_RVW1cGsIBXZF1wg.UiAP-e08mdUlXa_dZDJ-1scGyPK3JqTJChZy8mfc83Ug.JPEG%2FD7FE5909-00FE-4D9C-8AD4-EBB969DCE7DC.jpeg%3Ftype%3Dw1500_60_sharpen"), title: "오레노 라멘", subtitle: "마포구")
-                                ShopCardView(imageURL: URL(string: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240529_153%2F1716962503577skV9y_PNG%2FE-label_round_Bib.png"), title: "오레노 라멘", subtitle: "연남동")
-                            }
-                        }
+                        ramenSection(
+                            title: "추천 라멘",
+                            items: viewModel.ramenShops
+                        )
 
                         // 근처 라멘 섹션
-                        HStack {
-                            Text("근처 라멘")
-                                .font(.headline)
-                                .fontWeight(.semibold)
-                                .foregroundColor(CustomColor.text)
-
-                            Spacer()
-
-                            Button(action: {
-                                print("Explore more tapped")
-                            }) {
-                                Text("더보기 →")
-                                    .font(.subheadline)
-                                    .foregroundColor(CustomColor.secondary)
-                            }
-                        }
-
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 16) {
-                                ShopCardView(imageURL: URL(string: "https://search.pstatic.net/common/?src=https%3A%2F%2Fpup-review-phinf.pstatic.net%2FMjAyNDEyMDdfMTQx%2FMDAxNzMzNTc5NzQ5NDM5.Rkvpb4U3IoWhG5ddhQQJbOz7rqwO_RVW1cGsIBXZF1wg.UiAP-e08mdUlXa_dZDJ-1scGyPK3JqTJChZy8mfc83Ug.JPEG%2FD7FE5909-00FE-4D9C-8AD4-EBB969DCE7DC.jpeg%3Ftype%3Dw1500_60_sharpen"), title: "오레노 라멘", subtitle: "합정동")
-                                ShopCardView(imageURL: URL(string: "https://search.pstatic.net/common/?src=https%3A%2F%2Fldb-phinf.pstatic.net%2F20240529_153%2F1716962503577skV9y_PNG%2FE-label_round_Bib.png"), title: "오레노 라멘", subtitle: "마포구")
-                            }
-                        }
+                        ramenSection(
+                            title: "근처 라멘",
+                            items: [
+                                RamenShop(
+                                    name: "오레노 라멘",
+                                    roadAddress: "합정동",
+                                    address: "",
+                                    category: "",
+                                    latitude: 0,
+                                    longitude: 0
+                                ),
+                                RamenShop(
+                                    name: "무메노",
+                                    roadAddress: "연남동",
+                                    address: "",
+                                    category: "",
+                                    latitude: 0,
+                                    longitude: 0
+                                )
+                            ]
+                        )
                     }
                     .padding()
+                }
+                .onAppear {
+                    print("onAppear 호출됨.")
+                    viewModel.fetchRamenShops()
                 }
                 .navigationBarTitleDisplayMode(.inline)
             }
@@ -131,8 +70,118 @@ struct HomeView: View {
         }
         .edgesIgnoringSafeArea(.bottom)
     }
-}
 
+    // Greeting Section
+    private var greetingSection: some View {
+        HStack {
+            VStack(alignment: .leading) {
+                Text("안녕하세요, 홍길동님")
+                    .font(.title2)
+                    .fontWeight(.semibold)
+                    .padding(.leading)
+            }
+            
+            Spacer()
+            
+            Image(systemName: "person.circle.fill")
+                .font(.title)
+                .foregroundColor(CustomColor.text)
+                .padding(.trailing)
+        }
+    }
+
+    // Search Section
+    private var searchSection: some View {
+        VStack(alignment: .leading) {
+            Text("🍜 식당 찾기")
+                .font(.largeTitle)
+                .fontWeight(.bold)
+
+            HStack {
+                TextField("찾으시는 라멘집을 입력해주세요.", text: .constant(""))
+                    .padding()
+                    .background(CustomColor.background)
+                    .cornerRadius(999)
+                
+                Button(action: {
+                    print("Search button tapped")
+                }) {
+                    Image(systemName: "magnifyingglass")
+                        .font(.title3)
+                        .foregroundColor(.white)
+                        .padding()
+                        .background(CustomColor.primary)
+                        .cornerRadius(999)
+                }
+                .shadow(color: CustomColor.text.opacity(0.2), radius: 4, x: 0, y: 2)
+            }
+        }
+    }
+
+    // Category Section
+    private var categorySection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("지역")
+                .font(.headline)
+                .foregroundColor(CustomColor.text)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    CategoryView(icon: "figure.walk", title: "동대문구") {}
+                    CategoryView(icon: "mountain.2.fill", title: "성동구") {}
+                    CategoryView(icon: "leaf.fill", title: "마포구") {}
+                    CategoryView(icon: "building.2.fill", title: "강남구") {}
+                    CategoryView(icon: "house.fill", title: "서초구") {}
+                }
+            }
+        }
+    }
+
+    // Ramen Section
+    private func ramenSection(title: String, items: [RamenShop]) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+                Text(title)
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(CustomColor.text)
+
+                Spacer()
+
+                Button(action: {
+                    print("\(title) 더보기 클릭")
+                }) {
+                    Text("더보기 →")
+                        .font(.subheadline)
+                        .foregroundColor(CustomColor.secondary)
+                }
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(viewModel.ramenShops) { shop in
+                        ShopCardView(
+                            imageURL: URL(string: "https://i.ytimg.com/vi/Ngrety1u_Tk/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDoV99texdogOwObr3Elyyt8L9xCA"),
+                            title: shop.name,
+                            subtitle: shop.roadAddress
+                        )
+                        .onAppear {
+                            if shop == viewModel.ramenShops.last && !viewModel.isLoading {
+                                viewModel.fetchRamenShops(isNextPage: true)
+                            }
+                        }
+                    }
+
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .frame(width: 150, height: 100)
+                    }
+                }
+//                .padding(.horizontal)
+            }
+        }
+    }
+}
 struct CategoryView: View {
     let icon: String
     let title: String

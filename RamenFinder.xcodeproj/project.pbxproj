@@ -73,6 +73,7 @@
 				C0DDB2142D04853C00528F24 /* Assets.xcassets */,
 				C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */,
 				C0DDB2152D04853C00528F24 /* ContentView.swift */,
+				C0DDB22C2D04A40E00528F24 /* Model */,
 				C0DDB2112D04853C00528F24 /* Feature */,
 			);
 			path = RamenFinder;
@@ -101,6 +102,13 @@
 				C0DDB2192D04853C00528F24 /* TabBar.swift */,
 			);
 			path = Tab;
+			sourceTree = "<group>";
+		};
+		C0DDB22C2D04A40E00528F24 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
