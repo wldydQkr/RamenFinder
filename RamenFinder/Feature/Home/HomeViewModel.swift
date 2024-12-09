@@ -59,7 +59,7 @@ final class HomeViewModel: ObservableObject {
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
             URLQueryItem(name: "query", value: query),
-            URLQueryItem(name: "display", value: "20"), // 최대 20개 결과
+            URLQueryItem(name: "display", value: "5"), // 한번에 5개가 최대
             URLQueryItem(name: "start", value: "1"),
             URLQueryItem(name: "sort", value: "random")
         ]
@@ -74,6 +74,7 @@ final class HomeViewModel: ObservableObject {
                 guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
                     throw URLError(.badServerResponse)
                 }
+                print("Received raw data: \(String(data: output.data, encoding: .utf8) ?? "No data")")
                 return output.data
             }
             .decode(type: RamenSearchResponse.self, decoder: JSONDecoder())

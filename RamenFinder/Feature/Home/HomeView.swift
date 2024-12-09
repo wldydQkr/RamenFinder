@@ -77,10 +77,10 @@ struct HomeView: View {
     private var greetingSection: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("안녕하세요, 홍길동님")
+                Text("안녕하세요, 이형준님😊")
                     .font(.title2)
                     .fontWeight(.semibold)
-                    .padding(.leading)
+//                    .padding(.leading)
             }
 
             Spacer()
@@ -88,7 +88,7 @@ struct HomeView: View {
             Image(systemName: "person.circle.fill")
                 .font(.title)
                 .foregroundColor(CustomColor.text)
-                .padding(.trailing)
+//                .padding(.trailing)
         }
     }
 
@@ -231,6 +231,8 @@ struct ShopCardView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
+    
+    @State private var isLiked: Bool = false
 
     var body: some View {
         NavigationLink(destination: RamenDetailView(
@@ -265,11 +267,12 @@ struct ShopCardView: View {
                     }
 
                     Button(action: {
-                        // 좋아요 로직
+                        isLiked.toggle()
                     }) {
-                        Image(systemName: "heart")
+                        Image(systemName: isLiked ? "heart.fill" : "heart")
                             .font(.title2)
-                            .foregroundColor(.white)
+                            .foregroundColor(isLiked ? .pink : .white)
+                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
                             .padding(8)
                     }
                 }
