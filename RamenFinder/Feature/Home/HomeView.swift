@@ -11,6 +11,11 @@ struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
     @State private var isSearchViewActive = false
     @StateObject private var viewModel = HomeViewModel()
+    
+    // 전체 매장 리스트로 이동하기 위한 State
+    @State private var selectedRamenList: [RamenShop] = []
+    @State private var ramenListTitle: String = ""
+    @State private var showRamenListView = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -58,6 +63,17 @@ struct HomeView: View {
                     viewModel.fetchRamenShops(query: "서울 라멘")
                 }
                 .navigationBarTitleDisplayMode(.inline)
+                .background(
+                    NavigationLink(
+                        destination: RamenShopListView(
+                            title: ramenListTitle,
+                            shops: selectedRamenList
+                        ),
+                        isActive: $showRamenListView
+                    ) {
+                        EmptyView()
+                    }
+                )
             }
 
             Spacer()
@@ -159,6 +175,9 @@ struct HomeView: View {
 
                 Button(action: {
                     print("\(title) 더보기 클릭")
+                    self.ramenListTitle = title
+                    self.selectedRamenList = items
+                    self.showRamenListView = true
                 }) {
                     Text("더보기 →")
                         .font(.subheadline)

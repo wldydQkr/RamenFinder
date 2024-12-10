@@ -15,12 +15,14 @@ struct RamenDetailView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
-    
+
     @StateObject private var locationManager = LocationManager()
+    @Environment(\.dismiss) var dismiss
 
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
+                topBar
                 // 상단 이미지 섹션
                 ZStack(alignment: .topLeading) {
                     AsyncImage(
@@ -38,7 +40,7 @@ struct RamenDetailView: View {
                     }
 
                     Button(action: {
-                        // 닫기 버튼 동작
+                        dismiss()
                     }) {
                         Image(systemName: "xmark.circle.fill")
                             .font(.largeTitle)
@@ -46,6 +48,8 @@ struct RamenDetailView: View {
                             .padding()
                     }
                 }
+                .frame(maxWidth: .infinity) // 이미지를 SafeArea 안에서 표시
+                .edgesIgnoringSafeArea(.top) // 상단 여백 제거
 
                 // 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
@@ -55,9 +59,9 @@ struct RamenDetailView: View {
                             .fontWeight(.bold)
                             .lineLimit(2)
                             .multilineTextAlignment(.leading)
-                        
+
                         Spacer()
-                        
+
                         Button(action: {
                             locationManager.requestUserLocation()
                         }) {
@@ -81,9 +85,9 @@ struct RamenDetailView: View {
                         .font(.subheadline)
                         .foregroundColor(.blue)
                 }
-                .padding(.horizontal) // 텍스트와 화면 가장자리 간격 조정
-                .frame(maxWidth: .infinity, alignment: .leading) // 텍스트 전체 너비와 정렬
-                
+                .padding(.horizontal)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
                 // 맵뷰 섹션
                 MapView(mapX: mapX, mapY: mapY, locationManager: locationManager)
                     .frame(height: 300)
@@ -94,7 +98,34 @@ struct RamenDetailView: View {
             .frame(maxWidth: .infinity)
         }
         .background(Color.white)
-        .edgesIgnoringSafeArea(.top) // 상단 이미지 확장
+        .navigationBarBackButtonHidden(true)
+    }
+    
+    private var topBar: some View {
+        ZStack {
+            HStack {
+                Button(action: {
+                    dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .foregroundColor(CustomColor.text)
+                        .font(.title3)
+                }
+                .padding(.leading)
+
+                Spacer()
+            }
+
+            Text(title)
+                .font(.title2)
+                .fontWeight(.semibold)
+                .foregroundColor(CustomColor.text)
+        }
+        .frame(height: 60)
+        .background(Color.white)
+        .overlay(
+            Divider(), alignment: .bottom
+        )
     }
 }
 

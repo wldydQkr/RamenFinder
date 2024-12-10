@@ -11,6 +11,7 @@ import Combine
 
 class LocationManager: NSObject, ObservableObject {
     @Published var userLocation: CLLocationCoordinate2D?
+    @Published var isAuthorizationDenied = false
     fileprivate let manager = CLLocationManager()
 
     override init() {
@@ -43,8 +44,12 @@ extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
         case .authorizedWhenInUse, .authorizedAlways:
+            self.isAuthorizationDenied = false
             manager.startUpdatingLocation()
         case .denied, .restricted:
+            DispatchQueue.main.async {
+                self.isAuthorizationDenied = true
+            }
             print("위치 권한 거부됨")
         case .notDetermined:
             manager.requestWhenInUseAuthorization()
