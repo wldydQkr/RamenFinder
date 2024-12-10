@@ -15,6 +15,8 @@ struct RamenDetailView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
+    
+    @StateObject private var locationManager = LocationManager()
 
     var body: some View {
         ScrollView {
@@ -47,11 +49,23 @@ struct RamenDetailView: View {
 
                 // 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
-                    Text(title)
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .lineLimit(2)
-                        .multilineTextAlignment(.leading)
+                    HStack {
+                        Text(title)
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .lineLimit(2)
+                            .multilineTextAlignment(.leading)
+                        
+                        Spacer()
+                        
+                        Button(action: {
+                            locationManager.requestUserLocation()
+                        }) {
+                            Image(systemName: "location.fill")
+                                .foregroundColor(.blue)
+                        }
+                        .padding(.trailing, 8)
+                    }
 
                     Text(roadAddress)
                         .font(.subheadline)
@@ -71,7 +85,7 @@ struct RamenDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading) // 텍스트 전체 너비와 정렬
                 
                 // 맵뷰 섹션
-                MapView(mapX: mapX, mapY: mapY)
+                MapView(mapX: mapX, mapY: mapY, locationManager: locationManager)
                     .frame(height: 300)
                     .cornerRadius(10)
                     .padding(.horizontal)
@@ -87,15 +101,34 @@ struct RamenDetailView: View {
 struct MapView: View {
     let mapX: Double
     let mapY: Double
+    @ObservedObject var locationManager: LocationManager
+
+    struct IdentifiableCoordinate: Identifiable {
+        let id = UUID()
+        let coordinate: CLLocationCoordinate2D
+        let tint: Color
+    }
 
     var body: some View {
-        let coordinate = CLLocationCoordinate2D(latitude: mapY, longitude: mapX)
+        let shopCoordinate = CLLocationCoordinate2D(latitude: mapY, longitude: mapX)
         let region = MKCoordinateRegion(
-            center: coordinate,
+            center: shopCoordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
-        print(mapX, mapY)
-        return Map(coordinateRegion: .constant(region))
+
+        // 매장 마커
+        var annotationItems = [
+            IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red)
+        ]
+
+        // 사용자 위치가 있을 경우 마커 추가
+        if let userCoordinate = locationManager.userLocation {
+            annotationItems.append(IdentifiableCoordinate(coordinate: userCoordinate, tint: .blue))
+        }
+
+        return Map(coordinateRegion: .constant(region), annotationItems: annotationItems) { item in
+            MapMarker(coordinate: item.coordinate, tint: item.tint)
+        }
     }
 }
 
