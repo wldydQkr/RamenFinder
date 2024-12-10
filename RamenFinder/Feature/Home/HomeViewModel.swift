@@ -16,8 +16,8 @@ struct RamenShop: Identifiable, Equatable {
     let address: String
     let category: String
     let link: String?
-    let latitude: Double
-    let longitude: Double
+    let mapx: Double
+    let mapy: Double
 
     // Equatable 요구 사항 구현
     static func == (lhs: RamenShop, rhs: RamenShop) -> Bool {
@@ -92,8 +92,8 @@ final class HomeViewModel: ObservableObject {
                         address: item.address,
                         category: item.category,
                         link: item.link,
-                        latitude: 0,
-                        longitude: 0
+                        mapx: item.mapx.toCoordinateDouble() ?? 0,
+                        mapy: item.mapy.toCoordinateDouble() ?? 0
                     )
                 }
             })
@@ -121,6 +121,8 @@ struct RamenShopResponse: Codable {
     let address: String
     let category: String
     let link: String
+    let mapx: String
+    let mapy: String
 }
 
 struct RamenSearchResponse: Codable {

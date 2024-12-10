@@ -70,8 +70,8 @@ final class SearchViewModel: ObservableObject {
                         address: $0.address,
                         category: $0.category,
                         link: $0.link,
-                        latitude: 0,
-                        longitude: 0
+                        mapx: $0.mapx.toCoordinateDouble() ?? 0,
+                        mapy: $0.mapy.toCoordinateDouble() ?? 0
                     )
                 }
             })

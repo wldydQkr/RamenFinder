@@ -37,8 +37,8 @@ struct HomeView: View {
                                     address: "",
                                     category: "",
                                     link: "https://naver.com",
-                                    latitude: 37.549902,
-                                    longitude: 126.913705
+                                    mapx: 37.549902,
+                                    mapy: 126.913705
                                 ),
                                 RamenShop(
                                     name: "무메노",
@@ -46,8 +46,8 @@ struct HomeView: View {
                                     address: "",
                                     category: "",
                                     link: "https://naver.com",
-                                    latitude: 37.561632,
-                                    longitude: 126.923739
+                                    mapx: 37.561632,
+                                    mapy: 126.923739
                                 )
                             ]
                         )
@@ -176,8 +176,8 @@ struct HomeView: View {
                             link: shop.link ?? "https://naver.com",
                             address: shop.address,
                             roadAddress: shop.roadAddress,
-                            mapX: shop.longitude,
-                            mapY: shop.latitude
+                            mapX: shop.mapx,
+                            mapY: shop.mapy
                         )
                     }
 
@@ -188,107 +188,6 @@ struct HomeView: View {
                 }
             }
         }
-    }
-}
-
-struct CategoryView: View {
-    let icon: String
-    let title: String
-    let action: () -> Void
-
-    var body: some View {
-        Button(action: action) {
-            HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .frame(height: 15)
-                    .fixedSize(horizontal: true, vertical: false)
-
-                Text(title)
-                    .font(.body)
-                    .fontWeight(.medium)
-                    .foregroundColor(.white)
-                    .frame(height: 15)
-                    .fixedSize(horizontal: true, vertical: false)
-            }
-            .padding(.vertical, 10)
-            .padding(.horizontal, 16)
-            .background(CustomColor.primary)
-            .cornerRadius(999)
-        }
-        .padding(.bottom, 5)
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
-struct ShopCardView: View {
-    let imageURL: URL?
-    let title: String
-    let subtitle: String
-    let link: String
-    let address: String
-    let roadAddress: String
-    let mapX: Double
-    let mapY: Double
-    
-    @State private var isLiked: Bool = false
-
-    var body: some View {
-        NavigationLink(destination: RamenDetailView(
-            title: title,
-            link: link,
-            address: address,
-            roadAddress: roadAddress,
-            mapX: mapX,
-            mapY: mapY
-        )) {
-            VStack(alignment: .leading) {
-                ZStack(alignment: .bottomTrailing) {
-                    if let imageURL = imageURL {
-                        AsyncImage(url: imageURL) { image in
-                            image.resizable()
-                                .scaledToFill()
-                                .frame(width: 150, height: 100)
-                                .cornerRadius(10)
-                                .clipped()
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 150, height: 100)
-                        }
-                    } else {
-                        Image(systemName: "photo")
-                            .resizable()
-                            .scaledToFill()
-                            .frame(width: 150, height: 100)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
-                            .clipped()
-                    }
-
-                    Button(action: {
-                        isLiked.toggle()
-                    }) {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.title2)
-                            .foregroundColor(isLiked ? .pink : .white)
-                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-                            .padding(8)
-                    }
-                }
-
-                Text(title)
-                    .font(.headline)
-                    .fontWeight(.semibold)
-                    .foregroundColor(.primary)
-
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            .frame(width: 150)
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 

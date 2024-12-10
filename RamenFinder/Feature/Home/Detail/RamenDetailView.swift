@@ -94,7 +94,7 @@ struct MapView: View {
             center: coordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
-
+        print(mapX, mapY)
         return Map(coordinateRegion: .constant(region))
     }
 }
@@ -108,4 +108,12 @@ struct MapView: View {
         mapX: 126.923739,
         mapY: 37.561632
     )
+}
+
+extension String {
+    /// 문자열을 Double로 변환하고, 1e7로 나눈 좌표값으로 반환합니다.
+    func toCoordinateDouble() -> Double? {
+        guard let doubleValue = Double(self) else { return nil }
+        return doubleValue / 1_0000000.0
+    }
 }

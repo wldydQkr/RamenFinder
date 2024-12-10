@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C0B741982D083FA900BAB93A /* ShopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741972D083FA900BAB93A /* ShopCardView.swift */; };
+		C0B7419A2D083FE600BAB93A /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741992D083FE600BAB93A /* CategoryView.swift */; };
 		C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2152D04853C00528F24 /* ContentView.swift */; };
 		C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2162D04853C00528F24 /* HomeView.swift */; };
 		C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2172D04853C00528F24 /* HomeViewModel.swift */; };
@@ -22,6 +24,8 @@
 
 /* Begin PBXFileReference section */
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C0B741972D083FA900BAB93A /* ShopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCardView.swift; sourceTree = "<group>"; };
+		C0B741992D083FE600BAB93A /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		C0DDB2142D04853C00528F24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C0DDB2152D04853C00528F24 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		C0DDB2162D04853C00528F24 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -100,6 +104,8 @@
 				C0DDB22D2D05504000528F24 /* Search */,
 				C0DDB2162D04853C00528F24 /* HomeView.swift */,
 				C0DDB2172D04853C00528F24 /* HomeViewModel.swift */,
+				C0B741992D083FE600BAB93A /* CategoryView.swift */,
+				C0B741972D083FA900BAB93A /* ShopCardView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -209,8 +215,10 @@
 			files = (
 				C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */,
 				C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */,
+				C0B741982D083FA900BAB93A /* ShopCardView.swift in Sources */,
 				C0DDB2362D05BE6600528F24 /* RamenDetailView.swift in Sources */,
 				C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */,
+				C0B7419A2D083FE600BAB93A /* CategoryView.swift in Sources */,
 				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
 				C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */,
 				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
