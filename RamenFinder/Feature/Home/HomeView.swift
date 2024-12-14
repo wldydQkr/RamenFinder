@@ -14,6 +14,7 @@ struct HomeView: View {
     
     // 전체 매장 리스트로 이동하기 위한 State
     @State private var selectedRamenList: [RamenShop] = []
+    @State private var selectedLocalRamenList: [LocalRamenShop] = []
     @State private var ramenListTitle: String = ""
     @State private var showRamenListView = false
 
@@ -25,7 +26,7 @@ struct HomeView: View {
                         greetingSection
                         searchSection
                         categorySection
-
+                        
                         // 추천 라멘 섹션
                         ramenSection(
                             title: "추천 라멘",
@@ -39,20 +40,20 @@ struct HomeView: View {
                                 RamenShop(
                                     name: "오레노 라멘",
                                     roadAddress: "합정동",
-                                    address: "",
-                                    category: "",
+                                    address: "서울특별시 동대문구 장안1동 406-2",
+                                    category: "서울특별시 천호대로 77가길 18",
                                     link: "https://naver.com",
-                                    mapx: 37.549902,
-                                    mapy: 126.913705
+                                    mapx: 0,
+                                    mapy: 0
                                 ),
                                 RamenShop(
                                     name: "무메노",
                                     roadAddress: "연남동",
-                                    address: "",
-                                    category: "",
+                                    address: "서울특별시 동대문구 장안1동 406-2",
+                                    category: "서울특별시 천호대로 77가길 18",
                                     link: "https://naver.com",
-                                    mapx: 37.561632,
-                                    mapy: 126.923739
+                                    mapx: 0,
+                                    mapy: 0
                                 )
                             ]
                         )
@@ -61,6 +62,7 @@ struct HomeView: View {
                 }
                 .onAppear {
                     viewModel.fetchRamenShops(query: "서울 라멘")
+                    viewModel.fetchRamenShopsByCategory(category: "동대문구")
                 }
                 .navigationBarTitleDisplayMode(.inline)
                 .background(
@@ -152,14 +154,30 @@ struct HomeView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    CategoryView(icon: "figure.walk", title: "동대문구") {}
-                    CategoryView(icon: "mountain.2.fill", title: "성동구") {}
-                    CategoryView(icon: "leaf.fill", title: "마포구") {}
-                    CategoryView(icon: "building.2.fill", title: "강남구") {}
-                    CategoryView(icon: "house.fill", title: "서초구") {}
+                    CategoryView(icon: "figure.walk", title: "동대문구") {
+                        viewModel.fetchRamenShopsByCategory(category: "동대문구")
+                    }
+                    CategoryView(icon: "mountain.2.fill", title: "성동구") {
+                        viewModel.fetchRamenShopsByCategory(category: "성동구")
+                    }
+                    CategoryView(icon: "leaf.fill", title: "마포구") {
+                        viewModel.fetchRamenShopsByCategory(category: "마포구")
+                    }
+                    CategoryView(icon: "building.2.fill", title: "강남구") {
+                        viewModel.fetchRamenShopsByCategory(category: "강남구")
+                    }
+                    CategoryView(icon: "house.fill", title: "서초구") {
+                        viewModel.fetchRamenShopsByCategory(category: "서초구")
+                    }
                 }
             }
+            // 지역 라멘 섹션
+            localRamenSection(
+                title: ramenListTitle,
+                items: viewModel.localRamenShops
+            )
         }
+        .padding(.bottom, 0) // 섹션과의 간격을 제거
     }
 
     // 라멘 섹션
@@ -190,6 +208,54 @@ struct HomeView: View {
                     ForEach(items) { shop in
                         ShopCardView(
                             imageURL: URL(string: "https://i.ytimg.com/vi/h-ccx94lXSE/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDuCs5orHjNXdXnBLARfzedQTwMEA"),
+                            title: shop.name,
+                            subtitle: shop.roadAddress,
+                            link: shop.link ?? "https://naver.com",
+                            address: shop.address,
+                            roadAddress: shop.roadAddress,
+                            mapX: shop.mapx,
+                            mapY: shop.mapy
+                        )
+                    }
+
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .frame(width: 150, height: 100)
+                    }
+                }
+            }
+        }
+        .padding(.top, 0)
+    }
+    
+    // 라멘 섹션
+    private func localRamenSection(title: String, items: [LocalRamenShop]) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            HStack {
+//                Text(title)
+//                    .font(.headline)
+//                    .fontWeight(.semibold)
+//                    .foregroundColor(CustomColor.text)
+//
+//                Spacer()
+
+//                Button(action: {
+//                    print("\(title) 더보기 클릭")
+//                    self.ramenListTitle = title
+//                    self.selectedLocalRamenList = items
+//                    self.showRamenListView = true
+//                }) {
+//                    Text("더보기 →")
+//                        .font(.subheadline)
+//                        .foregroundColor(CustomColor.secondary)
+//                }
+            }
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(items) { shop in
+                        LocalShopCardView(
+                            imageURL: URL(string: "https://i.ytimg.com/vi/Ngrety1u_Tk/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDoV99texdogOwObr3Elyyt8L9xCA"),
                             title: shop.name,
                             subtitle: shop.roadAddress,
                             link: shop.link ?? "https://naver.com",

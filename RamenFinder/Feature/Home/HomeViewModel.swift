@@ -26,6 +26,23 @@ struct RamenShop: Identifiable, Equatable {
     }
 }
 
+// 지역 라멘 모델 정의
+struct LocalRamenShop: Identifiable, Equatable {
+    let id = UUID()
+    let name: String
+    let roadAddress: String
+    let address: String
+    let category: String
+    let link: String?
+    let mapx: Double
+    let mapy: Double
+
+    // Equatable 요구 사항 구현
+    static func == (lhs: LocalRamenShop, rhs: LocalRamenShop) -> Bool {
+        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
+    }
+}
+
 // 근처 라멘 전용 모델
 struct NearbyRamenShop: Identifiable, Equatable {
     let id = UUID()
@@ -46,6 +63,7 @@ final class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var ramenShops: [RamenShop] = []       // 추천 라멘용
     @Published var nearbyRamenShops: [NearbyRamenShop] = [] // 근처 라멘용
+    @Published var localRamenShops: [LocalRamenShop] = []       // 지역 라멘용
     @Published var isLoading: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -174,6 +192,57 @@ final class HomeViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
+    
+    func fetchRamenShopsByCategory(category: String) {
+        let query = "\(category) 라멘" // 카테고리 이름 + 라멘
+        guard !query.isEmpty else { return }
+        
+        isLoading = true
+
+        // URL 구성
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "query", value: query),
+            URLQueryItem(name: "display", value: "5"),
+            URLQueryItem(name: "start", value: "1"),
+            URLQueryItem(name: "sort", value: "random")
+        ]
+        
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+
+        URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { output -> Data in
+                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
+                    throw URLError(.badServerResponse)
+                }
+                return output.data
+            }
+            .decode(type: RamenSearchResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completion in
+                self?.isLoading = false
+                if case .failure(let error) = completion {
+                    print("Error fetching shops: \(error)")
+                }
+            }, receiveValue: { [weak self] response in
+                self?.localRamenShops = response.items.map { item in
+                    LocalRamenShop(
+                        name: item.title.stripHTML(),
+                        roadAddress: item.roadAddress,
+                        address: item.address,
+                        category: item.category,
+                        link: item.link,
+                        mapx: item.mapx.toCoordinateDouble() ?? 0,
+                        mapy: item.mapy.toCoordinateDouble() ?? 0
+                    )
+                }
+            })
+            .store(in: &cancellables)
+    }
+    
 }
 
 // 네이버 API 응답 모델

@@ -10,7 +10,7 @@ import MapKit
 
 struct RamenDetailView: View {
     let title: String
-    let link: String
+    let link: String?
     let address: String
     let roadAddress: String
     let mapX: Double
@@ -18,6 +18,22 @@ struct RamenDetailView: View {
 
     @StateObject private var locationManager = LocationManager()
     @Environment(\.dismiss) var dismiss
+
+    @State private var region: MKCoordinateRegion
+
+    init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double) {
+        self.title = title
+        self.link = link
+        self.address = address
+        self.roadAddress = roadAddress
+        self.mapX = mapX
+        self.mapY = mapY
+        // 초기 위치를 매장 좌표로 설정
+        _region = State(initialValue: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: mapY, longitude: mapX),
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        ))
+    }
 
     var body: some View {
         ScrollView {
@@ -49,8 +65,8 @@ struct RamenDetailView: View {
                     }
                 }
                 .frame(maxWidth: .infinity) // 이미지를 SafeArea 안에서 표시
-                .edgesIgnoringSafeArea(.top) // 상단 여백 제거
-
+                .edgesIgnoringSafeArea(.top)
+                
                 // 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
@@ -63,7 +79,13 @@ struct RamenDetailView: View {
                         Spacer()
 
                         Button(action: {
-                            locationManager.requestUserLocation()
+                            // 사용자 위치 버튼을 눌렀을 때만 맵 업데이트
+                            if let userLocation = locationManager.userLocation {
+                                region = MKCoordinateRegion(
+                                    center: userLocation,
+                                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                                )
+                            }
                         }) {
                             Image(systemName: "location.fill")
                                 .foregroundColor(.blue)
@@ -80,19 +102,18 @@ struct RamenDetailView: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .lineLimit(2)
-
-                    Link("웹사이트 방문하기", destination: URL(string: link)!)
-                        .font(.subheadline)
-                        .foregroundColor(.blue)
+                    
+                    if let validLink = link, !validLink.isEmpty {
+                        Link("웹사이트 방문하기", destination: URL(string: validLink)!)
+                            .font(.subheadline)
+                            .foregroundColor(.blue)
+                    }
                 }
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity, alignment: .leading)
-
+                
                 // 맵뷰 섹션
-                MapView(mapX: mapX, mapY: mapY, locationManager: locationManager)
-                    .frame(height: 300)
-                    .cornerRadius(10)
-                    .padding(.horizontal)
+                MapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
             }
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity)
@@ -130,6 +151,7 @@ struct RamenDetailView: View {
 }
 
 struct MapView: View {
+    @Binding var region: MKCoordinateRegion
     let mapX: Double
     let mapY: Double
     @ObservedObject var locationManager: LocationManager
@@ -141,25 +163,23 @@ struct MapView: View {
     }
 
     var body: some View {
+        // 라멘 위치 마커
         let shopCoordinate = CLLocationCoordinate2D(latitude: mapY, longitude: mapX)
-        let region = MKCoordinateRegion(
-            center: shopCoordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        )
-
-        // 매장 마커
-        var annotationItems = [
-            IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red)
+        let annotationItems = [
+            IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red) // 가게 위치 마커
         ]
 
-        // 사용자 위치가 있을 경우 마커 추가
-        if let userCoordinate = locationManager.userLocation {
-            annotationItems.append(IdentifiableCoordinate(coordinate: userCoordinate, tint: .blue))
-        }
-
-        return Map(coordinateRegion: .constant(region), annotationItems: annotationItems) { item in
+        return Map(
+            coordinateRegion: $region,
+            showsUserLocation: true, // 사용자 위치를 동그라미로 표시
+            annotationItems: annotationItems
+        ) { item in
+            // 가게 위치 마커를 표시
             MapMarker(coordinate: item.coordinate, tint: item.tint)
         }
+        .frame(height: 300)
+        .cornerRadius(10)
+        .padding(.horizontal)
     }
 }
 
