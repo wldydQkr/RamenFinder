@@ -11,7 +11,9 @@ import SwiftUI
 struct RamenFinderApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NavigationView {
+                HomeView()
+            }
         }
     }
 }
