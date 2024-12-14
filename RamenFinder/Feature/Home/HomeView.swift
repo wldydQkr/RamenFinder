@@ -154,23 +154,15 @@ struct HomeView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
-                    CategoryView(icon: "figure.walk", title: "동대문구") {
-                        viewModel.fetchRamenShopsByCategory(category: "동대문구")
-                    }
-                    CategoryView(icon: "mountain.2.fill", title: "성동구") {
-                        viewModel.fetchRamenShopsByCategory(category: "성동구")
-                    }
-                    CategoryView(icon: "leaf.fill", title: "마포구") {
-                        viewModel.fetchRamenShopsByCategory(category: "마포구")
-                    }
-                    CategoryView(icon: "building.2.fill", title: "강남구") {
-                        viewModel.fetchRamenShopsByCategory(category: "강남구")
-                    }
-                    CategoryView(icon: "house.fill", title: "서초구") {
-                        viewModel.fetchRamenShopsByCategory(category: "서초구")
+                    ForEach(RegionalCategory.categories) { category in
+                        CategoryView(icon: category.icon, title: category.title) {
+                            viewModel.fetchRamenShopsByCategory(category: category.title)
+                            print("Selected: \(category.title)")
+                        }
                     }
                 }
             }
+
             // 지역 라멘 섹션
             localRamenSection(
                 title: ramenListTitle,
@@ -207,7 +199,7 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         ShopCardView(
-                            imageURL: URL(string: "https://i.ytimg.com/vi/h-ccx94lXSE/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDuCs5orHjNXdXnBLARfzedQTwMEA"),
+                            imageURL: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg"),
                             title: shop.name,
                             subtitle: shop.roadAddress,
                             link: shop.link ?? "https://naver.com",

@@ -36,36 +36,26 @@ struct RamenDetailView: View {
     }
 
     var body: some View {
+        topBar
         ScrollView {
             VStack(spacing: 20) {
-                topBar
                 // 상단 이미지 섹션
                 ZStack(alignment: .topLeading) {
                     AsyncImage(
-                        url: URL(string: "https://i.ytimg.com/vi/h-ccx94lXSE/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDuCs5orHjNXdXnBLARfzedQTwMEA")
+                        url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
                     ) { image in
                         image
                             .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: UIScreen.main.bounds.height * 0.4)
+                            .scaledToFill()
+                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 화면 너비에서 양옆 12씩 뺀 크기
                             .clipped()
+                            .cornerRadius(10)
                     } placeholder: {
                         ProgressView()
-                            .frame(maxWidth: .infinity, maxHeight: UIScreen.main.bounds.height * 0.4)
-                    }
-
-                    Button(action: {
-                        dismiss()
-                    }) {
-                        Image(systemName: "xmark.circle.fill")
-                            .font(.largeTitle)
-                            .foregroundColor(.white)
-                            .padding()
+                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 동일한 크기
                     }
                 }
-                .frame(maxWidth: .infinity) // 이미지를 SafeArea 안에서 표시
-                .edgesIgnoringSafeArea(.top)
+                .padding(.horizontal, 12) // 양옆 간격 12 고정
                 
                 // 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
@@ -104,7 +94,7 @@ struct RamenDetailView: View {
                         .lineLimit(2)
                     
                     if let validLink = link, !validLink.isEmpty {
-                        Link("웹사이트 방문하기", destination: URL(string: validLink)!)
+                        Link("홈페이지 방문하기", destination: URL(string: validLink)!)
                             .font(.subheadline)
                             .foregroundColor(.blue)
                     }

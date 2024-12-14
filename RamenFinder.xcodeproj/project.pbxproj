@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C09FA0132D0D4A1F002E2952 /* RegionalCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09FA0122D0D49F9002E2952 /* RegionalCategory.swift */; };
 		C0B741982D083FA900BAB93A /* ShopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741972D083FA900BAB93A /* ShopCardView.swift */; };
 		C0B7419A2D083FE600BAB93A /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741992D083FE600BAB93A /* CategoryView.swift */; };
 		C0B7419D2D08459E00BAB93A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B7419C2D08459800BAB93A /* LocationManager.swift */; };
@@ -27,6 +28,7 @@
 
 /* Begin PBXFileReference section */
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C09FA0122D0D49F9002E2952 /* RegionalCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalCategory.swift; sourceTree = "<group>"; };
 		C0B741972D083FA900BAB93A /* ShopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCardView.swift; sourceTree = "<group>"; };
 		C0B741992D083FE600BAB93A /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		C0B7419C2D08459800BAB93A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 		C0DDB22C2D04A40E00528F24 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C09FA0122D0D49F9002E2952 /* RegionalCategory.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -234,6 +237,7 @@
 			files = (
 				C0B741A02D08731C00BAB93A /* ShopListView.swift in Sources */,
 				C0DDB21B2D04853C00528F24 /* ContentView.swift in Sources */,
+				C09FA0132D0D4A1F002E2952 /* RegionalCategory.swift in Sources */,
 				C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */,
 				C0B741982D083FA900BAB93A /* ShopCardView.swift in Sources */,
 				C0B741A22D094FF700BAB93A /* LocalShopCardView.swift in Sources */,

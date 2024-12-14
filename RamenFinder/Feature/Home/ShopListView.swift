@@ -106,7 +106,7 @@ struct ShopRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: "https://i.ytimg.com/vi/h-ccx94lXSE/hqdefault.jpg")) { image in
+            AsyncImage(url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -119,16 +119,31 @@ struct ShopRow: View {
 
             VStack(alignment: .leading, spacing: 4) {
                 Text(shop.name)
-                    .font(.headline)
+                    .font(.title2)
+                    .fontWeight(.bold)
                     .foregroundColor(CustomColor.text)
-
+//                    .padding(.bottom)
+                
                 Text(shop.roadAddress)
                     .font(.subheadline)
                     .foregroundColor(CustomColor.secondary)
+                    .frame(alignment: .leading)
+                    .lineLimit(1)
+                    
+                
+                Text(shop.address)
+                    .font(.subheadline)
+                    .foregroundColor(CustomColor.secondary)
+                    .lineLimit(1)
+                    
             }
 
             Spacer()
         }
         .padding(.horizontal)
     }
+}
+
+#Preview {
+    ShopRow(shop: RamenShop(name: "오레노라멘 합정", roadAddress: "천호대로77가길", address: "장안1동", category: "동대문구", link: "", mapx: 0, mapy: 0))
 }
