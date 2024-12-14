@@ -44,20 +44,20 @@ struct LocalRamenShop: Identifiable, Equatable {
 }
 
 // 근처 라멘 전용 모델
-struct NearbyRamenShop: Identifiable, Equatable {
-    let id = UUID()
-    let name: String
-    let roadAddress: String
-    let address: String
-    let category: String
-    let link: String?
-    let mapx: Double
-    let mapy: Double
-
-    static func == (lhs: NearbyRamenShop, rhs: NearbyRamenShop) -> Bool {
-        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
-    }
-}
+//struct NearbyRamenShop: Identifiable, Equatable {
+//    let id = UUID()
+//    let name: String
+//    let roadAddress: String
+//    let address: String
+//    let category: String
+//    let link: String?
+//    let mapx: Double
+//    let mapy: Double
+//
+//    static func == (lhs: NearbyRamenShop, rhs: NearbyRamenShop) -> Bool {
+//        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
+//    }
+//}
 
 final class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
@@ -86,63 +86,63 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    func fetchRamenShopsNearby(latitude: Double, longitude: Double) {
-        let query = "라멘"
-        let coordinate = "\(longitude),\(latitude)" // 경도,위도 순서
-        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-        
-        guard let url = URL(string: "https://openapi.naver.com/v1/search/local.json?query=\(encodedQuery)&sort=distance&coordinate=\(coordinate)") else {
-            print("유효하지 않은 URL")
-            return
-        }
-
-        var request = URLRequest(url: url)
-        request.httpMethod = "GET"
-        
-        // 헤더에 네이버 인증 정보 추가
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
-
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-            if let error = error {
-                print("네트워크 요청 에러: \(error.localizedDescription)")
-                return
-            }
-
-            guard let data = data else {
-                print("데이터 없음")
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let response = try decoder.decode(RamenSearchResponse.self, from: data)
-                
-                // 응답을 NearbyRamenShop 배열로 매핑
-                let shops = response.items.compactMap { item -> NearbyRamenShop? in
-                    guard let lat = item.mapy.toCoordinateDouble(),
-                          let lng = item.mapx.toCoordinateDouble() else {
-                        return nil
-                    }
-                    return NearbyRamenShop(
-                        name: item.title.stripHTML(),
-                        roadAddress: item.roadAddress,
-                        address: item.address,
-                        category: item.category,
-                        link: item.link,
-                        mapx: lat,
-                        mapy: lng
-                    )
-                }
-
-                DispatchQueue.main.async {
-                    self?.nearbyRamenShops = shops
-                }
-            } catch {
-                print("디코딩 에러: \(error.localizedDescription)")
-            }
-        }.resume()
-    }
+//    func fetchRamenShopsNearby(latitude: Double, longitude: Double) {
+//        let query = "라멘"
+//        let coordinate = "\(longitude),\(latitude)" // 경도,위도 순서
+//        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
+//        
+//        guard let url = URL(string: "https://openapi.naver.com/v1/search/local.json?query=\(encodedQuery)&sort=distance&coordinate=\(coordinate)") else {
+//            print("유효하지 않은 URL")
+//            return
+//        }
+//
+//        var request = URLRequest(url: url)
+//        request.httpMethod = "GET"
+//        
+//        // 헤더에 네이버 인증 정보 추가
+//        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+//        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+//
+//        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+//            if let error = error {
+//                print("네트워크 요청 에러: \(error.localizedDescription)")
+//                return
+//            }
+//
+//            guard let data = data else {
+//                print("데이터 없음")
+//                return
+//            }
+//
+//            do {
+//                let decoder = JSONDecoder()
+//                let response = try decoder.decode(RamenSearchResponse.self, from: data)
+//                
+//                // 응답을 NearbyRamenShop 배열로 매핑
+//                let shops = response.items.compactMap { item -> NearbyRamenShop? in
+//                    guard let lat = item.mapy.toCoordinateDouble(),
+//                          let lng = item.mapx.toCoordinateDouble() else {
+//                        return nil
+//                    }
+//                    return NearbyRamenShop(
+//                        name: item.title.stripHTML(),
+//                        roadAddress: item.roadAddress,
+//                        address: item.address,
+//                        category: item.category,
+//                        link: item.link,
+//                        mapx: lat,
+//                        mapy: lng
+//                    )
+//                }
+//
+//                DispatchQueue.main.async {
+//                    self?.nearbyRamenShops = shops
+//                }
+//            } catch {
+//                print("디코딩 에러: \(error.localizedDescription)")
+//            }
+//        }.resume()
+//    }
 
     func fetchRamenShops(query: String) {
         guard !query.isEmpty else { return }

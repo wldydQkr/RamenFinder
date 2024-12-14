@@ -12,7 +12,7 @@ struct RamenFinderApp: App {
     var body: some Scene {
         WindowGroup {
             NavigationView {
-                HomeView()
+                TabBar()
             }
         }
     }

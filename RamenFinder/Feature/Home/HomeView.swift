@@ -80,8 +80,6 @@ struct HomeView: View {
 
             Spacer()
 
-            TabBar(selectedTab: $selectedTab)
-                .padding(.bottom, 20)
         }
         .edgesIgnoringSafeArea(.bottom)
         .fullScreenCover(isPresented: $isSearchViewActive) {

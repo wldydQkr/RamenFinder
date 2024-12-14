@@ -103,7 +103,7 @@ struct RamenDetailView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
                 // 맵뷰 섹션
-                MapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
+                DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
             }
             .padding(.bottom, 20)
             .frame(maxWidth: .infinity)
@@ -140,7 +140,7 @@ struct RamenDetailView: View {
     }
 }
 
-struct MapView: View {
+struct DetailMapView: View {
     @Binding var region: MKCoordinateRegion
     let mapX: Double
     let mapY: Double

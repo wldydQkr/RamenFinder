@@ -70,6 +70,7 @@ struct LocalShopCardView: View {
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .lineLimit(2)
             }
             .frame(width: 150)
         }
