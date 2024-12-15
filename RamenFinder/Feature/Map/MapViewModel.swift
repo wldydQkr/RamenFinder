@@ -33,7 +33,6 @@ struct NearbyRamenShop: Identifiable, Decodable {
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         
-        // Decode title and remove HTML tags
         let rawName = try container.decode(String.self, forKey: .name)
         name = rawName.stripHTML()
         
@@ -42,12 +41,12 @@ struct NearbyRamenShop: Identifiable, Decodable {
         category = try container.decode(String.self, forKey: .category)
         link = try container.decodeIfPresent(String.self, forKey: .link)
         
-        // Convert mapx/mapy from String to Double
+        // 좌표값 처리
         if let mapxString = try? container.decode(String.self, forKey: .mapx),
            let mapyString = try? container.decode(String.self, forKey: .mapy),
            let mapxValue = Double(mapxString),
            let mapyValue = Double(mapyString) {
-            mapx = mapxValue / 1_000_000.0 // 네이버 좌표계 보정
+            mapx = mapxValue / 1_000_000.0
             mapy = mapyValue / 1_000_000.0
         } else {
             throw DecodingError.dataCorruptedError(forKey: .mapx, in: container, debugDescription: "Invalid mapx or mapy value")
@@ -105,9 +104,10 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         print("Failed to fetch user location: \(error.localizedDescription)")
     }
 
+    /// 네이버 API로 라멘 매장 데이터를 가져오는 메서드
     func fetchNearbyRamenShops(lat: Double, lon: Double) {
         let baseURL = "https://openapi.naver.com/v1/search/local.json"
-        let query = "서울 라멘"
+        let query = "라멘"
         let urlString = "\(baseURL)?query=\(query)&display=5&coordinate=\(lon),\(lat)"
         guard let url = URL(string: urlString) else {
             print("Invalid URL.")

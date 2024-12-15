@@ -8,67 +8,71 @@
 import SwiftUI
 import MapKit
 
-struct MapView: View {
-    @StateObject private var viewModel = MapViewModel()
+struct ContainerView: View {
+    @StateObject var viewModel: MapViewModel
+    @StateObject private var locationManager = LocationManager()
+    @State private var region: MKCoordinateRegion?
+
+    var ramenShop: NearbyRamenShop
+
+    init(viewModel: MapViewModel, ramenShop: NearbyRamenShop) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+        self.ramenShop = ramenShop
+        _region = State(initialValue: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx),
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+        ))
+    }
 
     var body: some View {
-        ZStack {
-            if let region = viewModel.region {
-                // 지도 설정
-                Map(
-                    coordinateRegion: .constant(region),
-                    interactionModes: .all,
-                    showsUserLocation: true, // 내 위치 표시
-                    annotationItems: viewModel.ramenShops
-                ) { shop in
-                    MapAnnotation(
-                        coordinate: CLLocationCoordinate2D(latitude: shop.mapy, longitude: shop.mapx)
-                    ) {
-                        VStack {
-                            Image(systemName: "mappin.circle.fill")
-                                .resizable()
-                                .frame(width: 30, height: 30)
-                                .foregroundColor(.red)
-                            Text(shop.name)
-                                .font(.caption)
-                                .background(Color.white.opacity(0.7))
-                                .cornerRadius(5)
-                        }
-                    }
-                }
-                .ignoresSafeArea()
-            } else {
-                Text("위치를 불러오는 중입니다...")
-                    .font(.headline)
-                    .foregroundColor(.gray)
-            }
+        VStack {
+            Text(ramenShop.name)
+                .font(.title2)
+                .fontWeight(.bold)
+                .padding()
 
-            // 내 위치 버튼
-            VStack {
-                Spacer()
-                HStack {
-                    Spacer()
-                    Button(action: {
-                        viewModel.requestUserLocation()
-                    }) {
-                        Image(systemName: "location.fill")
-                            .resizable()
-                            .frame(width: 40, height: 40)
-                            .padding()
-                            .background(Color.white)
-                            .clipShape(Circle())
-                            .shadow(color: .gray.opacity(0.5), radius: 5, x: 0, y: 3)
-                    }
-                    .padding()
-                }
-            }
+            MapView(region: $region, ramenShop: ramenShop, locationManager: locationManager)
+                .padding(.horizontal)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .background(Color(UIColor.systemBackground))
         .onAppear {
-            viewModel.requestInitialLocation()
+            region = MKCoordinateRegion(
+                center: CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx),
+                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            )
         }
     }
 }
 
-#Preview {
-    MapView()
+struct MapView: View {
+    @Binding var region: MKCoordinateRegion?
+    let ramenShop: NearbyRamenShop
+    @ObservedObject var locationManager: LocationManager
+
+    var body: some View {
+        if let region = region {
+            let shopCoordinate = CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx)
+            let annotationItems = [IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red)]
+
+            Map(coordinateRegion: .constant(region), annotationItems: annotationItems) { item in
+                MapMarker(coordinate: item.coordinate, tint: item.tint)
+            }
+            .frame(height: 300)
+            .cornerRadius(10)
+            .padding(.horizontal)
+        } else {
+            Text("Loading map...")
+        }
+    }
+
+    struct IdentifiableCoordinate: Identifiable {
+        let id = UUID()
+        let coordinate: CLLocationCoordinate2D
+        let tint: Color
+    }
 }
+
+//#Preview {
+//    MapView()
+//}
