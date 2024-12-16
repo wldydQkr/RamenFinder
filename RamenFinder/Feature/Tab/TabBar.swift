@@ -35,24 +35,7 @@ struct TabBar: View {
                 case .home:
                     HomeView()
                 case .map:
-                    // MapViewModel을 활용하여 라멘 매장 데이터를 표시
-                    if mapViewModel.ramenShops.isEmpty {
-                        Text("Fetching nearby ramen shops...")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                            .onAppear {
-                                mapViewModel.requestInitialLocation()
-                            }
-                    } else {
-                        // 첫 번째 라멘 매장 정보를 ContainerView로 전달
-                        if let firstShop = mapViewModel.ramenShops.first {
-                            ContainerView(viewModel: mapViewModel, ramenShop: firstShop)
-                        } else {
-                            Text("No shops available")
-                                .font(.headline)
-                                .foregroundColor(.secondary)
-                        }
-                    }
+                    MapView()
                 case .favorites:
                     HomeView()
                 case .profile:

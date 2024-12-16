@@ -8,68 +8,38 @@
 import SwiftUI
 import MapKit
 
-struct ContainerView: View {
-    @StateObject var viewModel: MapViewModel
-    @StateObject private var locationManager = LocationManager()
-    @State private var region: MKCoordinateRegion?
-
-    var ramenShop: NearbyRamenShop
-
-    init(viewModel: MapViewModel, ramenShop: NearbyRamenShop) {
-        _viewModel = StateObject(wrappedValue: viewModel)
-        self.ramenShop = ramenShop
-        _region = State(initialValue: MKCoordinateRegion(
-            center: CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx),
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        ))
-    }
+struct MapView: View {
+    @StateObject private var viewModel = MapViewModel() // MapViewModel 인스턴스
 
     var body: some View {
-        VStack {
-            Text(ramenShop.name)
-                .font(.title2)
-                .fontWeight(.bold)
-                .padding()
-
-            MapView(region: $region, ramenShop: ramenShop, locationManager: locationManager)
-                .padding(.horizontal)
+        ZStack {
+            if let region = viewModel.region {
+                // 맵뷰 생성
+                Map(
+                    coordinateRegion: .constant(region),
+                    showsUserLocation: true,
+                    annotationItems: viewModel.annotationItems
+                ) { item in
+                    // 마커 추가
+                    MapMarker(coordinate: item.coordinate, tint: item.tint)
+                }
+                .edgesIgnoringSafeArea(.all)
+            } else {
+                // 로딩 상태 표시
+                Text("Loading map...")
+                    .foregroundColor(.gray)
+            }
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color(UIColor.systemBackground))
         .onAppear {
-            region = MKCoordinateRegion(
-                center: CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx),
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            viewModel.requestInitialLocation() // 사용자 위치 요청 및 초기 데이터 로드
+        }
+        .alert(isPresented: $viewModel.showLocationError) {
+            Alert(
+                title: Text("Location Error"),
+                message: Text("Unable to fetch your location. Please check your settings."),
+                dismissButton: .default(Text("OK"))
             )
         }
-    }
-}
-
-struct MapView: View {
-    @Binding var region: MKCoordinateRegion?
-    let ramenShop: NearbyRamenShop
-    @ObservedObject var locationManager: LocationManager
-
-    var body: some View {
-        if let region = region {
-            let shopCoordinate = CLLocationCoordinate2D(latitude: ramenShop.mapy, longitude: ramenShop.mapx)
-            let annotationItems = [IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red)]
-
-            Map(coordinateRegion: .constant(region), annotationItems: annotationItems) { item in
-                MapMarker(coordinate: item.coordinate, tint: item.tint)
-            }
-            .frame(height: 300)
-            .cornerRadius(10)
-            .padding(.horizontal)
-        } else {
-            Text("Loading map...")
-        }
-    }
-
-    struct IdentifiableCoordinate: Identifiable {
-        let id = UUID()
-        let coordinate: CLLocationCoordinate2D
-        let tint: Color
     }
 }
 

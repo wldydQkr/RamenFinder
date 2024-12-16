@@ -5,7 +5,7 @@
 //  Created by 박지용 on 12/14/24.
 //
 
-import Foundation
+import SwiftUI
 import CoreLocation
 import Combine
 import MapKit
@@ -60,12 +60,12 @@ struct NaverAPIResponse: Decodable {
 
 @MainActor
 final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
-    @Published var ramenShops: [NearbyRamenShop] = []
+    @Published var ramenShops: [NearbyRamenShop] = [] // 파싱된 매장 데이터
     @Published var region: MKCoordinateRegion? // 맵뷰의 현재 중심 위치
-    private let locationManager = CLLocationManager()
+    @Published var annotationItems: [IdentifiableCoordinate] = [] // 맵 마커 리스트
+    @Published var showLocationError: Bool = false // 위치 권한 에러 플래그
 
-    private let clientId = "NZmzvNuQwqMF1dFh9YmL"
-    private let clientSecret = "UL5R8sDcrz"
+    private let locationManager = CLLocationManager()
 
     override init() {
         super.init()
@@ -75,28 +75,20 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
     }
 
     func requestInitialLocation() {
-        // 초기 위치 요청
         locationManager.requestLocation()
-    }
-
-    func requestUserLocation() {
-        // 버튼 클릭 시 위치 요청
-        locationManager.startUpdatingLocation()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-            self.locationManager.stopUpdatingLocation()
-        }
     }
 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-
         let coordinate = location.coordinate
+
+        // 현재 사용자 위치를 기준으로 맵 중앙 설정
         region = MKCoordinateRegion(
             center: coordinate,
             span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         )
-
-        // 주변 라멘 매장 가져오기
+        print(coordinate.latitude, coordinate.longitude)
+        // 주변 라멘 매장 데이터 가져오기
         fetchNearbyRamenShops(lat: coordinate.latitude, lon: coordinate.longitude)
     }
 
@@ -104,10 +96,11 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         print("Failed to fetch user location: \(error.localizedDescription)")
     }
 
-    /// 네이버 API로 라멘 매장 데이터를 가져오는 메서드
+    /// 네이버 API로 라멘 매장 데이터 가져오기
     func fetchNearbyRamenShops(lat: Double, lon: Double) {
+        // 네이버 API 요청 URL 생성
         let baseURL = "https://openapi.naver.com/v1/search/local.json"
-        let query = "라멘"
+        let query = "동대문구 라멘"
         let urlString = "\(baseURL)?query=\(query)&display=5&coordinate=\(lon),\(lat)"
         guard let url = URL(string: urlString) else {
             print("Invalid URL.")
@@ -115,8 +108,8 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         }
 
         var request = URLRequest(url: url)
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+        request.addValue("NZmzvNuQwqMF1dFh9YmL", forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue("UL5R8sDcrz", forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
@@ -129,20 +122,34 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
                 return
             }
 
-            // Debugging: Print raw JSON data
-            if let jsonString = String(data: data, encoding: .utf8) {
-                print("Received JSON: \(jsonString)")
-            }
-
             do {
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(NaverAPIResponse.self, from: data)
+
+                // 메인 스레드에서 데이터 업데이트
                 DispatchQueue.main.async {
                     self?.ramenShops = response.items
+                    self?.updateAnnotations()
                 }
             } catch {
                 print("Failed to decode JSON: \(error.localizedDescription)")
             }
         }.resume()
     }
+
+    /// 매장 데이터를 기반으로 마커 업데이트
+    private func updateAnnotations() {
+        annotationItems = ramenShops.map { shop in
+            IdentifiableCoordinate(
+                coordinate: CLLocationCoordinate2D(latitude: shop.mapy, longitude: shop.mapx),
+                tint: .red
+            )
+        }
+    }
+}
+
+struct IdentifiableCoordinate: Identifiable {
+    let id = UUID()
+    let coordinate: CLLocationCoordinate2D
+    let tint: Color
 }
