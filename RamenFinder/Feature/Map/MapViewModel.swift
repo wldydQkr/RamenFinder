@@ -60,6 +60,7 @@ struct NaverAPIResponse: Decodable {
 
 @MainActor
 final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
+    @Published var userLocation: CLLocationCoordinate2D? // 사용자 위치 저장
     @Published var ramenShops: [NearbyRamenShop] = [] // 파싱된 매장 데이터
     @Published var region: MKCoordinateRegion? // 맵뷰의 현재 중심 위치
     @Published var annotationItems: [IdentifiableCoordinate] = [] // 맵 마커 리스트
@@ -81,6 +82,16 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
         let coordinate = location.coordinate
+        
+        if let location = locations.first {
+            DispatchQueue.main.async {
+                self.userLocation = location.coordinate
+                self.region = MKCoordinateRegion(
+                    center: location.coordinate,
+                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+                )
+            }
+        }
 
         // 현재 사용자 위치를 기준으로 맵 중앙 설정
         region = MKCoordinateRegion(
@@ -100,14 +111,23 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
     func fetchNearbyRamenShops(lat: Double, lon: Double) {
         // 네이버 API 요청 URL 생성
         let baseURL = "https://openapi.naver.com/v1/search/local.json"
-        let query = "동대문구 라멘"
-        let urlString = "\(baseURL)?query=\(query)&display=5&coordinate=\(lon),\(lat)"
+        let query = "장안동 라멘"
+//        let urlString = "\(baseURL)?query=\(query)&display=5&coordinate=\(lon),\(lat)"
+        let urlString = "\(baseURL)?query=\(query)&display=5"
         guard let url = URL(string: urlString) else {
             print("Invalid URL.")
             return
         }
+        
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "query", value: "라멘"),
+            URLQueryItem(name: "display", value: "10"), // 결과 갯수
+            URLQueryItem(name: "sort", value: "random"), // 정렬 방식
+//            URLQueryItem(name: "coordinate", value: "\(longitude),\(latitude)") // 경도,위도
+        ]
 
-        var request = URLRequest(url: url)
+        var request = URLRequest(url: components.url!)
         request.addValue("NZmzvNuQwqMF1dFh9YmL", forHTTPHeaderField: "X-Naver-Client-Id")
         request.addValue("UL5R8sDcrz", forHTTPHeaderField: "X-Naver-Client-Secret")
 
@@ -125,7 +145,8 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
             do {
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(NaverAPIResponse.self, from: data)
-
+                print("Fetched shops: \(response.items.count)")
+                
                 // 메인 스레드에서 데이터 업데이트
                 DispatchQueue.main.async {
                     self?.ramenShops = response.items
@@ -138,13 +159,18 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
     }
 
     /// 매장 데이터를 기반으로 마커 업데이트
-    private func updateAnnotations() {
-        annotationItems = ramenShops.map { shop in
-            IdentifiableCoordinate(
+    func updateAnnotations() {
+        annotationItems = ramenShops.compactMap { shop in
+            guard shop.mapx != 0, shop.mapy != 0 else {
+                print("Invalid coordinate for shop: \(shop.name)")
+                return nil
+            }
+            return IdentifiableCoordinate(
                 coordinate: CLLocationCoordinate2D(latitude: shop.mapy, longitude: shop.mapx),
                 tint: .red
             )
         }
+        print("Updated annotations: \(annotationItems.count) items.")
     }
 }
 

@@ -55,7 +55,7 @@ struct RamenDetailView: View {
                             .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 동일한 크기
                     }
                 }
-                .padding(.horizontal, 12) // 양옆 간격 12 고정
+                .padding(.horizontal, 12)
                 
                 // 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
