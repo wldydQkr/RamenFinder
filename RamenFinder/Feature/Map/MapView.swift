@@ -10,12 +10,11 @@ import MapKit
 
 struct MapView: View {
     @State private var region: MKCoordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472), // 초기 지도 중심: 장한평역
+        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472), // 임시 초기 값
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
     @StateObject private var locationManager = LocationManager() // 사용자 위치 관리
 
-    // 고정된 라멘 가게 데이터
     let ramenShops: [RamenIdentifiableCoordinate] = [
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5628, longitude: 127.0635),
@@ -76,12 +75,23 @@ struct MapView: View {
         }
         .onAppear {
             locationManager.requestUserLocation()
+            updateInitialRegion()
         }
         .alert(isPresented: .constant(locationManager.isAuthorizationDenied)) {
             Alert(
                 title: Text("위치 권한이 필요합니다."),
                 message: Text("앱 설정에서 위치 접근 권한을 허용해주세요."),
                 dismissButton: .default(Text("확인"))
+            )
+        }
+    }
+
+    // 초기 사용자 위치로 지도 중심 업데이트
+    private func updateInitialRegion() {
+        if let userLocation = locationManager.userLocation {
+            region = MKCoordinateRegion(
+                center: userLocation,
+                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
             )
         }
     }
