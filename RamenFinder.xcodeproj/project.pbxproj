@@ -10,6 +10,7 @@
 		C0879DE82D0D9B0900715D85 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE72D0D9B0900715D85 /* MapView.swift */; };
 		C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE92D0DBF3200715D85 /* MapViewModel.swift */; };
 		C09629C12D2D372600AA5CD8 /* NearbyRamenShop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09629C02D2D371D00AA5CD8 /* NearbyRamenShop.swift */; };
+		C09629C42D2D38F300AA5CD8 /* FavoriteRamenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09629C32D2D38F300AA5CD8 /* FavoriteRamenView.swift */; };
 		C09FA0132D0D4A1F002E2952 /* RegionalCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09FA0122D0D49F9002E2952 /* RegionalCategory.swift */; };
 		C0B741982D083FA900BAB93A /* ShopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741972D083FA900BAB93A /* ShopCardView.swift */; };
 		C0B7419A2D083FE600BAB93A /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741992D083FE600BAB93A /* CategoryView.swift */; };
@@ -34,6 +35,7 @@
 		C0879DE92D0DBF3200715D85 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C09629C02D2D371D00AA5CD8 /* NearbyRamenShop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyRamenShop.swift; sourceTree = "<group>"; };
+		C09629C32D2D38F300AA5CD8 /* FavoriteRamenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteRamenView.swift; sourceTree = "<group>"; };
 		C09FA0122D0D49F9002E2952 /* RegionalCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalCategory.swift; sourceTree = "<group>"; };
 		C0B741972D083FA900BAB93A /* ShopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCardView.swift; sourceTree = "<group>"; };
 		C0B741992D083FE600BAB93A /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
@@ -90,6 +92,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C09629C22D2D38D600AA5CD8 /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				C09629C32D2D38F300AA5CD8 /* FavoriteRamenView.swift */,
+			);
+			path = Favorite;
+			sourceTree = "<group>";
+		};
 		C0B7419B2D08458D00BAB93A /* Manager */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,6 +113,7 @@
 			children = (
 				C0DDB2292D04858D00528F24 /* Tab */,
 				C0DDB2282D04858300528F24 /* Home */,
+				C09629C22D2D38D600AA5CD8 /* Favorite */,
 				C0879DE62D0D9A4600715D85 /* Map */,
 			);
 			path = Feature;
@@ -265,6 +276,7 @@
 				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
 				C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */,
 				C09629C12D2D372600AA5CD8 /* NearbyRamenShop.swift in Sources */,
+				C09629C42D2D38F300AA5CD8 /* FavoriteRamenView.swift in Sources */,
 				C0B7419D2D08459E00BAB93A /* LocationManager.swift in Sources */,
 				C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */,
 				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
