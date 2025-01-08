@@ -8,6 +8,7 @@
 import SwiftUI
 import Combine
 import CoreLocation
+import CoreData
 
 // 모델 정의
 struct RamenShop: Identifiable, Equatable {
@@ -43,27 +44,11 @@ struct LocalRamenShop: Identifiable, Equatable {
     }
 }
 
-// 근처 라멘 전용 모델
-//struct NearbyRamenShop: Identifiable, Equatable {
-//    let id = UUID()
-//    let name: String
-//    let roadAddress: String
-//    let address: String
-//    let category: String
-//    let link: String?
-//    let mapx: Double
-//    let mapy: Double
-//
-//    static func == (lhs: NearbyRamenShop, rhs: NearbyRamenShop) -> Bool {
-//        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
-//    }
-//}
-
 final class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
-    @Published var ramenShops: [RamenShop] = []       // 추천 라멘용
-    @Published var nearbyRamenShops: [NearbyRamenShop] = [] // 근처 라멘용
-    @Published var localRamenShops: [LocalRamenShop] = []       // 지역 라멘용
+    @Published var ramenShops: [RamenShop] = []
+    @Published var localRamenShops: [LocalRamenShop] = []
+    @Published var favoriteRamenShops: [FavoriteRamen] = []
     @Published var isLoading: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -71,126 +56,42 @@ final class HomeViewModel: ObservableObject {
     private let clientId = "NZmzvNuQwqMF1dFh9YmL"
     private let clientSecret = "UL5R8sDcrz"
 
-    init() {
-        // 실시간 검색어를 토대로 데이터 업데이트
+    private let viewContext: NSManagedObjectContext
+
+    init(context: NSManagedObjectContext) {
+        self.viewContext = context
+        setupSearchListener()
+        fetchFavorites()
+    }
+
+    private func setupSearchListener() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
             .removeDuplicates()
+            .filter { $0.count >= 2 } // 최소 두 글자 이상 입력 시 검색
             .sink { [weak self] text in
-                if !text.isEmpty {
-                    self?.fetchRamenShops(query: text)
-                } else {
-                    self?.ramenShops = [] // 검색어가 비어있으면 초기화
-                }
+                guard let self = self else { return }
+                self.fetchRamenShops(query: text)
             }
             .store(in: &cancellables)
     }
 
-//    func fetchRamenShopsNearby(latitude: Double, longitude: Double) {
-//        let query = "라멘"
-//        let coordinate = "\(longitude),\(latitude)" // 경도,위도 순서
-//        let encodedQuery = query.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? query
-//        
-//        guard let url = URL(string: "https://openapi.naver.com/v1/search/local.json?query=\(encodedQuery)&sort=distance&coordinate=\(coordinate)") else {
-//            print("유효하지 않은 URL")
-//            return
-//        }
-//
-//        var request = URLRequest(url: url)
-//        request.httpMethod = "GET"
-//        
-//        // 헤더에 네이버 인증 정보 추가
-//        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-//        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
-//
-//        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
-//            if let error = error {
-//                print("네트워크 요청 에러: \(error.localizedDescription)")
-//                return
-//            }
-//
-//            guard let data = data else {
-//                print("데이터 없음")
-//                return
-//            }
-//
-//            do {
-//                let decoder = JSONDecoder()
-//                let response = try decoder.decode(RamenSearchResponse.self, from: data)
-//                
-//                // 응답을 NearbyRamenShop 배열로 매핑
-//                let shops = response.items.compactMap { item -> NearbyRamenShop? in
-//                    guard let lat = item.mapy.toCoordinateDouble(),
-//                          let lng = item.mapx.toCoordinateDouble() else {
-//                        return nil
-//                    }
-//                    return NearbyRamenShop(
-//                        name: item.title.stripHTML(),
-//                        roadAddress: item.roadAddress,
-//                        address: item.address,
-//                        category: item.category,
-//                        link: item.link,
-//                        mapx: lat,
-//                        mapy: lng
-//                    )
-//                }
-//
-//                DispatchQueue.main.async {
-//                    self?.nearbyRamenShops = shops
-//                }
-//            } catch {
-//                print("디코딩 에러: \(error.localizedDescription)")
-//            }
-//        }.resume()
-//    }
-
     func fetchRamenShops(query: String) {
-        guard !query.isEmpty else { return }
-        
-        isLoading = true
+        guard !isLoading else { return } // 중복 요청 방지
 
-        // URL 구성
-        var components = URLComponents(string: baseURL)!
-        components.queryItems = [
-            URLQueryItem(name: "query", value: query),
-            URLQueryItem(name: "display", value: "5"),
-            URLQueryItem(name: "start", value: "1"),
-            URLQueryItem(name: "sort", value: "random")
-        ]
-        
-        var request = URLRequest(url: components.url!)
-        request.httpMethod = "GET"
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
-
-        URLSession.shared.dataTaskPublisher(for: request)
-            .tryMap { output -> Data in
-                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
-                    throw URLError(.badServerResponse)
-                }
-                return output.data
+        performAPISearch(query: query) { [weak self] response in
+            self?.ramenShops = response.items.map { item in
+                RamenShop(
+                    name: item.title.stripHTML(),
+                    roadAddress: item.roadAddress,
+                    address: item.address,
+                    category: item.category,
+                    link: item.link,
+                    mapx: item.mapx.toCoordinateDouble() ?? 0,
+                    mapy: item.mapy.toCoordinateDouble() ?? 0
+                )
             }
-            .decode(type: RamenSearchResponse.self, decoder: JSONDecoder())
-            .receive(on: DispatchQueue.main)
-            .sink(receiveCompletion: { [weak self] completion in
-                self?.isLoading = false
-                if case .failure(let error) = completion {
-                    print("Error fetching shops: \(error)")
-                }
-            }, receiveValue: { [weak self] response in
-                self?.ramenShops = response.items.map { item in
-                    RamenShop(
-                        name: item.title.stripHTML(),
-                        roadAddress: item.roadAddress,
-                        address: item.address,
-                        category: item.category,
-                        link: item.link,
-                        mapx: item.mapx.toCoordinateDouble() ?? 0,
-                        mapy: item.mapy.toCoordinateDouble() ?? 0
-                    )
-                }
-            })
-            .store(in: &cancellables)
+        }
     }
     
     func fetchRamenShopsByCategory(category: String) {
@@ -242,12 +143,72 @@ final class HomeViewModel: ObservableObject {
             })
             .store(in: &cancellables)
     }
-    
-}
 
-// 네이버 API 응답 모델
-struct NaverSearchResponse: Codable {
-    let items: [ShopItem]
+    private func performAPISearch(query: String, completion: @escaping (RamenSearchResponse) -> Void) {
+        guard !query.isEmpty else { return }
+
+        isLoading = true
+
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "query", value: query),
+            URLQueryItem(name: "display", value: "5"),
+            URLQueryItem(name: "start", value: "1"),
+            URLQueryItem(name: "sort", value: "random")
+        ]
+
+        var request = URLRequest(url: components.url!)
+        request.httpMethod = "GET"
+        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+
+        URLSession.shared.dataTaskPublisher(for: request)
+            .tryMap { output -> Data in
+                guard let response = output.response as? HTTPURLResponse, response.statusCode == 200 else {
+                    throw URLError(.badServerResponse)
+                }
+                return output.data
+            }
+            .decode(type: RamenSearchResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: { [weak self] completionState in
+                self?.isLoading = false
+                if case .failure(let error) = completionState {
+                    self?.handleError(error: error)
+                }
+            }, receiveValue: { response in
+                completion(response)
+            })
+            .store(in: &cancellables)
+    }
+
+    private func handleError(error: Error) {
+        print("Network or parsing error: \(error.localizedDescription)")
+    }
+
+    func fetchFavorites() {
+        do {
+            let request: NSFetchRequest<FavoriteRamen> = FavoriteRamen.fetchRequest()
+            request.sortDescriptors = [NSSortDescriptor(key: "name", ascending: true)]
+            favoriteRamenShops = try viewContext.fetch(request)
+        } catch {
+            print("Error fetching favorites: \(error.localizedDescription)")
+        }
+    }
+
+    func deleteFavorite(shop: FavoriteRamen) {
+        viewContext.delete(shop)
+        saveContext()
+    }
+
+    private func saveContext() {
+        do {
+            try viewContext.save()
+            fetchFavorites()
+        } catch {
+            print("Error saving context: \(error.localizedDescription)")
+        }
+    }
 }
 
 struct ShopItem: Codable {
@@ -271,17 +232,4 @@ struct RamenShopResponse: Codable {
 
 struct RamenSearchResponse: Codable {
     let items: [RamenShopResponse]
-}
-
-// HTML 태그 제거 메서드
-extension String {
-    func stripHTML() -> String {
-        guard let data = self.data(using: .utf8) else { return self }
-        let options: [NSAttributedString.DocumentReadingOptionKey: Any] = [
-            .documentType: NSAttributedString.DocumentType.html,
-            .characterEncoding: String.Encoding.utf8.rawValue
-        ]
-        let attributedString = try? NSAttributedString(data: data, options: options, documentAttributes: nil)
-        return attributedString?.string ?? self
-    }
 }

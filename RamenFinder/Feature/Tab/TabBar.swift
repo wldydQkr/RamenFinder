@@ -11,6 +11,7 @@ import CoreLocation
 struct TabBar: View {
     @State private var selectedTab: Tab = .home
     @StateObject private var mapViewModel = MapViewModel()
+    @Environment(\.managedObjectContext) private var viewContext // Core Data context
 
     enum Tab: String, CaseIterable {
         case home = "Home"
@@ -33,13 +34,13 @@ struct TabBar: View {
             ZStack {
                 switch selectedTab {
                 case .home:
-                    HomeView()
+                    HomeView(context: viewContext) // 전달된 context 사용
                 case .map:
                     MapView()
                 case .favorites:
-                    HomeView()
+                    FavoriteRamenView()
                 case .profile:
-                    HomeView()
+                    HomeView(context: viewContext) // 동일하게 context 전달
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -80,7 +81,3 @@ struct TabBar: View {
 #Preview {
     TabBar()
 }
-
-//#Preview {
-//    TabBar(selectedTab: .constant(.home))
-//}
