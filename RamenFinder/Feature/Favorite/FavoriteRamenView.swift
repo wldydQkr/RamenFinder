@@ -11,41 +11,120 @@ import CoreData
 struct FavoriteRamenView: View {
     @StateObject private var viewModel: FavoriteRamenViewModel
 
-    // Initializer to inject the ViewModel
+    // ViewModel을 주입하기 위한 초기화 메서드
     init(container: NSPersistentContainer) {
         _viewModel = StateObject(wrappedValue: FavoriteRamenViewModel(container: container))
     }
 
-    var body: some View {
-        NavigationView {
-            List {
-                ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
-                    VStack(alignment: .leading) {
-                        Text(shop.name ?? "Unknown")
-                            .font(.headline)
-                        Text(shop.roadAddress ?? "Unknown")
-                            .font(.subheadline)
-                        Text(shop.address ?? "Unknown")
-                            .font(.subheadline)
-                    }
-                    .padding()
-                }
-                .onDelete(perform: deleteFavorite)
-            }
-            .navigationTitle("좋아하는 라멘")
-        }
-    }
+    @State private var selectedShop: FavoriteRamen? // 선택된 매장을 저장
+    @State private var isDetailViewActive = false // DetailView로 이동 상태 관리
 
-    private func deleteFavorite(at offsets: IndexSet) {
-        offsets.forEach { index in
-            let shop = viewModel.favoriteRamenShops[index]
-            viewModel.removeFavorite(shop: shop)
+    var body: some View {
+        VStack(spacing: 0) {
+            NavigationView {
+                VStack(spacing: 0) {
+                    // 헤더 섹션
+                    Text("찜한 매장")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal)
+                        .padding(.top, 20)
+
+                    // 즐겨찾기 라멘 리스트 (ScrollView 사용)
+                    ScrollView {
+                        VStack(spacing: 16) {
+                            ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
+                                Button(action: {
+                                    selectedShop = shop
+                                    isDetailViewActive = true
+                                }) {
+                                    FavoriteRamenCardView(
+                                        shop: shop,
+                                        onDelete: { shopToDelete in
+                                            viewModel.removeFavorite(shop: shopToDelete) // 삭제 동작 실행
+                                        }
+                                    )
+                                }
+                                .buttonStyle(PlainButtonStyle()) // 기본 버튼 스타일 제거
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 10)
+                    }
+
+                    // NavigationLink로 RamenDetailView로 이동
+                    NavigationLink(
+                        destination: RamenDetailView(
+                            title: selectedShop?.name ?? "Unknown",
+                            link: selectedShop?.link,
+                            address: selectedShop?.address ?? "Unknown",
+                            roadAddress: selectedShop?.roadAddress ?? "Unknown",
+                            mapX: selectedShop?.mapx ?? 0,
+                            mapY: selectedShop?.mapy ?? 0
+                        ),
+                        isActive: $isDetailViewActive
+                    ) {
+                        EmptyView()
+                    }
+                }
+                .navigationBarHidden(true) // 네비게이션 바 숨김
+            }
         }
+        .edgesIgnoringSafeArea(.bottom)
     }
 }
 
-#Preview {
-    // Provide a preview using an in-memory Core Data store for testing
-    let testContainer = PersistenceController(inMemory: true).container
-    return FavoriteRamenView(container: testContainer)
+struct FavoriteRamenCardView: View {
+    let shop: FavoriteRamen
+    let onDelete: (FavoriteRamen) -> Void // 삭제 동작을 전달받는 클로저
+
+    @State private var showDeleteConfirmation = false // 삭제 확인 다이얼로그 상태
+
+    var body: some View {
+        HStack(spacing: 16) {
+            // 원형 이미지 자리
+            Circle()
+                .fill(Color.gray.opacity(0.3))
+                .frame(width: 50, height: 50)
+                .overlay(
+                    Text(shop.name?.prefix(1) ?? "❤️") // 매장 이름의 첫 글자 표시
+                        .font(.title)
+                        .foregroundColor(.white)
+                )
+
+            // 텍스트 상세 정보
+            VStack(alignment: .leading, spacing: 4) {
+                Text(shop.name ?? "Unknown") // 매장 이름
+                    .font(.headline)
+                    .lineLimit(1)
+
+                Text(shop.roadAddress ?? "Unknown Address") // 매장 도로명 주소
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+                    .lineLimit(1)
+            }
+
+            Spacer()
+
+            // ellipsis 버튼
+            Button(action: {
+                showDeleteConfirmation = true // 삭제 확인 다이얼로그 표시
+            }) {
+                Image(systemName: "ellipsis")
+                    .font(.title3)
+                    .foregroundColor(.secondary)
+            }
+            .confirmationDialog("이 매장을 삭제하시겠습니까?", isPresented: $showDeleteConfirmation, actions: {
+                Button("삭제", role: .destructive) {
+                    onDelete(shop) // 삭제 동작 실행
+                }
+                Button("취소", role: .cancel) {}
+            })
+        }
+        .padding()
+        .background(Color.white) // 배경 흰색
+        .cornerRadius(12) // 모서리 둥글게
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2) // 그림자 효과
+    }
 }
