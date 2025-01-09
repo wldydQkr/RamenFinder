@@ -6,9 +6,15 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct FavoriteRamenView: View {
-    @StateObject private var viewModel = FavoriteRamenViewModel()
+    @StateObject private var viewModel: FavoriteRamenViewModel
+
+    // Initializer to inject the ViewModel
+    init(container: NSPersistentContainer) {
+        _viewModel = StateObject(wrappedValue: FavoriteRamenViewModel(container: container))
+    }
 
     var body: some View {
         NavigationView {
@@ -39,5 +45,7 @@ struct FavoriteRamenView: View {
 }
 
 #Preview {
-    FavoriteRamenView()
+    // Provide a preview using an in-memory Core Data store for testing
+    let testContainer = PersistenceController(inMemory: true).container
+    return FavoriteRamenView(container: testContainer)
 }

@@ -38,7 +38,7 @@ struct TabBar: View {
                 case .map:
                     MapView()
                 case .favorites:
-                    FavoriteRamenView()
+                    FavoriteRamenView(container: PersistenceController.shared.container)
                 case .profile:
                     HomeView(context: viewContext) // 동일하게 context 전달
                 }

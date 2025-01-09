@@ -13,13 +13,9 @@ class FavoriteRamenViewModel: ObservableObject {
 
     private let container: NSPersistentContainer
 
-    init() {
-        container = NSPersistentContainer(name: "RamenFinderModel")
-        container.loadPersistentStores { _, error in
-            if let error = error {
-                print("Failed to load Core Data: \(error.localizedDescription)")
-            }
-        }
+    // Use Dependency Injection to pass the container
+    init(container: NSPersistentContainer) {
+        self.container = container
         fetchFavorites()
     }
 

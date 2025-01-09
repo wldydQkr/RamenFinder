@@ -73,7 +73,7 @@ struct HomeView: View {
                         )
                         
                         // 즐겨찾기 섹션
-                        favoriteRamenSection
+//                        favoriteRamenSection
                     }
                     .padding()
                 }
