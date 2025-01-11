@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct ShopCardView: View {
     let imageURL: URL?
@@ -16,8 +17,13 @@ struct ShopCardView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
-    
+
     @State private var isLiked: Bool = false
+    @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        entity: FavoriteRamen.entity(),
+        sortDescriptors: []
+    ) private var favoriteRamenShops: FetchedResults<FavoriteRamen>
 
     var body: some View {
         NavigationLink(destination: RamenDetailView(
@@ -52,7 +58,7 @@ struct ShopCardView: View {
                     }
 
                     Button(action: {
-                        isLiked.toggle()
+                        toggleLikeStatus()
                     }) {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
                             .font(.title2)
@@ -63,17 +69,64 @@ struct ShopCardView: View {
                 }
 
                 Text(title)
-                    .font(.headline)
+                    .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
+                    .padding(.vertical, 4)
 
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .lineLimit(2)
             }
             .frame(width: 150)
+            .onAppear {
+                isLiked = isFavorite()
+            }
         }
         .buttonStyle(PlainButtonStyle())
+    }
+
+    // MARK: - Helper Functions
+    private func toggleLikeStatus() {
+        if isLiked {
+            removeFromFavorites()
+        } else {
+            addToFavorites()
+        }
+        isLiked.toggle()
+    }
+
+    private func isFavorite() -> Bool {
+        favoriteRamenShops.contains(where: { $0.name == title && $0.roadAddress == roadAddress })
+    }
+
+    private func addToFavorites() {
+        let newFavorite = FavoriteRamen(context: viewContext)
+        newFavorite.id = UUID()
+        newFavorite.name = title
+        newFavorite.roadAddress = roadAddress
+        newFavorite.address = address
+        newFavorite.link = link
+        newFavorite.mapx = mapX
+        newFavorite.mapy = mapY
+
+        saveContext()
+    }
+
+    private func removeFromFavorites() {
+        if let shop = favoriteRamenShops.first(where: { $0.name == title && $0.roadAddress == roadAddress }) {
+            viewContext.delete(shop)
+            saveContext()
+        }
+    }
+
+    private func saveContext() {
+        do {
+            try viewContext.save()
+        } catch {
+            print("Failed to save context: \(error.localizedDescription)")
+        }
     }
 }
 

@@ -16,7 +16,7 @@ struct LocalShopCardView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
-    
+
     @State private var isLiked: Bool = false
 
     var body: some View {
@@ -28,18 +28,20 @@ struct LocalShopCardView: View {
             mapX: mapX,
             mapY: mapY
         )) {
-            VStack(alignment: .leading) {
-                ZStack(alignment: .bottomTrailing) {
+            VStack(alignment: .leading, spacing: 8) {
+                ZStack(alignment: .topLeading) {
                     if let imageURL = imageURL {
                         AsyncImage(url: imageURL) { image in
                             image.resizable()
                                 .scaledToFill()
                                 .frame(width: 150, height: 100)
-                                .cornerRadius(10)
+                                .cornerRadius(7)
                                 .clipped()
                         } placeholder: {
                             ProgressView()
                                 .frame(width: 150, height: 100)
+                                .background(Color.gray.opacity(0.2))
+                                .cornerRadius(10)
                         }
                     } else {
                         Image(systemName: "photo")
@@ -47,36 +49,50 @@ struct LocalShopCardView: View {
                             .scaledToFill()
                             .frame(width: 150, height: 100)
                             .background(Color.gray.opacity(0.2))
-                            .cornerRadius(10)
+                            .cornerRadius(7)
                             .clipped()
                     }
-
-                    Button(action: {
-                        isLiked.toggle()
-                    }) {
-                        Image(systemName: isLiked ? "heart.fill" : "heart")
-                            .font(.title2)
-                            .foregroundColor(isLiked ? .pink : .white)
-                            .shadow(color: .black.opacity(0.4), radius: 4, x: 0, y: 2)
-                            .padding(8)
-                    }
                 }
-
+                
                 Text(title)
-                    .font(.headline)
+                    .font(.caption)
                     .fontWeight(.semibold)
-                    .foregroundColor(.primary)
+                    .padding([.horizontal], 8)
+                    .padding(.top, 4)
+//                    .padding(.bottom, 4)
+//                    .background(Color.black.opacity(0.6))
+                    .foregroundColor(.black)
+                    .cornerRadius(5)
+
 
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
+                    .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
+                    .lineLimit(2)
+
+                HStack {
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            isLiked.toggle()
+                        }) {
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .font(.title2)
+                                .foregroundColor(isLiked ? .red : .gray)
+                        }
+                        .padding(.trailing, 8) // 하트 버튼 위치 조정
+                    }
+                    
+                }
             }
-            .frame(width: 150)
+            .padding(.bottom, 8)
+            .frame(width: 150, height: 200)
+            .background(Color.white)
+            .cornerRadius(7)
+            .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 1)
         }
         .buttonStyle(PlainButtonStyle())
     }
 }
-
-//#Preview {
-//    LocalShopCardView()
-//}
