@@ -69,9 +69,10 @@ struct ShopCardView: View {
                 }
 
                 Text(title)
-                    .font(.headline)
+                    .font(.caption)
                     .fontWeight(.semibold)
                     .foregroundColor(.primary)
+                    .padding(.vertical, 4)
 
                 Text(subtitle)
                     .font(.subheadline)

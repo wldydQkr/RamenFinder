@@ -17,7 +17,7 @@ struct LocalShopCardView: View {
     let mapX: Double
     let mapY: Double
 
-    @State private var isBookmarked: Bool = false
+    @State private var isLiked: Bool = false
 
     var body: some View {
         NavigationLink(destination: RamenDetailView(
@@ -52,16 +52,6 @@ struct LocalShopCardView: View {
                             .cornerRadius(7)
                             .clipped()
                     }
-
-//                    Text(title)
-//                        .font(.caption)
-//                        .fontWeight(.semibold)
-//                        .padding(.horizontal, 8)
-//                        .padding(.vertical, 4)
-//                        .background(Color.black.opacity(0.6))
-//                        .foregroundColor(.white)
-//                        .cornerRadius(5)
-//                        .padding(8)
                 }
                 
                 Text(title)
@@ -83,15 +73,18 @@ struct LocalShopCardView: View {
                     .lineLimit(2)
 
                 HStack {
-//                    Spacer()
-                    Button(action: {
-                        isBookmarked.toggle()
-                    }) {
-                        Image(systemName: isBookmarked ? "heart.fill" : "heart")
-                            .font(.title2)
-                            .foregroundColor(isBookmarked ? .red : .gray)
+                    Spacer()
+                    VStack {
+                        Button(action: {
+                            isLiked.toggle()
+                        }) {
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .font(.title2)
+                                .foregroundColor(isLiked ? .red : .gray)
+                        }
+                        .padding(.trailing, 8) // 하트 버튼 위치 조정
                     }
-//                    .padding([.trailing, .bottom], -8) // 하트 버튼 위치 조정
+                    
                 }
             }
             .padding(.bottom, 8)
