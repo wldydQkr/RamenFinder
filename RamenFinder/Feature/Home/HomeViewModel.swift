@@ -10,40 +10,6 @@ import Combine
 import CoreLocation
 import CoreData
 
-// 모델 정의
-struct RamenShop: Identifiable, Equatable {
-    let id = UUID()
-    let name: String
-    let roadAddress: String
-    let address: String
-    let category: String
-    let link: String?
-    let mapx: Double
-    let mapy: Double
-
-    // Equatable 요구 사항 구현
-    static func == (lhs: RamenShop, rhs: RamenShop) -> Bool {
-        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
-    }
-}
-
-// 지역 라멘 모델 정의
-struct LocalRamenShop: Identifiable, Equatable {
-    let id = UUID()
-    let name: String
-    let roadAddress: String
-    let address: String
-    let category: String
-    let link: String?
-    let mapx: Double
-    let mapy: Double
-
-    // Equatable 요구 사항 구현
-    static func == (lhs: LocalRamenShop, rhs: LocalRamenShop) -> Bool {
-        return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
-    }
-}
-
 final class HomeViewModel: ObservableObject {
     @Published var searchText: String = ""
     @Published var ramenShops: [RamenShop] = []
@@ -209,27 +175,4 @@ final class HomeViewModel: ObservableObject {
             print("Error saving context: \(error.localizedDescription)")
         }
     }
-}
-
-struct ShopItem: Codable {
-    let title: String
-    let roadAddress: String
-    let address: String
-    let category: String
-    let mapx: String
-    let mapy: String
-}
-
-struct RamenShopResponse: Codable {
-    let title: String
-    let roadAddress: String
-    let address: String
-    let category: String
-    let link: String
-    let mapx: String
-    let mapy: String
-}
-
-struct RamenSearchResponse: Codable {
-    let items: [RamenShopResponse]
 }

@@ -31,7 +31,7 @@ struct FavoriteRamenView: View {
                         .padding(.horizontal)
                         .padding(.top, 20)
 
-                    // 즐겨찾기 라멘 리스트 (ScrollView 사용)
+                    // 즐겨찾기 라멘 리스트
                     ScrollView {
                         VStack(spacing: 16) {
                             ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
@@ -46,7 +46,7 @@ struct FavoriteRamenView: View {
                                         }
                                     )
                                 }
-                                .buttonStyle(PlainButtonStyle()) // 기본 버튼 스타일 제거
+                                .buttonStyle(PlainButtonStyle())
                             }
                         }
                         .padding(.horizontal)

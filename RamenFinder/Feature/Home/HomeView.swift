@@ -12,6 +12,7 @@ struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
     @State private var isSearchViewActive = false
     @StateObject private var viewModel: HomeViewModel
+    private let hPadding: Int = 8
     
     // FetchRequest로 Core Data 데이터 관리
     @FetchRequest(
@@ -33,10 +34,10 @@ struct HomeView: View {
     }
     
     var body: some View {
-        VStack(spacing: 0) {
+        VStack {
             NavigationView {
                 ScrollView(showsIndicators: false) {
-                    VStack(alignment: .leading, spacing: 20) {
+                    VStack(alignment: .leading, spacing: 10) {
                         greetingSection
                         searchSection
                         categorySection
@@ -71,11 +72,7 @@ struct HomeView: View {
                                 )
                             ]
                         )
-                        
-                        // 즐겨찾기 섹션
-//                        favoriteRamenSection
                     }
-                    .padding()
                 }
                 .onAppear {
                     loadInitialData()
@@ -142,6 +139,7 @@ struct HomeView: View {
                 .font(.title)
                 .foregroundColor(CustomColor.text)
         }
+        .padding(.horizontal, 8)
     }
     
     // MARK: - 검색창 섹션
@@ -150,6 +148,7 @@ struct HomeView: View {
             Text("🍜 식당 찾기")
                 .font(.largeTitle)
                 .fontWeight(.bold)
+                .padding(.horizontal, 8)
             
             HStack {
                 TextField(
@@ -173,18 +172,20 @@ struct HomeView: View {
                 }
                 .shadow(color: CustomColor.text.opacity(0.2), radius: 4, x: 0, y: 2)
             }
+            .padding(.horizontal, 8)
             .onTapGesture {
                 isSearchViewActive = true
             }
         }
     }
     
-    // 지역 카테고리 섹션
+    // MARK: 지역 카테고리 섹션
     private var categorySection: some View {
         VStack(alignment: .leading, spacing: 16) {
             Text("지역")
                 .font(.headline)
                 .foregroundColor(CustomColor.text)
+                .padding(.horizontal, 8)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
@@ -195,6 +196,7 @@ struct HomeView: View {
                         }
                     }
                 }
+                .padding(.horizontal, 8)
             }
             
             // 지역 라멘 섹션
@@ -206,10 +208,8 @@ struct HomeView: View {
         .padding(.bottom, 0) // 섹션과의 간격을 제거
     }
     
-    // 라멘 섹션
+    // MARK: 근처 라멘 섹션
     private func localRamenSection(title: String, items: [LocalRamenShop]) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
@@ -230,13 +230,13 @@ struct HomeView: View {
                             .frame(width: 150, height: 100)
                     }
                 }
+                .padding([.top, .bottom, .horizontal], 8)
             }
-        }
     }
     
-    // MARK: - 라멘 섹션
+    // MARK: - 추천 라멘 섹션
     private func ramenSection(title: String, items: [RamenShop]) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(spacing: 16) {
             HStack {
                 Text(title)
                     .font(.headline)
@@ -256,6 +256,7 @@ struct HomeView: View {
                         .foregroundColor(CustomColor.secondary)
                 }
             }
+            .padding(.horizontal, 8)
             
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
@@ -277,9 +278,10 @@ struct HomeView: View {
                             .frame(width: 150, height: 100)
                     }
                 }
+                .padding([.top, .bottom, .horizontal], 8)
             }
         }
-        .padding(.top, 0)
+//        .padding(.leading, 10)
     }
     
     // MARK: - 즐겨찾기 섹션
