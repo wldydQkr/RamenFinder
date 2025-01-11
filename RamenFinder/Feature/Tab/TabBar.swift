@@ -40,7 +40,7 @@ struct TabBar: View {
                 case .favorites:
                     FavoriteRamenView(container: PersistenceController.shared.container)
                 case .profile:
-                    HomeView(context: viewContext) // 동일하게 context 전달
+                    ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)

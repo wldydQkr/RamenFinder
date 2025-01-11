@@ -129,7 +129,3 @@ struct ShopCardView: View {
         }
     }
 }
-
-//#Preview {
-//    ShopCardView(imageURL: <#URL?#>, title: <#String#>, subtitle: <#String#>, link: <#String#>, address: <#String#>, roadAddress: <#String#>, mapX: <#Double#>, mapY: <#Double#>)
-//}
