@@ -56,11 +56,11 @@ struct TabBar: View {
                         VStack {
                             Image(systemName: tab.icon)
                                 .font(.system(size: 22))
-                                .foregroundColor(selectedTab == tab ? Color.blue : Color.gray)
+                                .foregroundColor(selectedTab == tab ? CustomColor.primary : Color.gray)
                             if selectedTab == tab {
                                 Text(tab.rawValue)
                                     .font(.footnote)
-                                    .foregroundColor(Color.blue)
+                                    .foregroundColor(CustomColor.primary)
                             }
                         }
                         .padding(.vertical, 10)

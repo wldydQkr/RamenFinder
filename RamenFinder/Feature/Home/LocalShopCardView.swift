@@ -67,20 +67,20 @@ struct LocalShopCardView: View {
                 Text(title)
                     .font(.caption)
                     .fontWeight(.semibold)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(Color.black.opacity(0.6))
-                    .foregroundColor(.white)
+                    .padding([.horizontal], 8)
+                    .padding(.top, 4)
+//                    .padding(.bottom, 4)
+//                    .background(Color.black.opacity(0.6))
+                    .foregroundColor(.black)
                     .cornerRadius(5)
-//                    .padding(8)
+
 
                 Text(subtitle)
                     .font(.subheadline)
                     .foregroundColor(.secondary)
                     .padding(.horizontal, 8)
+                    .padding(.bottom, 8)
                     .lineLimit(2)
-
-//                Spacer() // 하트 버튼과 다른 요소 사이 공간 확보
 
                 HStack {
 //                    Spacer()

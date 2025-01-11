@@ -139,7 +139,7 @@ struct HomeView: View {
                 .font(.title)
                 .foregroundColor(CustomColor.text)
         }
-        .padding(.horizontal, 8)
+        .padding([.horizontal, .vertical], 8)
     }
     
     // MARK: - 검색창 섹션

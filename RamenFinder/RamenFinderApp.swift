@@ -20,12 +20,12 @@ struct LaunchScreenView: View {
                 Image("ramen") // 런치 스크린 로고
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 150, height: 150)
+                    .frame(width: 100, height: 100)
                 
-                Text("RamenFinder")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .foregroundColor(.primary)
+//                Text("RamenFinder")
+//                    .font(.largeTitle)
+//                    .fontWeight(.bold)
+//                    .foregroundColor(.primary)
             }
         }
     }
