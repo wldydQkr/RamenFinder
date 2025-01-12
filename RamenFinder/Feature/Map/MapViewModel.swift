@@ -78,14 +78,14 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
             URLQueryItem(name: "query", value: "라멘"),
-            URLQueryItem(name: "display", value: "10"), // 결과 갯수
+            URLQueryItem(name: "display", value: "5"), // 한번에 최대 5개(네이버 정책)
             URLQueryItem(name: "sort", value: "random"), // 정렬 방식
 //            URLQueryItem(name: "coordinate", value: "\(longitude),\(latitude)") // 경도,위도
         ]
 
         var request = URLRequest(url: components.url!)
-        request.addValue("NZmzvNuQwqMF1dFh9YmL", forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue("UL5R8sDcrz", forHTTPHeaderField: "X-Naver-Client-Secret")
+        request.addValue(NaverAPIKey.clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(NaverAPIKey.clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
@@ -114,7 +114,7 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         }.resume()
     }
 
-    /// 매장 데이터를 기반으로 마커 업데이트
+    // 매장 데이터를 기반으로 마커 업데이트
     func updateAnnotations() {
         annotationItems = ramenShops.compactMap { shop in
             guard shop.mapx != 0, shop.mapy != 0 else {

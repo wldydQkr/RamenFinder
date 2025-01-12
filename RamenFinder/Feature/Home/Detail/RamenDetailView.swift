@@ -39,7 +39,7 @@ struct RamenDetailView: View {
         topBar
         ScrollView {
             VStack(spacing: 20) {
-                // 상단 이미지 섹션
+                //MARK: 상단 이미지 섹션
                 ZStack(alignment: .topLeading) {
                     AsyncImage(
                         url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
@@ -57,7 +57,7 @@ struct RamenDetailView: View {
                 }
                 .padding(.horizontal, 12)
                 
-                // 텍스트 섹션
+                //MARK: 텍스트 섹션
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text(title)
@@ -102,7 +102,7 @@ struct RamenDetailView: View {
                 .padding(.horizontal)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 
-                // 맵뷰 섹션
+                //MARK: 맵뷰 섹션
                 DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
             }
             .padding(.bottom, 20)
@@ -137,57 +137,5 @@ struct RamenDetailView: View {
         .overlay(
             Divider(), alignment: .bottom
         )
-    }
-}
-
-struct DetailMapView: View {
-    @Binding var region: MKCoordinateRegion
-    let mapX: Double
-    let mapY: Double
-    @ObservedObject var locationManager: LocationManager
-
-    struct IdentifiableCoordinate: Identifiable {
-        let id = UUID()
-        let coordinate: CLLocationCoordinate2D
-        let tint: Color
-    }
-
-    var body: some View {
-        // 라멘 위치 마커
-        let shopCoordinate = CLLocationCoordinate2D(latitude: mapY, longitude: mapX)
-        let annotationItems = [
-            IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red) // 가게 위치 마커
-        ]
-
-        return Map(
-            coordinateRegion: $region,
-            showsUserLocation: true, // 사용자 위치를 동그라미로 표시
-            annotationItems: annotationItems
-        ) { item in
-            // 가게 위치 마커를 표시
-            MapMarker(coordinate: item.coordinate, tint: item.tint)
-        }
-        .frame(height: 300)
-        .cornerRadius(10)
-        .padding(.horizontal)
-    }
-}
-
-#Preview {
-    RamenDetailView(
-        title: "무메노",
-        link: "https://naver.com",
-        address: "서울특별시 마포구 연남동",
-        roadAddress: "연남동",
-        mapX: 126.923739,
-        mapY: 37.561632
-    )
-}
-
-extension String {
-    /// 문자열을 Double로 변환하고, 1e7로 나눈 좌표값으로 반환합니다.
-    func toCoordinateDouble() -> Double? {
-        guard let doubleValue = Double(self) else { return nil }
-        return doubleValue / 1_0000000.0
     }
 }

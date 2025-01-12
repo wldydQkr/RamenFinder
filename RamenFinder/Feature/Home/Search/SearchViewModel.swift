@@ -15,8 +15,6 @@ final class SearchViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     private let baseURL = "https://openapi.naver.com/v1/search/local.json"
-    private let clientId = "NZmzvNuQwqMF1dFh9YmL"  // 네이버 API 클라이언트 ID
-    private let clientSecret = "UL5R8sDcrz"  // 네이버 API 클라이언트 Secret
 
     init() {
         $searchText
@@ -45,8 +43,8 @@ final class SearchViewModel: ObservableObject {
 
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+        request.addValue(NaverAPIKey.clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(NaverAPIKey.clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output -> Data in

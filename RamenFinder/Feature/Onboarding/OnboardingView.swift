@@ -51,10 +51,9 @@ struct OnboardingView: View {
                             .padding(.horizontal, 40)
                     }
                     .padding()
-                    .tag(index) // 페이지 인덱스 태그 추가
+                    .tag(index)
                 }
-
-                // 마지막 페이지: "게스트로 시작하기" 버튼 추가
+                
                 VStack(spacing: 20) {
                     Text("모두 준비되었습니다!")
                         .font(.title)
@@ -77,11 +76,11 @@ struct OnboardingView: View {
                     }
                     .padding(.horizontal, 40)
                 }
-                .tag(onboardingItems.count) // 마지막 페이지 인덱스
+                .tag(onboardingItems.count)
             }
             .tabViewStyle(PageTabViewStyle())
 
-            // 페이지 인디케이터
+            //MARK: Page Indicator
             HStack(spacing: 8) {
                 ForEach(0...onboardingItems.count, id: \.self) { index in
                     Circle()

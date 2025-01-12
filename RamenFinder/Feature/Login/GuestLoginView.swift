@@ -10,6 +10,7 @@ import SwiftUI
 struct GuestLoginView: View {
     @State private var nickname: String = UserDefaults.standard.string(forKey: "guestNickname") ?? "" // UserDefaults에서 별명 불러오기
     @State private var isLoginComplete: Bool = false // 로그인 완료 상태
+    @State private var viewModel: LoginViewModel = LoginViewModel()
 
     var body: some View {
         VStack(spacing: 20) {
@@ -22,18 +23,18 @@ struct GuestLoginView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            // 별명 입력 필드
+            //MARK: Input
             TextField("별명을 입력하세요", text: $nickname)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 40)
 
-            // 로그인 버튼
+            //MARK: Login Button
             Button(action: {
                 guard !nickname.isEmpty else {
                     print("별명을 입력해주세요.")
                     return
                 }
-                saveNicknameToUserDefaults(nickname) // 별명 저장
+                viewModel.saveNicknameToUserDefaults(nickname)
                 print("로그인 성공 - 별명: \(nickname)")
                 isLoginComplete = true
             }) {
@@ -51,10 +52,5 @@ struct GuestLoginView: View {
         .fullScreenCover(isPresented: $isLoginComplete) {
             TabBar()
         }
-    }
-
-    // 별명을 UserDefaults에 저장
-    private func saveNicknameToUserDefaults(_ nickname: String) {
-        UserDefaults.standard.set(nickname, forKey: "guestNickname")
     }
 }

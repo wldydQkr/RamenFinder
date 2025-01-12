@@ -17,8 +17,8 @@ struct RamenShopListView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                topBar // 커스텀 상단 바
-                searchBar // 검색 바
+                topBar
+                searchBar
 
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 20) {
@@ -40,9 +40,9 @@ struct RamenShopListView: View {
                     .padding(.top, 10)
                 }
             }
-            .navigationBarHidden(true) // 네비게이션 바 전체 숨기기
+            .navigationBarHidden(true)
         }
-        .navigationBarBackButtonHidden(true) // 기본 Back 버튼 숨기기
+        .navigationBarBackButtonHidden(true)
     }
 
     private var topBar: some View {
@@ -80,7 +80,7 @@ struct RamenShopListView: View {
                 .cornerRadius(8)
 
             Button(action: {
-                // 검색 버튼 동작 (추가 구현 가능)
+                // ..something..
             }) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(CustomColor.text)
@@ -122,7 +122,6 @@ struct ShopRow: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(CustomColor.text)
-//                    .padding(.bottom)
                 
                 Text(shop.roadAddress)
                     .font(.subheadline)
@@ -137,7 +136,6 @@ struct ShopRow: View {
                     .lineLimit(1)
                     
             }
-
             Spacer()
         }
         .padding(.horizontal)

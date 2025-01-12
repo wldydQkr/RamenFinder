@@ -19,8 +19,6 @@ final class HomeViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     private let baseURL = "https://openapi.naver.com/v1/search/local.json"
-    private let clientId = "NZmzvNuQwqMF1dFh9YmL"
-    private let clientSecret = "UL5R8sDcrz"
 
     private let viewContext: NSManagedObjectContext
 
@@ -77,8 +75,8 @@ final class HomeViewModel: ObservableObject {
         
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+        request.addValue(NaverAPIKey.clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(NaverAPIKey.clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output -> Data in
@@ -125,8 +123,8 @@ final class HomeViewModel: ObservableObject {
 
         var request = URLRequest(url: components.url!)
         request.httpMethod = "GET"
-        request.addValue(clientId, forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue(clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+        request.addValue(NaverAPIKey.clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(NaverAPIKey.clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
 
         URLSession.shared.dataTaskPublisher(for: request)
             .tryMap { output -> Data in
@@ -162,17 +160,22 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    func deleteFavorite(shop: FavoriteRamen) {
-        viewContext.delete(shop)
-        saveContext()
-    }
-
     private func saveContext() {
         do {
             try viewContext.save()
             fetchFavorites()
         } catch {
             print("Error saving context: \(error.localizedDescription)")
+        }
+    }
+    
+    // MARK: - 즐겨찾기 삭제
+    func deleteFavorite(shop: FavoriteRamen) {
+        viewContext.delete(shop)
+        do {
+            try viewContext.save()
+        } catch {
+            print("Failed to delete favorite: \(error.localizedDescription)")
         }
     }
 }

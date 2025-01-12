@@ -303,7 +303,7 @@ struct HomeView: View {
                             .font(.subheadline)
                         Spacer()
                         Button(action: {
-                            deleteFavorite(shop: shop)
+                            viewModel.deleteFavorite(shop: shop)
                         }) {
                             Image(systemName: "trash")
                                 .foregroundColor(.red)
@@ -314,13 +314,5 @@ struct HomeView: View {
         }
     }
     
-    // MARK: - 즐겨찾기 삭제
-    private func deleteFavorite(shop: FavoriteRamen) {
-        viewContext.delete(shop)
-        do {
-            try viewContext.save()
-        } catch {
-            print("Failed to delete favorite: \(error.localizedDescription)")
-        }
-    }
+
 }
