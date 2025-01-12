@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		C066DEFF2D32816700CD85DB /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DEFE2D32816300CD85DB /* ProfileView.swift */; };
 		C066DF012D32817100CD85DB /* ProfileViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF002D32816D00CD85DB /* ProfileViewModel.swift */; };
+		C066DF042D33955A00CD85DB /* OnboardingData.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF032D33955700CD85DB /* OnboardingData.swift */; };
+		C066DF072D33957E00CD85DB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF062D33957A00CD85DB /* OnboardingView.swift */; };
+		C066DF0A2D3395E100CD85DB /* GuestLoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF092D3395DA00CD85DB /* GuestLoginView.swift */; };
 		C0879DE82D0D9B0900715D85 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE72D0D9B0900715D85 /* MapView.swift */; };
 		C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE92D0DBF3200715D85 /* MapViewModel.swift */; };
 		C09629C12D2D372600AA5CD8 /* NearbyRamenShop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09629C02D2D371D00AA5CD8 /* NearbyRamenShop.swift */; };
@@ -45,6 +48,9 @@
 /* Begin PBXFileReference section */
 		C066DEFE2D32816300CD85DB /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
 		C066DF002D32816D00CD85DB /* ProfileViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewModel.swift; sourceTree = "<group>"; };
+		C066DF032D33955700CD85DB /* OnboardingData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingData.swift; sourceTree = "<group>"; };
+		C066DF062D33957A00CD85DB /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		C066DF092D3395DA00CD85DB /* GuestLoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuestLoginView.swift; sourceTree = "<group>"; };
 		C0879DE72D0D9B0900715D85 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		C0879DE92D0DBF3200715D85 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -98,6 +104,30 @@
 				C066DEFE2D32816300CD85DB /* ProfileView.swift */,
 			);
 			path = Profile;
+			sourceTree = "<group>";
+		};
+		C066DF022D33954B00CD85DB /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				C066DF032D33955700CD85DB /* OnboardingData.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		C066DF052D33957000CD85DB /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				C066DF062D33957A00CD85DB /* OnboardingView.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		C066DF082D3395CE00CD85DB /* Login */ = {
+			isa = PBXGroup;
+			children = (
+				C066DF092D3395DA00CD85DB /* GuestLoginView.swift */,
+			);
+			path = Login;
 			sourceTree = "<group>";
 		};
 		C0879DE62D0D9A4600715D85 /* Map */ = {
@@ -172,6 +202,8 @@
 		C0DDB2112D04853C00528F24 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
+				C066DF052D33957000CD85DB /* Onboarding */,
+				C066DF082D3395CE00CD85DB /* Login */,
 				C0DDB2292D04858D00528F24 /* Tab */,
 				C0DDB2282D04858300528F24 /* Home */,
 				C09629C22D2D38D600AA5CD8 /* Favorite */,
@@ -231,6 +263,7 @@
 		C0DDB22C2D04A40E00528F24 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C066DF022D33954B00CD85DB /* Onboarding */,
 				C09629DE2D2FC7A600AA5CD8 /* LocalRamenShop.swift */,
 				C09629DC2D2FC77E00AA5CD8 /* RamenShop.swift */,
 				C09629DA2D2FC70B00AA5CD8 /* RamenSearchResponse.swift */,
@@ -343,6 +376,7 @@
 				C0B741A22D094FF700BAB93A /* LocalShopCardView.swift in Sources */,
 				C0DDB2362D05BE6600528F24 /* RamenDetailView.swift in Sources */,
 				C0DDB2332D05507200528F24 /* SearchViewModel.swift in Sources */,
+				C066DF042D33955A00CD85DB /* OnboardingData.swift in Sources */,
 				C066DF012D32817100CD85DB /* ProfileViewModel.swift in Sources */,
 				C0B7419A2D083FE600BAB93A /* CategoryView.swift in Sources */,
 				C0DDB22B2D04934C00528F24 /* CustomColor.swift in Sources */,
@@ -351,6 +385,7 @@
 				C0DDB2312D05505A00528F24 /* SearchView.swift in Sources */,
 				C09629C12D2D372600AA5CD8 /* NearbyRamenShop.swift in Sources */,
 				C09629D12D2D625900AA5CD8 /* PersistenceController.swift in Sources */,
+				C066DF072D33957E00CD85DB /* OnboardingView.swift in Sources */,
 				C09629C42D2D38F300AA5CD8 /* FavoriteRamenView.swift in Sources */,
 				C09629C62D2D415300AA5CD8 /* FavoriteRamenViewModel.swift in Sources */,
 				C0B7419D2D08459E00BAB93A /* LocationManager.swift in Sources */,
@@ -358,6 +393,7 @@
 				C09629DF2D2FC7AE00AA5CD8 /* LocalRamenShop.swift in Sources */,
 				C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */,
 				C09629CB2D2D41CB00AA5CD8 /* String+.swift in Sources */,
+				C066DF0A2D3395E100CD85DB /* GuestLoginView.swift in Sources */,
 				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
 				C0DDB21E2D04853C00528F24 /* RamenFinderApp.swift in Sources */,
 				C0DDB21F2D04853C00528F24 /* TabBar.swift in Sources */,

@@ -8,8 +8,6 @@
 import SwiftUI
 import CoreData
 
-import SwiftUI
-
 struct LaunchScreenView: View {
     var body: some View {
         ZStack {
@@ -21,11 +19,8 @@ struct LaunchScreenView: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
+                    .padding(.bottom, 250)
                 
-//                Text("RamenFinder")
-//                    .font(.largeTitle)
-//                    .fontWeight(.bold)
-//                    .foregroundColor(.primary)
             }
         }
     }
@@ -37,9 +32,11 @@ struct LaunchScreenView: View {
 
 @main
 struct RamenFinderApp: App {
-    let persistenceController = PersistenceController.shared // Core Data 관리 싱글톤 인스턴스
+    let persistenceController = PersistenceController.shared
 
     @State private var isLaunchScreenVisible = true // 런치 스크린 상태 관리
+    @State private var isOnboardingCompleted = UserDefaults.standard.bool(forKey: "isOnboardingCompleted") // 온보딩 완료 상태
+    @State private var isGuestLogin = UserDefaults.standard.string(forKey: "guestNickname") != nil // 별명이 저장되어 있는지 확인
 
     var body: some Scene {
         WindowGroup {
@@ -51,11 +48,22 @@ struct RamenFinderApp: App {
                         }
                     }
             } else {
-                NavigationView {
-                    TabBar()
-                        .environment(\.managedObjectContext, persistenceController.context) // Core Data 컨텍스트 주입
+                if isOnboardingCompleted {
+                    if isGuestLogin {
+                        NavigationView {
+                            TabBar()
+                                .environment(\.managedObjectContext, persistenceController.context)
+                        }
+                        .navigationViewStyle(StackNavigationViewStyle())
+                    } else {
+                        GuestLoginView()
+                            .onDisappear {
+                                isGuestLogin = true // 게스트 로그인 완료 시 상태 변경
+                            }
+                    }
+                } else {
+                    OnboardingView(isOnboardingCompleted: $isOnboardingCompleted)
                 }
-                .navigationViewStyle(StackNavigationViewStyle()) // 모든 디바이스에서 Stack 스타일 강제
             }
         }
     }
