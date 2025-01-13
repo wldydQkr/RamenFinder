@@ -5,6 +5,8 @@
 //  Created by 박지용 on 1/12/25.
 //
 
+import Foundation
+
 final class LoginViewModel {
     
     // 별명을 UserDefaults에 저장

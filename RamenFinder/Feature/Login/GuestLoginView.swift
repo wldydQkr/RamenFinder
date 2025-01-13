@@ -42,7 +42,7 @@ struct GuestLoginView: View {
                     .fontWeight(.bold)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(CustomColor.primary)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }

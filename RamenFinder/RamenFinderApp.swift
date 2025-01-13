@@ -48,20 +48,21 @@ struct RamenFinderApp: App {
                         }
                     }
             } else {
-                if isOnboardingCompleted {
-                    if isGuestLogin {
-                        NavigationView {
-                            TabBar()
-                                .environment(\.managedObjectContext, persistenceController.context)
-                        }
-                        .navigationViewStyle(StackNavigationViewStyle())
-                    } else {
-                        GuestLoginView()
-                            .onDisappear {
-                                isGuestLogin = true // 게스트 로그인 완료 시 상태 변경
-                            }
+                if isGuestLogin {
+                    // guestNickname이 저장되어 있으면 바로 TabBar로 이동
+                    NavigationView {
+                        TabBar()
+                            .environment(\.managedObjectContext, persistenceController.context)
                     }
+                    .navigationViewStyle(StackNavigationViewStyle())
+                } else if isOnboardingCompleted {
+                    // 온보딩이 완료된 경우 게스트 로그인으로 이동
+                    GuestLoginView()
+                        .onDisappear {
+                            isGuestLogin = true // 게스트 로그인 완료 시 상태 변경
+                        }
                 } else {
+                    // 온보딩이 완료되지 않은 경우 온보딩 화면 표시
                     OnboardingView(isOnboardingCompleted: $isOnboardingCompleted)
                 }
             }

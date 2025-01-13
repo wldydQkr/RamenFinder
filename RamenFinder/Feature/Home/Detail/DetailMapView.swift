@@ -5,6 +5,10 @@
 //  Created by 박지용 on 1/12/25.
 //
 
+import SwiftUI
+import CoreLocation
+import MapKit
+
 struct DetailMapView: View {
     @Binding var region: MKCoordinateRegion
     let mapX: Double
