@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct ProfileView: View {
+    @StateObject private var viewModel = ProfileViewModel()
+    @State private var isEditingNickname = false // 닉네임 수정 화면 상태
+
     var body: some View {
         NavigationView {
             VStack {
@@ -21,7 +24,8 @@ struct ProfileView: View {
                         .overlay(Circle().stroke(Color.white, lineWidth: 4))
                         .shadow(radius: 10)
                     
-                    Text("올라잇 정진")
+                    // 닉네임 표시
+                    Text(viewModel.nickname)
                         .font(.title2)
                         .fontWeight(.bold)
                     
@@ -30,7 +34,7 @@ struct ProfileView: View {
                         .foregroundColor(.gray)
                     
                     Button(action: {
-                        // Edit Profile Action
+                        isEditingNickname = true // 닉네임 수정 화면 표시
                     }) {
                         Text("Edit Profile")
                             .font(.system(size: 14, weight: .medium))
@@ -39,6 +43,9 @@ struct ProfileView: View {
                             .padding(.vertical, 8)
                             .background(Color.red)
                             .cornerRadius(20)
+                    }
+                    .sheet(isPresented: $isEditingNickname) {
+                        EditNicknameView(viewModel: viewModel)
                     }
                 }
                 .padding(.vertical, 20)
@@ -69,11 +76,6 @@ struct ProfileView: View {
             }
             .navigationBarTitle("My Profile", displayMode: .inline)
             .navigationBarItems(
-//                leading: Button(action: {
-//                    // Back Action
-//                }) {
-//                    Image(systemName: "chevron.left")
-//                },
                 trailing: Button(action: {
                     // Settings Action
                 }) {

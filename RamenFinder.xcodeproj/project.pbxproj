@@ -15,6 +15,7 @@
 		C066DF0C2D339B7000CD85DB /* LoginViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF0B2D339B6700CD85DB /* LoginViewModel.swift */; };
 		C066DF0F2D339C3700CD85DB /* NaverAPIKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF0E2D339C3000CD85DB /* NaverAPIKey.swift */; };
 		C066DF112D339DC900CD85DB /* DetailMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF102D339DC500CD85DB /* DetailMapView.swift */; };
+		C066DF132D3563EC00CD85DB /* EditNicknameView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C066DF122D3563E200CD85DB /* EditNicknameView.swift */; };
 		C0879DE82D0D9B0900715D85 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE72D0D9B0900715D85 /* MapView.swift */; };
 		C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0879DE92D0DBF3200715D85 /* MapViewModel.swift */; };
 		C09629C12D2D372600AA5CD8 /* NearbyRamenShop.swift in Sources */ = {isa = PBXBuildFile; fileRef = C09629C02D2D371D00AA5CD8 /* NearbyRamenShop.swift */; };
@@ -56,6 +57,7 @@
 		C066DF0B2D339B6700CD85DB /* LoginViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewModel.swift; sourceTree = "<group>"; };
 		C066DF0E2D339C3000CD85DB /* NaverAPIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverAPIKey.swift; sourceTree = "<group>"; };
 		C066DF102D339DC500CD85DB /* DetailMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailMapView.swift; sourceTree = "<group>"; };
+		C066DF122D3563E200CD85DB /* EditNicknameView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditNicknameView.swift; sourceTree = "<group>"; };
 		C0879DE72D0D9B0900715D85 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		C0879DE92D0DBF3200715D85 /* MapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapViewModel.swift; sourceTree = "<group>"; };
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -104,6 +106,7 @@
 		C066DEFD2D32814200CD85DB /* Profile */ = {
 			isa = PBXGroup;
 			children = (
+				C066DF122D3563E200CD85DB /* EditNicknameView.swift */,
 				C066DF002D32816D00CD85DB /* ProfileViewModel.swift */,
 				C066DEFE2D32816300CD85DB /* ProfileView.swift */,
 			);
@@ -409,6 +412,7 @@
 				C066DF0F2D339C3700CD85DB /* NaverAPIKey.swift in Sources */,
 				C09629DF2D2FC7AE00AA5CD8 /* LocalRamenShop.swift in Sources */,
 				C0879DEA2D0DBF3800715D85 /* MapViewModel.swift in Sources */,
+				C066DF132D3563EC00CD85DB /* EditNicknameView.swift in Sources */,
 				C09629CB2D2D41CB00AA5CD8 /* String+.swift in Sources */,
 				C066DF0A2D3395E100CD85DB /* GuestLoginView.swift in Sources */,
 				C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */,
