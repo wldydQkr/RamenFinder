@@ -10,46 +10,61 @@ import MapKit
 
 struct MapView: View {
     @State private var region: MKCoordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472), // 임시 초기 값
+        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
-    @StateObject private var locationManager = LocationManager() // 사용자 위치 관리
+    @StateObject private var locationManager = LocationManager()
 
     let ramenShops: [RamenIdentifiableCoordinate] = [
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5628, longitude: 127.0635),
-            tint: .red
+            tint: .red,
+            name: "라멘 가게 1"
         ),
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5612, longitude: 127.0652),
-            tint: .red
+            tint: .blue,
+            name: "라멘 가게 2"
         ),
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5605, longitude: 127.0667),
-            tint: .red
+            tint: .green,
+            name: "라멘 가게 3"
         ),
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5630, longitude: 127.0620),
-            tint: .red
+            tint: .orange,
+            name: "라멘 가게 4"
         ),
         RamenIdentifiableCoordinate(
             coordinate: CLLocationCoordinate2D(latitude: 37.5625, longitude: 127.0640),
-            tint: .red
+            tint: .purple,
+            name: "라멘 가게 5"
         )
     ]
 
     var body: some View {
         ZStack {
-            // Map 뷰
             Map(
                 coordinateRegion: $region,
                 showsUserLocation: true,
                 annotationItems: ramenShops
             ) { item in
                 MapAnnotation(coordinate: item.coordinate) {
-                    Circle()
-                        .fill(item.tint)
-                        .frame(width: 10, height: 10)
+                    VStack {
+                        Text(item.name)
+                            .font(.caption)
+                            .padding(4)
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+
+                        Image(systemName: "fork.knife.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(item.tint)
+                            .shadow(radius: 4)
+                    }
                 }
             }
             .edgesIgnoringSafeArea(.all)
@@ -58,18 +73,18 @@ struct MapView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    // 내 위치로 돌아가는 버튼
                     Button(action: {
                         moveToUserLocation()
                     }) {
                         Image(systemName: "location.fill")
                             .font(.system(size: 24))
                             .padding()
-                            .background(Color.white)
+                            .background(CustomColor.background)
+                            .tint(CustomColor.primary)
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
-                    .padding(.trailing, 10)
+                    .padding([.bottom, .trailing], 10)
                 }
             }
         }
@@ -86,7 +101,6 @@ struct MapView: View {
         }
     }
 
-    // 초기 사용자 위치로 지도 중심 업데이트
     private func updateInitialRegion() {
         if let userLocation = locationManager.userLocation {
             region = MKCoordinateRegion(
@@ -96,7 +110,6 @@ struct MapView: View {
         }
     }
 
-    // 사용자 위치로 이동
     private func moveToUserLocation() {
         guard let userLocation = locationManager.userLocation else {
             print("사용자 위치를 가져올 수 없습니다.")
@@ -114,4 +127,5 @@ struct RamenIdentifiableCoordinate: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
     let tint: Color
+    let name: String // 매장 이름 추가
 }

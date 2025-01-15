@@ -12,7 +12,7 @@ struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
     @State private var isSearchViewActive = false
     @StateObject private var viewModel: HomeViewModel
-    private let hPadding: Int = 8
+    @State private var nickname: String = "" // 닉네임 상태 추가
     
     // FetchRequest로 Core Data 데이터 관리
     @FetchRequest(
@@ -76,6 +76,7 @@ struct HomeView: View {
                 }
                 .onAppear {
                     loadInitialData()
+                    loadNickname()
                     validateFetchRequest()
                 }
                 .navigationBarTitleDisplayMode(.inline)
@@ -124,17 +125,21 @@ struct HomeView: View {
         print("FetchRequest is valid.")
     }
     
+    private func loadNickname() {
+        nickname = UserDefaults.standard.string(forKey: "guestNickname") ?? "Guest"
+    }
+    
     // MARK: - 상단 인사말 섹션
     private var greetingSection: some View {
         HStack {
             VStack(alignment: .leading) {
-                Text("안녕하세요, 이형준님😊")
+                Text("안녕하세요, \(nickname)님 😊")
                     .font(.title2)
                     .fontWeight(.semibold)
             }
-            
+
             Spacer()
-            
+
             Image(systemName: "person.circle.fill")
                 .font(.title)
                 .foregroundColor(CustomColor.text)
@@ -172,7 +177,7 @@ struct HomeView: View {
                 }
                 .shadow(color: CustomColor.text.opacity(0.2), radius: 4, x: 0, y: 2)
             }
-            .padding(.horizontal, 8)
+            .padding([.horizontal, .bottom], 8)
             .onTapGesture {
                 isSearchViewActive = true
             }
@@ -214,7 +219,7 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         LocalShopCardView(
-                            imageURL: URL(string: "https://i.ytimg.com/vi/Ngrety1u_Tk/hqdefault.jpg?sqp=-oaymwEjCNACELwBSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLDoV99texdogOwObr3Elyyt8L9xCA"),
+                            imageURL: URL(string: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.jpg"),
                             title: shop.name,
                             subtitle: shop.roadAddress,
                             link: shop.link ?? "https://naver.com",

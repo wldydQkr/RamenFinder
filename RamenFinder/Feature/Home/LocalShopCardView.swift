@@ -28,68 +28,73 @@ struct LocalShopCardView: View {
             mapX: mapX,
             mapY: mapY
         )) {
-            VStack(alignment: .leading, spacing: 8) {
-                ZStack(alignment: .topLeading) {
-                    if let imageURL = imageURL {
-                        AsyncImage(url: imageURL) { image in
-                            image.resizable()
-                                .scaledToFill()
-                                .frame(width: 150, height: 100)
-                                .cornerRadius(7)
-                                .clipped()
-                        } placeholder: {
-                            ProgressView()
-                                .frame(width: 150, height: 100)
-                                .background(Color.gray.opacity(0.2))
-                                .cornerRadius(10)
-                        }
-                    } else {
-                        Image(systemName: "photo")
-                            .resizable()
+            ZStack(alignment: .bottomLeading) {
+                // 배경 이미지
+                if let imageURL = imageURL {
+                    AsyncImage(url: imageURL) { image in
+                        image.resizable()
                             .scaledToFill()
-                            .frame(width: 150, height: 100)
-                            .background(Color.gray.opacity(0.2))
-                            .cornerRadius(7)
+                            .frame(width: 150, height: 200)
                             .clipped()
+                    } placeholder: {
+                        ProgressView()
+                            .frame(width: 150, height: 200)
+                            .background(Color.gray.opacity(0.2))
                     }
+                } else {
+                    Image(systemName: "photo")
+                        .resizable()
+                        .scaledToFill()
+                        .frame(width: 150, height: 200)
+                        .background(Color.gray.opacity(0.2))
                 }
-                
-                Text(title)
-                    .font(.caption)
-                    .fontWeight(.semibold)
-                    .padding([.horizontal], 8)
-                    .padding(.top, 4)
-//                    .padding(.bottom, 4)
-//                    .background(Color.black.opacity(0.6))
-                    .foregroundColor(.black)
-                    .cornerRadius(5)
 
-
-                Text(subtitle)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .padding(.horizontal, 8)
-                    .padding(.bottom, 8)
-                    .lineLimit(2)
-
-                HStack {
-                    Spacer()
-                    VStack {
+                // 오버레이
+                VStack(alignment: .leading, spacing: 8) {
+                    
+                    // 좋아요 버튼
+                    HStack {
+                        Spacer()
                         Button(action: {
                             isLiked.toggle()
                         }) {
                             Image(systemName: isLiked ? "heart.fill" : "heart")
-                                .font(.title2)
-                                .foregroundColor(isLiked ? .red : .gray)
+                                .font(.title3)
+                                .foregroundColor(isLiked ? .red : .white)
+                                .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
                         }
-                        .padding(.trailing, 8) // 하트 버튼 위치 조정
                     }
                     
+                    Spacer()
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(title)
+                            .font(.headline)
+                            .fontWeight(.bold)
+                            .foregroundColor(.white)
+                            .lineLimit(1)
+                            .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
+
+                        Text(subtitle)
+                            .font(.subheadline)
+                            .foregroundColor(.white.opacity(0.8))
+                            .lineLimit(2)
+                            .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
+                    }
+
+
                 }
+                .padding()
+                .background(
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color.black.opacity(0.7), Color.clear]),
+                        startPoint: .bottom,
+                        endPoint: .top
+                    )
+                )
+                .cornerRadius(7)
             }
-            .padding(.bottom, 8)
             .frame(width: 150, height: 200)
-            .background(Color.white)
             .cornerRadius(7)
             .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 1)
         }

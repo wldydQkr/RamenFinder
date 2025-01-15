@@ -35,7 +35,7 @@ struct TabBar: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Tab Bar
+            //MARK: Tab Bar
             HStack {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
@@ -56,7 +56,7 @@ struct TabBar: View {
             .frame(height: 80)
             .background(
                 RoundedRectangle(cornerRadius: 15)
-                    .fill(Color.white)
+                    .fill(.white)
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
             )
         }
