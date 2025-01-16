@@ -30,16 +30,15 @@ struct LaunchScreenView: View {
     LaunchScreenView()
 }
 
-@main
-struct RamenFinderApp: App {
-    let persistenceController = PersistenceController.shared
+struct RootView: View {
+    @Binding var isLaunchScreenVisible: Bool
+    @Binding var isOnboardingCompleted: Bool
+    @Binding var isGuestLogin: Bool
 
-    @State private var isLaunchScreenVisible = true // 런치 스크린 상태 관리
-    @State private var isOnboardingCompleted = UserDefaults.standard.bool(forKey: "isOnboardingCompleted") // 온보딩 완료 상태
-    @State private var isGuestLogin = UserDefaults.standard.string(forKey: "guestNickname") != nil // 별명이 저장되어 있는지 확인
+    @State private var navigationPath = NavigationPath()
 
-    var body: some Scene {
-        WindowGroup {
+    var body: some View {
+        NavigationStack(path: $navigationPath) {
             if isLaunchScreenVisible {
                 LaunchScreenView()
                     .onAppear {
@@ -49,23 +48,38 @@ struct RamenFinderApp: App {
                     }
             } else {
                 if isGuestLogin {
-                    // guestNickname이 저장되어 있으면 바로 TabBar로 이동
-                    NavigationView {
-                        TabBar()
-                            .environment(\.managedObjectContext, persistenceController.context)
-                    }
-                    .navigationViewStyle(StackNavigationViewStyle())
+                    TabBar()
+                        .navigationBarBackButtonHidden(true) // 뒤로가기 버튼 숨김
                 } else if isOnboardingCompleted {
-                    // 온보딩이 완료된 경우 게스트 로그인으로 이동
                     GuestLoginView()
                         .onDisappear {
-                            isGuestLogin = true // 게스트 로그인 완료 시 상태 변경
+                            isGuestLogin = true
                         }
                 } else {
-                    // 온보딩이 완료되지 않은 경우 온보딩 화면 표시
                     OnboardingView(isOnboardingCompleted: $isOnboardingCompleted)
+
                 }
             }
+        }
+    }
+}
+
+@main
+struct RamenFinderApp: App {
+    let persistenceController = PersistenceController.shared
+
+    @State private var isLaunchScreenVisible = true
+    @State private var isOnboardingCompleted = UserDefaults.standard.bool(forKey: "isOnboardingCompleted")
+    @State private var isGuestLogin = UserDefaults.standard.string(forKey: "guestNickname") != nil
+
+    var body: some Scene {
+        WindowGroup {
+            RootView(
+                isLaunchScreenVisible: $isLaunchScreenVisible,
+                isOnboardingCompleted: $isOnboardingCompleted,
+                isGuestLogin: $isGuestLogin
+            )
+            .environment(\.managedObjectContext, persistenceController.context)
         }
     }
 }

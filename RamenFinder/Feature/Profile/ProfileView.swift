@@ -10,19 +10,31 @@ import SwiftUI
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @State private var isEditingNickname = false // 닉네임 수정 화면 상태
+    @State private var isImagePickerPresented = false // 이미지 선택 화면 상태
+    @State private var profileImage: UIImage? // 사용자 지정 프로필 이미지
 
     var body: some View {
         NavigationView {
             VStack {
                 // Profile Header
                 VStack(spacing: 10) {
-                    Image("profile_image")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 100, height: 100)
-                        .clipShape(Circle())
-                        .overlay(Circle().stroke(Color.white, lineWidth: 4))
-                        .shadow(radius: 10)
+                    if let profileImage = profileImage {
+                        Image(uiImage: profileImage)
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 100, height: 100)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                            .shadow(radius: 10)
+                    } else {
+                        Image("profile_image")
+                            .resizable()
+                            .scaledToFill()
+                            .frame(width: 100, height: 100)
+                            .clipShape(Circle())
+                            .overlay(Circle().stroke(Color.white, lineWidth: 4))
+                            .shadow(radius: 10)
+                    }
                     
                     // 닉네임 표시
                     Text(viewModel.nickname)
@@ -33,6 +45,7 @@ struct ProfileView: View {
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     
+                    // Edit Profile Button
                     Button(action: {
                         isEditingNickname = true // 닉네임 수정 화면 표시
                     }) {
@@ -77,11 +90,14 @@ struct ProfileView: View {
             .navigationBarTitle("My Profile", displayMode: .inline)
             .navigationBarItems(
                 trailing: Button(action: {
-                    // Settings Action
+                    isImagePickerPresented = true // 이미지 선택 화면 표시
                 }) {
-                    Image(systemName: "gearshape")
+                    Image(systemName: "photo")
                 }
             )
+            .sheet(isPresented: $isImagePickerPresented) {
+                ImagePicker(selectedImage: $profileImage)
+            }
         }
     }
 }

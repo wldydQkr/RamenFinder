@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct GuestLoginView: View {
-    @State private var nickname: String = UserDefaults.standard.string(forKey: "guestNickname") ?? "" // UserDefaults에서 별명 불러오기
-    @State private var isLoginComplete: Bool = false // 로그인 완료 상태
-    @State private var viewModel: LoginViewModel = LoginViewModel()
+    @State private var nickname: String = ""
+    @State private var isLoginComplete: Bool = false
+    @StateObject private var viewModel: LoginViewModel = LoginViewModel()
+
+    @State private var selectedImage: UIImage? = nil
+    @State private var isImagePickerPresented: Bool = false
 
     var body: some View {
         VStack(spacing: 20) {
@@ -23,18 +26,54 @@ struct GuestLoginView: View {
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
 
-            //MARK: Input
+            // 프로필 이미지
+            if let image = selectedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 100, height: 100)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(Color.gray, lineWidth: 2))
+                    .shadow(radius: 5)
+            } else {
+                Image(systemName: "person.crop.circle")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.gray)
+                    .clipShape(Circle())
+                    .shadow(radius: 5)
+            }
+
+            // 이미지 선택 버튼
+            Button(action: {
+                isImagePickerPresented = true
+            }) {
+                Text("프로필 이미지 선택")
+                    .fontWeight(.bold)
+                    .padding()
+                    .frame(maxWidth: .infinity)
+                    .background(Color.blue)
+                    .foregroundColor(.white)
+                    .cornerRadius(10)
+            }
+            .padding(.horizontal, 40)
+
+            // 닉네임 입력
             TextField("별명을 입력하세요", text: $nickname)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding(.horizontal, 40)
 
-            //MARK: Login Button
+            // 게스트 시작 버튼
             Button(action: {
                 guard !nickname.isEmpty else {
                     print("별명을 입력해주세요.")
                     return
                 }
                 viewModel.saveNicknameToUserDefaults(nickname)
+                if let image = selectedImage {
+                    viewModel.saveProfileImage(image)
+                }
                 print("로그인 성공 - 별명: \(nickname)")
                 isLoginComplete = true
             }) {
@@ -42,15 +81,63 @@ struct GuestLoginView: View {
                     .fontWeight(.bold)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(CustomColor.primary)
+                    .background(nickname.isEmpty ? Color.gray : Color.green)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
             .padding(.horizontal, 40)
+            .disabled(nickname.isEmpty)
         }
         .padding()
+        .sheet(isPresented: $isImagePickerPresented) {
+            ImagePicker(selectedImage: $selectedImage)
+        }
         .fullScreenCover(isPresented: $isLoginComplete) {
             TabBar()
         }
+        .onAppear {
+            nickname = viewModel.nickname
+            selectedImage = viewModel.profileImage
+        }
     }
+}
+
+struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var selectedImage: UIImage?
+
+    func makeUIViewController(context: Context) -> UIImagePickerController {
+        let picker = UIImagePickerController()
+        picker.delegate = context.coordinator
+        picker.allowsEditing = true
+        return picker
+    }
+
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
+    }
+
+    class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
+        let parent: ImagePicker
+
+        init(_ parent: ImagePicker) {
+            self.parent = parent
+        }
+
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            if let image = info[.editedImage] as? UIImage ?? info[.originalImage] as? UIImage {
+                parent.selectedImage = image
+            }
+            picker.dismiss(animated: true)
+        }
+
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            picker.dismiss(animated: true)
+        }
+    }
+}
+
+#Preview {
+    GuestLoginView()
 }

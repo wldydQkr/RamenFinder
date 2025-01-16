@@ -8,8 +8,9 @@
 import SwiftUI
 
 struct OnboardingView: View {
-    @Binding var isOnboardingCompleted: Bool
-    @State private var currentPage: Int = 0 // 현재 페이지 상태 추가
+    @Binding var isOnboardingCompleted: Bool // 온보딩 완료 상태
+
+    @State private var currentPage: Int = 0 // 현재 페이지 상태
 
     private let onboardingItems: [OnboardingData] = [
         OnboardingData(
@@ -31,29 +32,14 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack {
+            // MARK: TabView
             TabView(selection: $currentPage) {
-                ForEach(0..<onboardingItems.count, id: \.self) { index in
-                    let item = onboardingItems[index]
-                    VStack(spacing: 20) {
-                        Image(item.imageName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 200, height: 200)
-                            .padding()
-
-                        Text(item.title)
-                            .font(.title)
-                            .fontWeight(.bold)
-
-                        Text(item.description)
-                            .font(.body)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 40)
-                    }
-                    .padding()
-                    .tag(index)
+                ForEach(onboardingItems) { item in
+                    OnboardingPageView(item: item)
+                        .tag(item.id) // 고유 ID 기반 태그 설정
                 }
-                
+
+                // 마지막 화면
                 VStack(spacing: 20) {
                     Text("모두 준비되었습니다!")
                         .font(.title)
@@ -64,7 +50,7 @@ struct OnboardingView: View {
                         .multilineTextAlignment(.center)
 
                     Button(action: {
-                        isOnboardingCompleted = true
+                        completeOnboarding()
                     }) {
                         Text("게스트로 시작하기")
                             .fontWeight(.bold)
@@ -75,24 +61,63 @@ struct OnboardingView: View {
                             .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
+                    .accessibilityLabel("게스트로 시작하기 버튼. 온보딩을 완료하고 앱을 시작합니다.")
                 }
-                .tag(onboardingItems.count)
+                .tag(onboardingItems.count) // 마지막 페이지 태그 설정
             }
             .tabViewStyle(PageTabViewStyle())
+            .animation(.easeInOut, value: currentPage)
 
-            //MARK: Page Indicator
+            // MARK: Page Indicator
             HStack(spacing: 8) {
                 ForEach(0...onboardingItems.count, id: \.self) { index in
                     Circle()
                         .fill(index == currentPage ? CustomColor.primary : Color.gray)
                         .frame(width: 10, height: 10)
+                        .onTapGesture {
+                            withAnimation {
+                                currentPage = index
+                            }
+                        }
+                        .accessibilityLabel(index == currentPage ? "현재 페이지 \(index + 1)" : "페이지 \(index + 1)")
+                        .accessibilityAddTraits(index == currentPage ? .isSelected : [])
                 }
             }
             .padding(.top, 20)
         }
     }
+
+    private func completeOnboarding() {
+        withAnimation {
+            isOnboardingCompleted = true // 온보딩 완료 상태 변경
+        }
+    }
 }
 
-//#Preview {
-//    OnboardingView(isOnboardingCompleted: $isOnboardingCompleted)
-//}
+// MARK: OnboardingPageView
+struct OnboardingPageView: View {
+    let item: OnboardingData
+
+    var body: some View {
+        VStack(spacing: 20) {
+            Image(item.imageName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 200, height: 200)
+                .padding()
+                .accessibilityHidden(true)
+
+            Text(item.title)
+                .font(.title)
+                .fontWeight(.bold)
+                .accessibilityLabel("제목: \(item.title)")
+
+            Text(item.description)
+                .font(.body)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 40)
+                .accessibilityLabel("설명: \(item.description)")
+        }
+        .padding()
+    }
+}
