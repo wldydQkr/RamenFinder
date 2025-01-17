@@ -28,7 +28,6 @@ struct RamenDetailView: View {
         self.roadAddress = roadAddress
         self.mapX = mapX
         self.mapY = mapY
-        // 초기 위치를 매장 좌표로 설정
         _region = State(initialValue: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: mapY, longitude: mapX),
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
@@ -36,40 +35,54 @@ struct RamenDetailView: View {
     }
 
     var body: some View {
-        topBar
-        ScrollView {
-            VStack(spacing: 20) {
-                //MARK: 상단 이미지 섹션
-                ZStack(alignment: .topLeading) {
+        ZStack {
+            // ScrollView에 이미지 포함
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // 이미지 섹션
                     AsyncImage(
                         url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
                     ) { image in
                         image
                             .resizable()
                             .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 화면 너비에서 양옆 12씩 뺀 크기
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
                             .clipped()
-                            .cornerRadius(10)
                     } placeholder: {
                         ProgressView()
-                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 동일한 크기
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
                     }
-                }
-                .padding(.horizontal, 12)
-                
-                //MARK: 텍스트 섹션
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+
+                    // 텍스트 섹션
+                    VStack(alignment: .leading, spacing: 8) {
                         Text(title)
                             .font(.title)
                             .fontWeight(.bold)
                             .lineLimit(2)
-                            .multilineTextAlignment(.leading)
 
-                        Spacer()
+                        Text(roadAddress)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
 
+                        Text(address)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        if let validLink = link, !validLink.isEmpty {
+                            Link("홈페이지 방문하기", destination: URL(string: validLink)!)
+                                .font(.subheadline)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    // 맵뷰 섹션
+                    ZStack(alignment: .bottomTrailing) {
+                        DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
+                            .frame(height: 300)
+
+                        // 내 위치 버튼
                         Button(action: {
-                            // 사용자 위치 버튼을 눌렀을 때만 맵 업데이트
                             if let userLocation = locationManager.userLocation {
                                 region = MKCoordinateRegion(
                                     center: userLocation,
@@ -78,64 +91,66 @@ struct RamenDetailView: View {
                             }
                         }) {
                             Image(systemName: "location.fill")
-                                .foregroundColor(.blue)
+                                .font(.title3)
+                                .foregroundColor(CustomColor.primary)
+                                .padding(10)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
                         }
-                        .padding(.trailing, 8)
+                        .padding(.bottom, 10)
+                        .padding(.trailing, 20)
                     }
 
-                    Text(roadAddress)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-
-                    Text(address)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                    
-                    if let validLink = link, !validLink.isEmpty {
-                        Link("홈페이지 방문하기", destination: URL(string: validLink)!)
-                            .font(.subheadline)
-                            .foregroundColor(.blue)
-                    }
+                    Spacer()
                 }
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                //MARK: 맵뷰 섹션
-                DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
             }
-            .padding(.bottom, 20)
-            .frame(maxWidth: .infinity)
-        }
-        .background(Color.white)
-        .navigationBarBackButtonHidden(true)
-    }
-    
-    private var topBar: some View {
-        ZStack {
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(CustomColor.text)
-                        .font(.title3)
+
+            VStack {
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+
+                    HStack(spacing: 16) {
+                        Button(action: {
+                            // 공유 액션
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+
+                        Button(action: {
+                            // 좋아요 액션
+                        }) {
+                            Image(systemName: "heart")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+                    }
                 }
-                .padding(.leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 50)
 
                 Spacer()
             }
-
-            Text(title)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(CustomColor.text)
         }
-        .frame(height: 60)
-        .background(Color.white)
-        .overlay(
-            Divider(), alignment: .bottom
-        )
+        .edgesIgnoringSafeArea(.top)
+        .navigationBarHidden(true)
     }
 }
