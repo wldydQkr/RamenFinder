@@ -11,14 +11,13 @@ struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
     @State private var isEditingNickname = false // 닉네임 수정 화면 상태
     @State private var isImagePickerPresented = false // 이미지 선택 화면 상태
-    @State private var profileImage: UIImage? // 사용자 지정 프로필 이미지
 
     var body: some View {
         NavigationView {
             VStack {
                 // Profile Header
                 VStack(spacing: 10) {
-                    if let profileImage = profileImage {
+                    if let profileImage = viewModel.profileImage {
                         Image(uiImage: profileImage)
                             .resizable()
                             .scaledToFill()
@@ -27,7 +26,7 @@ struct ProfileView: View {
                             .overlay(Circle().stroke(Color.white, lineWidth: 4))
                             .shadow(radius: 10)
                     } else {
-                        Image("profile_image")
+                        Image("ramen") // 기본 이미지
                             .resizable()
                             .scaledToFill()
                             .frame(width: 100, height: 100)
@@ -47,7 +46,7 @@ struct ProfileView: View {
                     
                     // Edit Profile Button
                     Button(action: {
-                        isEditingNickname = true // 닉네임 수정 화면 표시
+                        isEditingNickname = true
                     }) {
                         Text("Edit Profile")
                             .font(.system(size: 14, weight: .medium))
@@ -90,13 +89,20 @@ struct ProfileView: View {
             .navigationBarTitle("My Profile", displayMode: .inline)
             .navigationBarItems(
                 trailing: Button(action: {
-                    isImagePickerPresented = true // 이미지 선택 화면 표시
+                    isImagePickerPresented = true
                 }) {
                     Image(systemName: "photo")
                 }
             )
             .sheet(isPresented: $isImagePickerPresented) {
-                ImagePicker(selectedImage: $profileImage)
+                ImagePicker(selectedImage: Binding(
+                    get: { viewModel.profileImage },
+                    set: { newImage in
+                        if let newImage = newImage {
+                            viewModel.updateProfileImage(newImage: newImage)
+                        }
+                    }
+                ))
             }
         }
     }

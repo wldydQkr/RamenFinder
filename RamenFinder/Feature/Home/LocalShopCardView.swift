@@ -51,10 +51,20 @@ struct LocalShopCardView: View {
 
                 // 오버레이
                 VStack(alignment: .leading, spacing: 8) {
-                    
                     // 좋아요 버튼
                     HStack {
+//                        Text(title)
+//                            .font(.caption)
+//                            .fontWeight(.bold)
+//                            .padding(6)
+//                            .background(Color.black.opacity(0.4))
+//                            .foregroundColor(.white)
+//                            .lineLimit(1)
+//                            .shadow(color: .black.opacity(0.8), radius: 3, x: 0, y: 2)
+//                            .cornerRadius(5)
+
                         Spacer()
+                        
                         Button(action: {
                             isLiked.toggle()
                         }) {
@@ -75,11 +85,11 @@ struct LocalShopCardView: View {
                             .lineLimit(1)
                             .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
 
-                        Text(subtitle)
-                            .font(.subheadline)
-                            .foregroundColor(.white.opacity(0.8))
-                            .lineLimit(2)
-                            .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
+//                        Text(subtitle)
+//                            .font(.subheadline)
+//                            .foregroundColor(.white.opacity(0.8))
+//                            .lineLimit(2)
+//                            .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
                     }
 
 

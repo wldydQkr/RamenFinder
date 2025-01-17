@@ -15,6 +15,7 @@ final class HomeViewModel: ObservableObject {
     @Published var ramenShops: [RamenShop] = []
     @Published var localRamenShops: [LocalRamenShop] = []
     @Published var favoriteRamenShops: [FavoriteRamen] = []
+    @Published var profileImage: UIImage? = nil // 프로필 이미지
     @Published var isLoading: Bool = false
 
     private var cancellables = Set<AnyCancellable>()
@@ -26,6 +27,17 @@ final class HomeViewModel: ObservableObject {
         self.viewContext = context
         setupSearchListener()
         fetchFavorites()
+        loadProfileImage()
+    }
+    
+    // MARK: - 프로필 이미지 로드
+    func loadProfileImage() {
+        if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
+           let image = UIImage(data: imageData) {
+            profileImage = image
+        } else {
+            profileImage = nil // 기본값
+        }
     }
 
     private func setupSearchListener() {

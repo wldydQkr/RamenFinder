@@ -11,8 +11,9 @@ import CoreData
 struct HomeView: View {
     @State private var selectedTab: TabBar.Tab = .home
     @State private var isSearchViewActive = false
-    @StateObject private var viewModel: HomeViewModel
     @State private var nickname: String = "" // 닉네임 상태 추가
+    @State private var profileImage: UIImage? = nil
+    @StateObject private var viewModel: HomeViewModel
     
     // FetchRequest로 Core Data 데이터 관리
     @FetchRequest(
@@ -140,11 +141,24 @@ struct HomeView: View {
 
             Spacer()
 
-            Image(systemName: "person.circle.fill")
-                .font(.title)
-                .foregroundColor(CustomColor.text)
+            if let profileImage = viewModel.profileImage {
+                Image(uiImage: profileImage)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 30, height: 30)
+                    .clipShape(Circle())
+                    .overlay(Circle().stroke(CustomColor.background, lineWidth: 1))
+                    .shadow(radius: 4)
+            } else {
+                Image(systemName: "person.circle.fill")
+                    .font(.title)
+                    .foregroundColor(CustomColor.text)
+            }
         }
         .padding([.horizontal, .vertical], 8)
+        .onAppear {
+            viewModel.loadProfileImage()
+        }
     }
     
     // MARK: - 검색창 섹션
