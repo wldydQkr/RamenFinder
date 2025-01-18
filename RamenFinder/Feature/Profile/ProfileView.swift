@@ -53,7 +53,7 @@ struct ProfileView: View {
                             .foregroundColor(.white)
                             .padding(.horizontal, 20)
                             .padding(.vertical, 8)
-                            .background(Color.red)
+                            .background(CustomColor.primary)
                             .cornerRadius(20)
                     }
                     .sheet(isPresented: $isEditingNickname) {

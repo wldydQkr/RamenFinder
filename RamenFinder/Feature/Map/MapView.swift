@@ -9,55 +9,35 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    @StateObject private var mapViewModel = MapViewModel()
     @State private var region: MKCoordinateRegion = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
-    @StateObject private var locationManager = LocationManager()
-
-    let ramenShops: [RamenIdentifiableCoordinate] = [
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5628, longitude: 127.0635),
-            tint: .red,
-            name: "라멘 가게 1"
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5612, longitude: 127.0652),
-            tint: .blue,
-            name: "라멘 가게 2"
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5605, longitude: 127.0667),
-            tint: .green,
-            name: "라멘 가게 3"
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5630, longitude: 127.0620),
-            tint: .orange,
-            name: "라멘 가게 4"
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5625, longitude: 127.0640),
-            tint: .purple,
-            name: "라멘 가게 5"
+    
+    @State private var equatableRegion = EquatableMKCoordinateRegion(
+        region: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
-    ]
+    )
+
 
     var body: some View {
         ZStack {
             Map(
                 coordinateRegion: $region,
                 showsUserLocation: true,
-                annotationItems: ramenShops
+                annotationItems: mapViewModel.annotationItems
             ) { item in
                 MapAnnotation(coordinate: item.coordinate) {
                     VStack {
-//                        Text(item.name)
-//                            .font(.caption)
-//                            .padding(4)
-//                            .background(Color.white)
-//                            .cornerRadius(8)
-//                            .shadow(radius: 4)
+                        Text(item.name)
+                            .font(.caption)
+                            .padding(4)
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
 
                         Image(systemName: "fork.knife.circle.fill")
                             .resizable()
@@ -69,12 +49,16 @@ struct MapView: View {
             }
             .edgesIgnoringSafeArea(.all)
 
+            // 내 위치 버튼
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
                     Button(action: {
-                        moveToUserLocation()
+                        mapViewModel.centerToUserLocation() // 내 위치로 이동
+                        if let newRegion = mapViewModel.region {
+                            region = newRegion
+                        }
                     }) {
                         Image(systemName: "location.fill")
                             .font(.title3)
@@ -89,10 +73,12 @@ struct MapView: View {
             }
         }
         .onAppear {
-            locationManager.requestUserLocation()
-            updateInitialRegion()
+            mapViewModel.requestInitialLocation()
         }
-        .alert(isPresented: .constant(locationManager.isAuthorizationDenied)) {
+        .onChange(of: equatableRegion) { newRegion in
+            region = newRegion.region
+        }
+        .alert(isPresented: $mapViewModel.showLocationError) {
             Alert(
                 title: Text("위치 권한이 필요합니다."),
                 message: Text("앱 설정에서 위치 접근 권한을 허용해주세요."),
@@ -100,32 +86,23 @@ struct MapView: View {
             )
         }
     }
-
-    private func updateInitialRegion() {
-        if let userLocation = locationManager.userLocation {
-            region = MKCoordinateRegion(
-                center: userLocation,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            )
-        }
-    }
-
-    private func moveToUserLocation() {
-        guard let userLocation = locationManager.userLocation else {
-            print("사용자 위치를 가져올 수 없습니다.")
-            return
-        }
-        region = MKCoordinateRegion(
-            center: userLocation,
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        )
-    }
 }
 
-// 마커 식별을 위한 IdentifiableCoordinate
+// 마커 식별을 위한 RamenIdentifiableCoordinate
 struct RamenIdentifiableCoordinate: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
     let tint: Color
-    let name: String // 매장 이름 추가
+    let name: String
+}
+
+struct EquatableMKCoordinateRegion: Equatable {
+    var region: MKCoordinateRegion
+
+    static func == (lhs: EquatableMKCoordinateRegion, rhs: EquatableMKCoordinateRegion) -> Bool {
+        lhs.region.center.latitude == rhs.region.center.latitude &&
+        lhs.region.center.longitude == rhs.region.center.longitude &&
+        lhs.region.span.latitudeDelta == rhs.region.span.latitudeDelta &&
+        lhs.region.span.longitudeDelta == rhs.region.span.longitudeDelta
+    }
 }
