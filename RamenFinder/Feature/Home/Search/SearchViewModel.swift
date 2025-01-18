@@ -63,6 +63,7 @@ final class SearchViewModel: ObservableObject {
             }, receiveValue: { [weak self] response in
                 self?.searchResults = response.items.map {
                     RamenShop(
+                        imageURL: "h",
                         name: $0.title.stripHTML(),
                         roadAddress: $0.roadAddress,
                         address: $0.address,

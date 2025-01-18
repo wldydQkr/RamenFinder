@@ -10,7 +10,8 @@ import SwiftUI
 struct TabBar: View {
     @State private var selectedTab: Tab = .home
     @StateObject private var mapViewModel = MapViewModel()
-    @Environment(\.managedObjectContext) private var viewContext // Core Data context
+    @StateObject private var homeViewModel = HomeViewModel(context: PersistenceController.shared.container.viewContext) // Core Data context 전달
+    @Environment(\.managedObjectContext) private var viewContext
 
     enum Tab: String, CaseIterable {
         case home = "house.fill"
@@ -28,14 +29,14 @@ struct TabBar: View {
                 case .map:
                     MapView()
                 case .favorites:
-                    FavoriteRamenView(container: PersistenceController.shared.container)
+                    FavoriteRamenView(container: PersistenceController.shared.container, homeViewModel: homeViewModel)
                 case .profile:
                     ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            //MARK: Tab Bar
+            // MARK: Tab Bar
             HStack {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {

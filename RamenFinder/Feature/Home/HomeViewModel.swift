@@ -59,6 +59,7 @@ final class HomeViewModel: ObservableObject {
         performAPISearch(query: query) { [weak self] response in
             self?.ramenShops = response.items.map { item in
                 RamenShop(
+                    imageURL: "",
                     name: item.title.stripHTML(),
                     roadAddress: item.roadAddress,
                     address: item.address,

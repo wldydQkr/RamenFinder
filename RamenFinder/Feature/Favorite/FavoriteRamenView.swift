@@ -10,10 +10,12 @@ import CoreData
 
 struct FavoriteRamenView: View {
     @StateObject private var viewModel: FavoriteRamenViewModel
+    @ObservedObject var homeViewModel: HomeViewModel
 
     // ViewModel을 주입하기 위한 초기화 메서드
-    init(container: NSPersistentContainer) {
+    init(container: NSPersistentContainer, homeViewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: FavoriteRamenViewModel(container: container))
+        self.homeViewModel = homeViewModel
     }
 
     @State private var selectedShop: FavoriteRamen? // 선택된 매장을 저장
@@ -23,7 +25,7 @@ struct FavoriteRamenView: View {
         VStack(spacing: 0) {
             NavigationView {
                 VStack(spacing: 0) {
-                    //MARK: 헤더 섹션
+                    // MARK: 헤더 섹션
                     Text("찜한 매장")
                         .font(.largeTitle)
                         .fontWeight(.bold)
@@ -31,7 +33,7 @@ struct FavoriteRamenView: View {
                         .padding(.horizontal)
                         .padding(.top, 20)
 
-                    //MARK: 즐겨찾기 라멘 리스트
+                    // MARK: 즐겨찾기 라멘 리스트
                     ScrollView {
                         VStack(spacing: 16) {
                             ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
@@ -43,7 +45,8 @@ struct FavoriteRamenView: View {
                                         shop: shop,
                                         onDelete: { shopToDelete in
                                             viewModel.removeFavorite(shop: shopToDelete) // 삭제 동작 실행
-                                        }
+                                        },
+                                        homeViewModel: homeViewModel // 좋아요 상태 관리
                                     )
                                 }
                                 .buttonStyle(PlainButtonStyle())
@@ -53,7 +56,7 @@ struct FavoriteRamenView: View {
                         .padding(.top, 10)
                     }
 
-                    //MARK: NavigationLink로 RamenDetailView로 이동
+                    // MARK: NavigationLink로 RamenDetailView로 이동
                     NavigationLink(
                         destination: RamenDetailView(
                             title: selectedShop?.name ?? "Unknown",
@@ -61,7 +64,8 @@ struct FavoriteRamenView: View {
                             address: selectedShop?.address ?? "Unknown",
                             roadAddress: selectedShop?.roadAddress ?? "Unknown",
                             mapX: selectedShop?.mapx ?? 0,
-                            mapY: selectedShop?.mapy ?? 0
+                            mapY: selectedShop?.mapy ?? 0,
+                            viewModel: homeViewModel
                         ),
                         isActive: $isDetailViewActive
                     ) {
@@ -78,8 +82,10 @@ struct FavoriteRamenView: View {
 struct FavoriteRamenCardView: View {
     let shop: FavoriteRamen
     let onDelete: (FavoriteRamen) -> Void // 삭제 동작을 전달받는 클로저
+    @ObservedObject var homeViewModel: HomeViewModel // 좋아요 상태 관리
 
     @State private var showDeleteConfirmation = false // 삭제 확인 다이얼로그 상태
+    @State private var isLiked: Bool = false // 좋아요 상태
 
     var body: some View {
         HStack(spacing: 16) {
@@ -107,7 +113,27 @@ struct FavoriteRamenCardView: View {
 
             Spacer()
 
-            //MARK: Delete Button
+//            // 좋아요 버튼
+//            Button(action: {
+//                homeViewModel.toggleFavorite(
+//                    title: shop.name ?? "Unknown",
+//                    address: shop.address ?? "Unknown",
+//                    roadAddress: shop.roadAddress ?? "Unknown",
+//                    link: shop.link ?? "",
+//                    mapX: shop.mapx,
+//                    mapY: shop.mapy
+//                )
+//                isLiked.toggle()
+//            }) {
+//                Image(systemName: isLiked ? "heart.fill" : "heart")
+//                    .font(.title3)
+//                    .foregroundColor(isLiked ? .red : .gray)
+//            }
+//            .onAppear {
+//                isLiked = homeViewModel.isFavorite(title: shop.name ?? "Unknown", roadAddress: shop.roadAddress ?? "Unknown")
+//            }
+
+            // 삭제 버튼
             Button(action: {
                 showDeleteConfirmation = true // 삭제 확인 다이얼로그 표시
             }) {

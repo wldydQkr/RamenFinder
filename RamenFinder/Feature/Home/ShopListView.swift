@@ -13,6 +13,14 @@ struct RamenShopListView: View {
 
     @Environment(\.dismiss) var dismiss
     @State private var searchText: String = ""
+    @StateObject private var viewModel: HomeViewModel
+    
+    // 초기화 메서드 접근 수준 수정
+    init(title: String, shops: [RamenShop], viewModel: HomeViewModel) {
+        self.title = title
+        self.shops = shops
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
 
     var body: some View {
         NavigationView {
@@ -22,7 +30,7 @@ struct RamenShopListView: View {
 
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 20) {
-                        ForEach(filteredShops) { shop in
+                        ForEach(filteredShops, id: \.id) { shop in
                             NavigationLink(
                                 destination: RamenDetailView(
                                     title: shop.name,
@@ -30,7 +38,8 @@ struct RamenShopListView: View {
                                     address: shop.address,
                                     roadAddress: shop.roadAddress,
                                     mapX: shop.mapx,
-                                    mapY: shop.mapy
+                                    mapY: shop.mapy,
+                                    viewModel: viewModel
                                 )
                             ) {
                                 ShopRow(shop: shop)
@@ -80,7 +89,7 @@ struct RamenShopListView: View {
                 .cornerRadius(8)
 
             Button(action: {
-                // ..something..
+                // 검색 버튼 동작 (필요 시 추가)
             }) {
                 Image(systemName: "magnifyingglass")
                     .foregroundColor(CustomColor.text)
@@ -96,7 +105,10 @@ struct RamenShopListView: View {
         if searchText.isEmpty {
             return shops
         } else {
-            return shops.filter { $0.name.contains(searchText) || $0.roadAddress.contains(searchText) }
+            return shops.filter {
+                $0.name.localizedCaseInsensitiveContains(searchText) ||
+                $0.roadAddress.localizedCaseInsensitiveContains(searchText)
+            }
         }
     }
 }
@@ -106,7 +118,7 @@ struct ShopRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")) { image in
+            AsyncImage(url: URL(string: shop.imageURL ?? "")) { image in
                 image
                     .resizable()
                     .scaledToFill()
@@ -122,19 +134,16 @@ struct ShopRow: View {
                     .font(.title2)
                     .fontWeight(.bold)
                     .foregroundColor(CustomColor.text)
-                
+
                 Text(shop.roadAddress)
                     .font(.subheadline)
                     .foregroundColor(CustomColor.secondary)
-                    .frame(alignment: .leading)
                     .lineLimit(1)
-                    
-                
+
                 Text(shop.address)
                     .font(.subheadline)
                     .foregroundColor(CustomColor.secondary)
                     .lineLimit(1)
-                    
             }
             Spacer()
         }
@@ -143,5 +152,14 @@ struct ShopRow: View {
 }
 
 #Preview {
-    ShopRow(shop: RamenShop(name: "오레노라멘 합정", roadAddress: "천호대로77가길", address: "장안1동", category: "동대문구", link: "", mapx: 0, mapy: 0))
+    ShopRow(shop: RamenShop(
+        imageURL: "https://example.com/image.jpg",
+        name: "오레노라멘 합정",
+        roadAddress: "천호대로77가길",
+        address: "장안1동",
+        category: "동대문구",
+        link: "",
+        mapx: 0,
+        mapy: 0
+    ))
 }

@@ -28,7 +28,8 @@ struct LocalShopCardView: View {
             address: address,
             roadAddress: roadAddress,
             mapX: mapX,
-            mapY: mapY
+            mapY: mapY,
+            viewModel: viewModel
         )) {
             ZStack(alignment: .bottomLeading) {
                 // 배경 이미지

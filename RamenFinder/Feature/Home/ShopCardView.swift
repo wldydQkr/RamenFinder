@@ -28,7 +28,8 @@ struct ShopCardView: View {
             address: address,
             roadAddress: roadAddress,
             mapX: mapX,
-            mapY: mapY
+            mapY: mapY,
+            viewModel: viewModel
         )) {
             VStack(alignment: .leading) {
                 ZStack(alignment: .bottomTrailing) {

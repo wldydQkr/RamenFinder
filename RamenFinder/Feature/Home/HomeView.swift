@@ -29,7 +29,7 @@ struct HomeView: View {
     @State private var showRamenListView = false
     
     @Environment(\.managedObjectContext) private var viewContext
-    
+
     // MARK: - Initializer
     init(context: NSManagedObjectContext) {
         _viewModel = StateObject(wrappedValue: HomeViewModel(context: context))
@@ -44,36 +44,30 @@ struct HomeView: View {
                         searchSection
                         categorySection
                         
+                        // 근처 라멘 섹션
+//                            ramenSection(
+//                                title: "지역 라멘",
+//                                items: viewModel.localRamenShops.map {
+//                                    RamenShop(
+//                                        imageURL: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.webp",
+//                                        name: $0.name,
+//                                        roadAddress: $0.roadAddress,
+//                                        address: $0.address,
+//                                        category: $0.category ?? "Unknown",
+//                                        link: $0.link ?? "",
+//                                        mapx: $0.mapx,
+//                                        mapy: $0.mapy
+//                                    )
+//                                }
+//                            )
+                        
                         // 추천 라멘 섹션
                         ramenSection(
                             title: "추천 라멘",
                             items: viewModel.ramenShops
                         )
                         
-                        // 근처 라멘 섹션
-                        ramenSection(
-                            title: "근처 라멘",
-                            items: [
-                                RamenShop(
-                                    name: "오레노 라멘",
-                                    roadAddress: "합정동",
-                                    address: "서울특별시 동대문구 장안1동 406-2",
-                                    category: "서울특별시 천호대로 77가길 18",
-                                    link: "https://naver.com",
-                                    mapx: 0,
-                                    mapy: 0
-                                ),
-                                RamenShop(
-                                    name: "무메노",
-                                    roadAddress: "연남동",
-                                    address: "서울특별시 동대문구 장안1동 406-2",
-                                    category: "서울특별시 천호대로 77가길 18",
-                                    link: "https://naver.com",
-                                    mapx: 0,
-                                    mapy: 0
-                                )
-                            ]
-                        )
+
                     }
                 }
                 .onAppear {
@@ -86,7 +80,8 @@ struct HomeView: View {
                     NavigationLink(
                         destination: RamenShopListView(
                             title: ramenListTitle,
-                            shops: selectedRamenList
+                            shops: selectedRamenList,
+                            viewModel: viewModel
                         ),
                         isActive: $showRamenListView
                     ) {
@@ -94,9 +89,7 @@ struct HomeView: View {
                     }
                 )
             }
-            
             Spacer()
-            
         }
         .edgesIgnoringSafeArea(.bottom)
         .fullScreenCover(isPresented: $isSearchViewActive) {
@@ -106,20 +99,76 @@ struct HomeView: View {
         }
     }
     
+    // MARK: 지역 카테고리 섹션
+    private var categorySection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("지역 라멘")
+                .font(.headline)
+                .foregroundColor(CustomColor.text)
+                .padding(.horizontal, 8)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(RegionalCategory.categories) { category in
+                        CategoryView(icon: category.icon, title: category.title) {
+                            selectedCategoryTitle = category.title // 선택된 카테고리 업데이트
+                            viewModel.fetchRamenShopsByCategory(category: category.title)
+                            print("Selected: \(category.title)")
+                        }
+                    }
+                }
+                .padding(.horizontal, 8)
+            }
+            
+            localRamenSection(
+                title: "Selected: \(selectedCategoryTitle)", // 선택된 카테고리 표시
+                category: selectedCategoryTitle, // 선택된 카테고리 전달
+                items: viewModel.localRamenShops
+            )
+        }
+        .padding(.bottom, 0)
+    }
+    
+    // MARK: 근처 라멘 섹션
+    private func localRamenSection(title: String, category: String, items: [LocalRamenShop]) -> some View {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 16) {
+                    ForEach(items) { shop in
+                        LocalShopCardView(
+                            imageURL: URL(string: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.jpg"),
+                            title: shop.name,
+                            subtitle: shop.roadAddress,
+                            link: shop.link ?? "https://naver.com",
+                            address: shop.address,
+                            roadAddress: shop.roadAddress,
+                            mapX: shop.mapx,
+                            mapY: shop.mapy,
+                            selectedCategory: category,
+                            viewModel: viewModel
+                        )
+                    }
+                    
+                    if viewModel.isLoading {
+                        ProgressView()
+                            .frame(width: 150, height: 100)
+                    }
+                }
+                .padding([.top, .bottom, .horizontal], 8)
+            }
+    }
+    
     // MARK: - 초기 데이터 로드
     private func loadInitialData() {
-        // 중복 호출 방지
         if viewModel.ramenShops.isEmpty {
             viewModel.fetchRamenShops(query: "서울 라멘")
         }
         if viewModel.localRamenShops.isEmpty {
-            viewModel.fetchRamenShopsByCategory(category: "동대문구")
+            viewModel.fetchRamenShopsByCategory(category: selectedCategoryTitle)
         }
     }
     
     // MARK: - FetchRequest 유효성 검사
     private func validateFetchRequest() {
-        // FetchRequest의 entity가 제대로 설정되어 있는지 확인
         guard FavoriteRamen.entity().name != nil else {
             print("Error: FavoriteRamen entity is not properly set.")
             return
@@ -199,65 +248,6 @@ struct HomeView: View {
         }
     }
     
-    // MARK: 지역 카테고리 섹션
-    private var categorySection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("지역")
-                .font(.headline)
-                .foregroundColor(CustomColor.text)
-                .padding(.horizontal, 8)
-            
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(RegionalCategory.categories) { category in
-                        CategoryView(icon: category.icon, title: category.title) {
-                            selectedCategoryTitle = category.title // 선택된 타이틀 업데이트
-                            viewModel.fetchRamenShopsByCategory(category: category.title)
-                            print("Selected: \(category.title)")
-                        }
-                    }
-                }
-                .padding(.horizontal, 8)
-            }
-            
-            // 지역 라멘 섹션
-            localRamenSection(
-                title: "Selected: \(selectedCategoryTitle)", // 선택된 타이틀 표시
-                category: selectedCategoryTitle, // 선택된 카테고리 전달
-                items: viewModel.localRamenShops
-            )
-        }
-        .padding(.bottom, 0) // 섹션과의 간격을 제거
-    }
-    
-    // MARK: 근처 라멘 섹션
-    private func localRamenSection(title: String, category: String, items: [LocalRamenShop]) -> some View {
-            ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 16) {
-                    ForEach(items) { shop in
-                        LocalShopCardView(
-                            imageURL: URL(string: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.jpg"),
-                            title: shop.name,
-                            subtitle: shop.roadAddress,
-                            link: shop.link ?? "https://naver.com",
-                            address: shop.address,
-                            roadAddress: shop.roadAddress,
-                            mapX: shop.mapx,
-                            mapY: shop.mapy,
-                            selectedCategory: category,
-                            viewModel: viewModel
-                        )
-                    }
-                    
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .frame(width: 150, height: 100)
-                    }
-                }
-                .padding([.top, .bottom, .horizontal], 8)
-            }
-    }
-    
     // MARK: - 추천 라멘 섹션
     private func ramenSection(title: String, items: [RamenShop]) -> some View {
         VStack(spacing: 16) {
@@ -270,10 +260,9 @@ struct HomeView: View {
                 Spacer()
                 
                 Button(action: {
-                    print("\(title) 더보기 클릭")
-                    self.ramenListTitle = title
-                    self.selectedRamenList = items
-                    self.showRamenListView = true
+                    ramenListTitle = title
+                    selectedRamenList = items
+                    showRamenListView = true
                 }) {
                     Text("더보기 →")
                         .font(.subheadline)
@@ -286,10 +275,10 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         ShopCardView(
-                            imageURL: URL(string: "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-tw.jpg?w=1080&cbr=1&q=90&fit=max"),
+                            imageURL: URL(string: "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-tw.jpg?w=1080&cbr=1&q=90&fit=max" ?? ""),
                             title: shop.name,
                             subtitle: shop.roadAddress,
-                            link: shop.link ?? "https://naver.com",
+                            link: shop.link ?? "",
                             address: shop.address,
                             roadAddress: shop.roadAddress,
                             mapX: shop.mapx,
@@ -297,47 +286,9 @@ struct HomeView: View {
                             viewModel: viewModel
                         )
                     }
-                    
-                    if viewModel.isLoading {
-                        ProgressView()
-                            .frame(width: 150, height: 100)
-                    }
                 }
                 .padding([.top, .bottom, .horizontal], 8)
             }
         }
-//        .padding(.leading, 10)
     }
-    
-    // MARK: - 즐겨찾기 섹션
-    private var favoriteRamenSection: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text("즐겨찾기")
-                .font(.headline)
-                .fontWeight(.semibold)
-                .foregroundColor(CustomColor.text)
-            
-            if favoriteRamenShops.isEmpty {
-                Text("아직 즐겨찾기가 없습니다.")
-                    .foregroundColor(.secondary)
-                    .font(.subheadline)
-            } else {
-                ForEach(favoriteRamenShops, id: \.self) { shop in
-                    HStack {
-                        Text(shop.name ?? "Unknown")
-                            .font(.subheadline)
-                        Spacer()
-                        Button(action: {
-                            viewModel.deleteFavorite(shop: shop)
-                        }) {
-                            Image(systemName: "trash")
-                                .foregroundColor(.red)
-                        }
-                    }
-                }
-            }
-        }
-    }
-    
-
 }

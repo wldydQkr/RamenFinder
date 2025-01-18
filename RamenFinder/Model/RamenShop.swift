@@ -9,6 +9,7 @@ import Foundation
 
 struct RamenShop: Identifiable, Equatable {
     let id = UUID()
+    let imageURL: String
     let name: String
     let roadAddress: String
     let address: String

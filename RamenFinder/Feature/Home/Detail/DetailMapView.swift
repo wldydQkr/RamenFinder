@@ -42,13 +42,14 @@ struct DetailMapView: View {
     }
 }
 
-#Preview {
-    RamenDetailView(
-        title: "무메노",
-        link: "https://naver.com",
-        address: "서울특별시 마포구 연남동",
-        roadAddress: "연남동",
-        mapX: 126.923739,
-        mapY: 37.561632
-    )
-}
+//#Preview {
+//    RamenDetailView(
+//        title: "무메노",
+//        link: "https://naver.com",
+//        address: "서울특별시 마포구 연남동",
+//        roadAddress: "연남동",
+//        mapX: 126.923739,
+//        mapY: 37.561632,
+//        viewModel: HomeViewModel()
+//    )
+//}

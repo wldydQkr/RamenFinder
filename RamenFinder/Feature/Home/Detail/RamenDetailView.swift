@@ -18,16 +18,20 @@ struct RamenDetailView: View {
 
     @StateObject private var locationManager = LocationManager()
     @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: HomeViewModel
+
+    @State private var isLiked: Bool = false
 
     @State private var region: MKCoordinateRegion
 
-    init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double) {
+    init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double, viewModel: HomeViewModel) {
         self.title = title
         self.link = link
         self.address = address
         self.roadAddress = roadAddress
         self.mapX = mapX
         self.mapY = mapY
+        self.viewModel = viewModel
         _region = State(initialValue: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: mapY, longitude: mapX),
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
@@ -36,7 +40,6 @@ struct RamenDetailView: View {
 
     var body: some View {
         ZStack {
-            // ScrollView에 이미지 포함
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
                     // 이미지 섹션
@@ -48,6 +51,7 @@ struct RamenDetailView: View {
                             .scaledToFill()
                             .frame(width: UIScreen.main.bounds.width, height: 300)
                             .clipped()
+                            .cornerRadius(4)
                     } placeholder: {
                         ProgressView()
                             .frame(width: UIScreen.main.bounds.width, height: 300)
@@ -81,7 +85,6 @@ struct RamenDetailView: View {
                         DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
                             .frame(height: 300)
 
-                        // 내 위치 버튼
                         Button(action: {
                             if let userLocation = locationManager.userLocation {
                                 region = MKCoordinateRegion(
@@ -133,9 +136,17 @@ struct RamenDetailView: View {
                         }
 
                         Button(action: {
-                            // 좋아요 액션
+                            viewModel.toggleFavorite(
+                                title: title,
+                                address: address,
+                                roadAddress: roadAddress,
+                                link: link ?? "",
+                                mapX: mapX,
+                                mapY: mapY
+                            )
+                            isLiked.toggle()
                         }) {
-                            Image(systemName: "heart")
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
                                 .font(.title3)
                                 .foregroundColor(.white)
                                 .padding(10)
@@ -152,5 +163,8 @@ struct RamenDetailView: View {
         }
         .edgesIgnoringSafeArea(.top)
         .navigationBarHidden(true)
+        .onAppear {
+            isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
+        }
     }
 }
