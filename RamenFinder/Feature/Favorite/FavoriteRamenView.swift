@@ -12,7 +12,7 @@ struct FavoriteRamenView: View {
     @StateObject private var viewModel: FavoriteRamenViewModel
     @ObservedObject var homeViewModel: HomeViewModel
 
-    // ViewModel을 주입하기 위한 초기화 메서드
+    // MARK: - Initializer
     init(container: NSPersistentContainer, homeViewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: FavoriteRamenViewModel(container: container))
         self.homeViewModel = homeViewModel
@@ -38,8 +38,17 @@ struct FavoriteRamenView: View {
                         VStack(spacing: 16) {
                             ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
                                 Button(action: {
-                                    selectedShop = shop
-                                    isDetailViewActive = true
+                                    // 중복 확인 로직 추가
+                                    if let shopName = shop.name, let roadAddress = shop.roadAddress {
+                                        if !homeViewModel.isFavorite(title: shopName, roadAddress: roadAddress) {
+                                            selectedShop = shop
+                                            isDetailViewActive = true
+                                        } else {
+                                            print("이미 즐겨찾기에 추가된 매장입니다: \(shopName)")
+                                            selectedShop = shop // RamenDetailView로는 정상적으로 이동
+                                            isDetailViewActive = true
+                                        }
+                                    }
                                 }) {
                                     FavoriteRamenCardView(
                                         shop: shop,
@@ -59,10 +68,10 @@ struct FavoriteRamenView: View {
                     // MARK: NavigationLink로 RamenDetailView로 이동
                     NavigationLink(
                         destination: RamenDetailView(
-                            title: selectedShop?.name ?? "Unknown",
+                            title: selectedShop?.name ?? "",
                             link: selectedShop?.link,
-                            address: selectedShop?.address ?? "Unknown",
-                            roadAddress: selectedShop?.roadAddress ?? "Unknown",
+                            address: selectedShop?.address ?? "",
+                            roadAddress: selectedShop?.roadAddress ?? "",
                             mapX: selectedShop?.mapx ?? 0,
                             mapY: selectedShop?.mapy ?? 0,
                             viewModel: homeViewModel
@@ -112,26 +121,6 @@ struct FavoriteRamenCardView: View {
             }
 
             Spacer()
-
-//            // 좋아요 버튼
-//            Button(action: {
-//                homeViewModel.toggleFavorite(
-//                    title: shop.name ?? "Unknown",
-//                    address: shop.address ?? "Unknown",
-//                    roadAddress: shop.roadAddress ?? "Unknown",
-//                    link: shop.link ?? "",
-//                    mapX: shop.mapx,
-//                    mapY: shop.mapy
-//                )
-//                isLiked.toggle()
-//            }) {
-//                Image(systemName: isLiked ? "heart.fill" : "heart")
-//                    .font(.title3)
-//                    .foregroundColor(isLiked ? .red : .gray)
-//            }
-//            .onAppear {
-//                isLiked = homeViewModel.isFavorite(title: shop.name ?? "Unknown", roadAddress: shop.roadAddress ?? "Unknown")
-//            }
 
             // 삭제 버튼
             Button(action: {

@@ -20,8 +20,7 @@ struct RamenDetailView: View {
     @Environment(\.dismiss) var dismiss
     @ObservedObject var viewModel: HomeViewModel
 
-    @State private var isLiked: Bool = false
-
+    @State private var isLiked: Bool = false // 좋아요 상태
     @State private var region: MKCoordinateRegion
 
     init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double, viewModel: HomeViewModel) {
@@ -36,6 +35,8 @@ struct RamenDetailView: View {
             center: CLLocationCoordinate2D(latitude: mapY, longitude: mapX),
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         ))
+        
+        self._isLiked = State(initialValue: viewModel.isFavorite(title: title, roadAddress: roadAddress))
     }
 
     var body: some View {
@@ -136,6 +137,7 @@ struct RamenDetailView: View {
                         }
 
                         Button(action: {
+                            // 좋아요 상태 토글 및 업데이트
                             viewModel.toggleFavorite(
                                 title: title,
                                 address: address,
@@ -144,7 +146,7 @@ struct RamenDetailView: View {
                                 mapX: mapX,
                                 mapY: mapY
                             )
-                            isLiked.toggle()
+                            isLiked.toggle() // 상태 변경
                         }) {
                             Image(systemName: isLiked ? "heart.fill" : "heart")
                                 .font(.title3)
@@ -164,7 +166,13 @@ struct RamenDetailView: View {
         .edgesIgnoringSafeArea(.top)
         .navigationBarHidden(true)
         .onAppear {
-            isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
+            // 뷰가 나타날 때 좋아요 상태 동기화
+            syncLikeStatus()
         }
+    }
+
+    // MARK: - 좋아요 상태 동기화 메서드
+    private func syncLikeStatus() {
+        isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
     }
 }

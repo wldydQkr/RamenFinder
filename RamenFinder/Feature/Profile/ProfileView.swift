@@ -40,7 +40,7 @@ struct ProfileView: View {
                         .font(.title2)
                         .fontWeight(.bold)
                     
-                    Text("@AllightAllightAllight")
+                    Text("@Allight24")
                         .font(.subheadline)
                         .foregroundColor(.gray)
                     
@@ -48,7 +48,7 @@ struct ProfileView: View {
                     Button(action: {
                         isEditingNickname = true
                     }) {
-                        Text("Edit Profile")
+                        Text("프로필 수정")
                             .font(.system(size: 14, weight: .medium))
                             .foregroundColor(.white)
                             .padding(.horizontal, 20)
@@ -68,15 +68,8 @@ struct ProfileView: View {
                 List {
                     Section {
                         ProfileRow(icon: "heart", title: "Favourites")
-                        ProfileRow(icon: "arrow.down.to.line", title: "Downloads")
                         ProfileRow(icon: "globe", title: "Language")
                         ProfileRow(icon: "location", title: "Location")
-                        ProfileRow(icon: "creditcard", title: "Subscription")
-                    }
-                    
-                    Section {
-                        ProfileRow(icon: "trash", title: "Clear Cache")
-                        ProfileRow(icon: "clock.arrow.circlepath", title: "Clear History")
                     }
                     
                     Section {
@@ -84,7 +77,7 @@ struct ProfileView: View {
                             .foregroundColor(.red)
                     }
                 }
-                .listStyle(InsetGroupedListStyle())
+                .listStyle(PlainListStyle())
             }
             .navigationBarTitle("My Profile", displayMode: .inline)
             .sheet(isPresented: $isImagePickerPresented) {

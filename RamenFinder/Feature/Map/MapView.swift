@@ -52,12 +52,12 @@ struct MapView: View {
             ) { item in
                 MapAnnotation(coordinate: item.coordinate) {
                     VStack {
-                        Text(item.name)
-                            .font(.caption)
-                            .padding(4)
-                            .background(Color.white)
-                            .cornerRadius(8)
-                            .shadow(radius: 4)
+//                        Text(item.name)
+//                            .font(.caption)
+//                            .padding(4)
+//                            .background(Color.white)
+//                            .cornerRadius(8)
+//                            .shadow(radius: 4)
 
                         Image(systemName: "fork.knife.circle.fill")
                             .resizable()
@@ -77,7 +77,7 @@ struct MapView: View {
                         moveToUserLocation()
                     }) {
                         Image(systemName: "location.fill")
-                            .font(.system(size: 16))
+                            .font(.title3)
                             .padding()
                             .background(.white)
                             .tint(CustomColor.primary)

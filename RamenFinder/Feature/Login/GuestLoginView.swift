@@ -17,11 +17,11 @@ struct GuestLoginView: View {
 
     var body: some View {
         VStack(spacing: 20) {
-            Text("게스트로 로그인")
+            Text("프로필 설정하기")
                 .font(.largeTitle)
                 .fontWeight(.bold)
 
-            Text("게스트로 로그인하여 라멘 매장을 탐색해보세요!")
+            Text("프로필을 설정하고 라멘 매장을 탐색해보세요!")
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal)
@@ -42,7 +42,7 @@ struct GuestLoginView: View {
                     .frame(width: 100, height: 100)
                     .foregroundColor(.gray)
                     .clipShape(Circle())
-                    .shadow(radius: 5)
+                    .shadow(radius: 3)
             }
 
             // 이미지 선택 버튼
@@ -53,7 +53,7 @@ struct GuestLoginView: View {
                     .fontWeight(.bold)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(Color.blue)
+                    .background(CustomColor.secondary)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }
@@ -77,11 +77,11 @@ struct GuestLoginView: View {
                 print("로그인 성공 - 별명: \(nickname)")
                 isLoginComplete = true
             }) {
-                Text("게스트로 시작하기")
+                Text("시작하기")
                     .fontWeight(.bold)
                     .padding()
                     .frame(maxWidth: .infinity)
-                    .background(nickname.isEmpty ? Color.gray : Color.green)
+                    .background(nickname.isEmpty ? Color.gray : CustomColor.primary)
                     .foregroundColor(.white)
                     .cornerRadius(10)
             }

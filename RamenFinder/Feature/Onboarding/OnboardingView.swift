@@ -34,9 +34,9 @@ struct OnboardingView: View {
         VStack {
             // MARK: TabView
             TabView(selection: $currentPage) {
-                ForEach(onboardingItems) { item in
+                ForEach(Array(onboardingItems.enumerated()), id: \.element.id) { index, item in
                     OnboardingPageView(item: item)
-                        .tag(item.id) // 고유 ID 기반 태그 설정
+                        .tag(index) // 인덱스 기반 태그 설정
                 }
 
                 // 마지막 화면
@@ -52,7 +52,7 @@ struct OnboardingView: View {
                     Button(action: {
                         completeOnboarding()
                     }) {
-                        Text("게스트로 시작하기")
+                        Text("시작하기")
                             .fontWeight(.bold)
                             .padding()
                             .frame(maxWidth: .infinity)
@@ -61,7 +61,6 @@ struct OnboardingView: View {
                             .cornerRadius(10)
                     }
                     .padding(.horizontal, 40)
-                    .accessibilityLabel("게스트로 시작하기 버튼. 온보딩을 완료하고 앱을 시작합니다.")
                 }
                 .tag(onboardingItems.count) // 마지막 페이지 태그 설정
             }
@@ -79,8 +78,6 @@ struct OnboardingView: View {
                                 currentPage = index
                             }
                         }
-                        .accessibilityLabel(index == currentPage ? "현재 페이지 \(index + 1)" : "페이지 \(index + 1)")
-                        .accessibilityAddTraits(index == currentPage ? .isSelected : [])
                 }
             }
             .padding(.top, 20)
@@ -105,18 +102,15 @@ struct OnboardingPageView: View {
                 .scaledToFit()
                 .frame(width: 200, height: 200)
                 .padding()
-                .accessibilityHidden(true)
 
             Text(item.title)
                 .font(.title)
                 .fontWeight(.bold)
-                .accessibilityLabel("제목: \(item.title)")
 
             Text(item.description)
                 .font(.body)
                 .multilineTextAlignment(.center)
                 .padding(.horizontal, 40)
-                .accessibilityLabel("설명: \(item.description)")
         }
         .padding()
     }
