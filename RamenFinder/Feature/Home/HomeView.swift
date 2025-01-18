@@ -13,6 +13,7 @@ struct HomeView: View {
     @State private var isSearchViewActive = false
     @State private var nickname: String = "" // 닉네임 상태 추가
     @State private var profileImage: UIImage? = nil
+    @State private var selectedCategoryTitle: String = "동대문구"
     @StateObject private var viewModel: HomeViewModel
     
     // FetchRequest로 Core Data 데이터 관리
@@ -210,6 +211,7 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(RegionalCategory.categories) { category in
                         CategoryView(icon: category.icon, title: category.title) {
+                            selectedCategoryTitle = category.title // 선택된 타이틀 업데이트
                             viewModel.fetchRamenShopsByCategory(category: category.title)
                             print("Selected: \(category.title)")
                         }
@@ -220,7 +222,8 @@ struct HomeView: View {
             
             // 지역 라멘 섹션
             localRamenSection(
-                title: ramenListTitle,
+                title: "Selected: \(selectedCategoryTitle)", // 선택된 타이틀 표시
+                category: selectedCategoryTitle, // 선택된 카테고리 전달
                 items: viewModel.localRamenShops
             )
         }
@@ -228,7 +231,7 @@ struct HomeView: View {
     }
     
     // MARK: 근처 라멘 섹션
-    private func localRamenSection(title: String, items: [LocalRamenShop]) -> some View {
+    private func localRamenSection(title: String, category: String, items: [LocalRamenShop]) -> some View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
@@ -240,7 +243,9 @@ struct HomeView: View {
                             address: shop.address,
                             roadAddress: shop.roadAddress,
                             mapX: shop.mapx,
-                            mapY: shop.mapy
+                            mapY: shop.mapy,
+                            selectedCategory: category,
+                            viewModel: viewModel
                         )
                     }
                     
@@ -288,7 +293,8 @@ struct HomeView: View {
                             address: shop.address,
                             roadAddress: shop.roadAddress,
                             mapX: shop.mapx,
-                            mapY: shop.mapy
+                            mapY: shop.mapy,
+                            viewModel: viewModel
                         )
                     }
                     

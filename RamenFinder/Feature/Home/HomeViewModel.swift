@@ -20,7 +20,6 @@ final class HomeViewModel: ObservableObject {
 
     private var cancellables = Set<AnyCancellable>()
     private let baseURL = "https://openapi.naver.com/v1/search/local.json"
-
     private let viewContext: NSManagedObjectContext
 
     init(context: NSManagedObjectContext) {
@@ -29,7 +28,7 @@ final class HomeViewModel: ObservableObject {
         fetchFavorites()
         loadProfileImage()
     }
-    
+
     // MARK: - 프로필 이미지 로드
     func loadProfileImage() {
         if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
@@ -40,6 +39,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    // MARK: - 검색 텍스트 리스너 설정
     private func setupSearchListener() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
@@ -52,6 +52,7 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // MARK: - 라멘 가게 검색
     func fetchRamenShops(query: String) {
         guard !isLoading else { return } // 중복 요청 방지
 
@@ -69,7 +70,7 @@ final class HomeViewModel: ObservableObject {
             }
         }
     }
-    
+
     func fetchRamenShopsByCategory(category: String) {
         let query = "\(category) 라멘" // 카테고리 이름 + 라멘
         guard !query.isEmpty else { return }
@@ -120,6 +121,7 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // MARK: - API 검색 수행
     private func performAPISearch(query: String, completion: @escaping (RamenSearchResponse) -> Void) {
         guard !query.isEmpty else { return }
 
@@ -158,10 +160,67 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
+    // MARK: - 에러 처리
     private func handleError(error: Error) {
         print("Network or parsing error: \(error.localizedDescription)")
     }
+    
+    // MARK: - 좋아요 기능
+    func isFavorite(title: String, roadAddress: String) -> Bool {
+        favoriteRamenShops.contains(where: { $0.name == title && $0.roadAddress == roadAddress })
+    }
+    
+    func toggleFavorite(
+        title: String,
+        address: String,
+        roadAddress: String,
+        link: String,
+        mapX: Double,
+        mapY: Double
+    ) {
+        if isFavorite(title: title, roadAddress: roadAddress) {
+            removeFromFavorites(title: title, roadAddress: roadAddress)
+        } else {
+            addToFavorites(
+                title: title,
+                address: address,
+                roadAddress: roadAddress,
+                link: link,
+                mapX: mapX,
+                mapY: mapY
+            )
+        }
+    }
+    
+    private func addToFavorites(
+        title: String,
+        address: String,
+        roadAddress: String,
+        link: String,
+        mapX: Double,
+        mapY: Double
+    ) {
+        let newFavorite = FavoriteRamen(context: viewContext)
+        newFavorite.id = UUID()
+        newFavorite.name = title
+        newFavorite.address = address
+        newFavorite.roadAddress = roadAddress
+        newFavorite.link = link
+        newFavorite.mapx = mapX
+        newFavorite.mapy = mapY
 
+        saveContext()
+    }
+    
+    private func removeFromFavorites(title: String, roadAddress: String) {
+        if let shop = favoriteRamenShops.first(where: { $0.name == title && $0.roadAddress == roadAddress }) {
+            viewContext.delete(shop)
+            saveContext()
+        }
+    }
+
+
+    // MARK: - 즐겨찾기 데이터 관리
     func fetchFavorites() {
         do {
             let request: NSFetchRequest<FavoriteRamen> = FavoriteRamen.fetchRequest()
@@ -186,6 +245,7 @@ final class HomeViewModel: ObservableObject {
         viewContext.delete(shop)
         do {
             try viewContext.save()
+            fetchFavorites()
         } catch {
             print("Failed to delete favorite: \(error.localizedDescription)")
         }

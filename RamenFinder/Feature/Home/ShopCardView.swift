@@ -18,12 +18,8 @@ struct ShopCardView: View {
     let mapX: Double
     let mapY: Double
 
+    @ObservedObject var viewModel: HomeViewModel
     @State private var isLiked: Bool = false
-    @Environment(\.managedObjectContext) private var viewContext
-    @FetchRequest(
-        entity: FavoriteRamen.entity(),
-        sortDescriptors: []
-    ) private var favoriteRamenShops: FetchedResults<FavoriteRamen>
 
     var body: some View {
         NavigationLink(destination: RamenDetailView(
@@ -58,7 +54,15 @@ struct ShopCardView: View {
                     }
 
                     Button(action: {
-                        toggleLikeStatus()
+                        viewModel.toggleFavorite(
+                            title: title,
+                            address: address,
+                            roadAddress: roadAddress,
+                            link: link,
+                            mapX: mapX,
+                            mapY: mapY
+                        )
+                        isLiked.toggle()
                     }) {
                         Image(systemName: isLiked ? "heart.fill" : "heart")
                             .font(.title2)
@@ -81,51 +85,9 @@ struct ShopCardView: View {
             }
             .frame(width: 150)
             .onAppear {
-                isLiked = isFavorite()
+                isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
             }
         }
         .buttonStyle(PlainButtonStyle())
-    }
-
-    // MARK: - Helper Functions
-    private func toggleLikeStatus() {
-        if isLiked {
-            removeFromFavorites()
-        } else {
-            addToFavorites()
-        }
-        isLiked.toggle()
-    }
-
-    private func isFavorite() -> Bool {
-        favoriteRamenShops.contains(where: { $0.name == title && $0.roadAddress == roadAddress })
-    }
-
-    private func addToFavorites() {
-        let newFavorite = FavoriteRamen(context: viewContext)
-        newFavorite.id = UUID()
-        newFavorite.name = title
-        newFavorite.roadAddress = roadAddress
-        newFavorite.address = address
-        newFavorite.link = link
-        newFavorite.mapx = mapX
-        newFavorite.mapy = mapY
-
-        saveContext()
-    }
-
-    private func removeFromFavorites() {
-        if let shop = favoriteRamenShops.first(where: { $0.name == title && $0.roadAddress == roadAddress }) {
-            viewContext.delete(shop)
-            saveContext()
-        }
-    }
-
-    private func saveContext() {
-        do {
-            try viewContext.save()
-        } catch {
-            print("Failed to save context: \(error.localizedDescription)")
-        }
     }
 }

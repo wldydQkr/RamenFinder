@@ -77,14 +77,14 @@ struct MapView: View {
                         moveToUserLocation()
                     }) {
                         Image(systemName: "location.fill")
-                            .font(.system(size: 24))
+                            .font(.system(size: 16))
                             .padding()
-                            .background(CustomColor.background)
+                            .background(.white)
                             .tint(CustomColor.primary)
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
-                    .padding([.bottom, .trailing], 10)
+                    .padding([.bottom, .trailing], 12)
                 }
             }
         }

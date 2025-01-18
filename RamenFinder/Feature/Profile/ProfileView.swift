@@ -87,13 +87,6 @@ struct ProfileView: View {
                 .listStyle(InsetGroupedListStyle())
             }
             .navigationBarTitle("My Profile", displayMode: .inline)
-            .navigationBarItems(
-                trailing: Button(action: {
-                    isImagePickerPresented = true
-                }) {
-                    Image(systemName: "photo")
-                }
-            )
             .sheet(isPresented: $isImagePickerPresented) {
                 ImagePicker(selectedImage: Binding(
                     get: { viewModel.profileImage },

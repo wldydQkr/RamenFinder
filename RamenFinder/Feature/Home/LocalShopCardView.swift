@@ -16,7 +16,9 @@ struct LocalShopCardView: View {
     let roadAddress: String
     let mapX: Double
     let mapY: Double
+    let selectedCategory: String // 선택된 카테고리 제목
 
+    @ObservedObject var viewModel: HomeViewModel
     @State private var isLiked: Bool = false
 
     var body: some View {
@@ -51,21 +53,29 @@ struct LocalShopCardView: View {
 
                 // 오버레이
                 VStack(alignment: .leading, spacing: 8) {
-                    // 좋아요 버튼
                     HStack {
-//                        Text(title)
-//                            .font(.caption)
-//                            .fontWeight(.bold)
-//                            .padding(6)
-//                            .background(Color.black.opacity(0.4))
-//                            .foregroundColor(.white)
-//                            .lineLimit(1)
-//                            .shadow(color: .black.opacity(0.8), radius: 3, x: 0, y: 2)
-//                            .cornerRadius(5)
-
+                        VStack(alignment: .leading, spacing: 4) {
+                            // 카테고리 제목 표시
+                            Text(selectedCategory)
+                                .font(.caption)
+                                .fontWeight(.bold)
+                                .padding(4)
+                                .background(Color.black.opacity(0.5))
+                                .foregroundColor(.white)
+                                .cornerRadius(4)
+                        }
                         Spacer()
-                        
+
+                        // 좋아요 버튼
                         Button(action: {
+                            viewModel.toggleFavorite(
+                                title: title,
+                                address: address,
+                                roadAddress: roadAddress,
+                                link: link,
+                                mapX: mapX,
+                                mapY: mapY
+                            )
                             isLiked.toggle()
                         }) {
                             Image(systemName: isLiked ? "heart.fill" : "heart")
@@ -74,25 +84,17 @@ struct LocalShopCardView: View {
                                 .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
                         }
                     }
-                    
+
                     Spacer()
-                    
+
                     VStack(alignment: .leading, spacing: 4) {
                         Text(title)
                             .font(.headline)
                             .fontWeight(.bold)
                             .foregroundColor(.white)
-                            .lineLimit(1)
+                            .lineLimit(2)
                             .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
-
-//                        Text(subtitle)
-//                            .font(.subheadline)
-//                            .foregroundColor(.white.opacity(0.8))
-//                            .lineLimit(2)
-//                            .shadow(color: .black.opacity(0.7), radius: 2, x: 0, y: 1)
                     }
-
-
                 }
                 .padding()
                 .background(
@@ -107,6 +109,9 @@ struct LocalShopCardView: View {
             .frame(width: 150, height: 200)
             .cornerRadius(7)
             .shadow(color: .black.opacity(0.1), radius: 5, x: 0, y: 1)
+            .onAppear {
+                isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
+            }
         }
         .buttonStyle(PlainButtonStyle())
     }
