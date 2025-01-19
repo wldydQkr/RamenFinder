@@ -15,7 +15,7 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             VStack {
-                // Profile Header
+                //MARK: Header Section
                 VStack(spacing: 10) {
                     if let profileImage = viewModel.profileImage {
                         Image(uiImage: profileImage)
@@ -35,7 +35,7 @@ struct ProfileView: View {
                             .shadow(radius: 10)
                     }
                     
-                    // 닉네임 표시
+                    // Name
                     Text(viewModel.nickname)
                         .font(.title2)
                         .fontWeight(.bold)
@@ -64,12 +64,13 @@ struct ProfileView: View {
                 
                 Divider()
                 
-                // List Section
+                //MARK: List Section
                 List {
                     Section {
                         ProfileRow(icon: "heart", title: "Favourites")
                         ProfileRow(icon: "globe", title: "Language")
                         ProfileRow(icon: "location", title: "Location")
+                        ProfileRow(icon: "mail", title: "E-Mail")
                     }
                     
                     Section {

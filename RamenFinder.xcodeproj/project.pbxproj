@@ -36,6 +36,7 @@
 		C0B7419D2D08459E00BAB93A /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B7419C2D08459800BAB93A /* LocationManager.swift */; };
 		C0B741A02D08731C00BAB93A /* ShopListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B7419F2D08731400BAB93A /* ShopListView.swift */; };
 		C0B741A22D094FF700BAB93A /* LocalShopCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0B741A12D094FF700BAB93A /* LocalShopCardView.swift */; };
+		C0D090CC2D3D2E3C00611E77 /* MasonryVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D090CB2D3D2E3A00611E77 /* MasonryVStack.swift */; };
 		C0DDB21C2D04853C00528F24 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2162D04853C00528F24 /* HomeView.swift */; };
 		C0DDB21D2D04853C00528F24 /* HomeViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2172D04853C00528F24 /* HomeViewModel.swift */; };
 		C0DDB21E2D04853C00528F24 /* RamenFinderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */; };
@@ -77,9 +78,10 @@
 		C0B741972D083FA900BAB93A /* ShopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopCardView.swift; sourceTree = "<group>"; };
 		C0B741992D083FE600BAB93A /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		C0B7419C2D08459800BAB93A /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
-		C0B7419E2D0848B200BAB93A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		C0B7419E2D0848B200BAB93A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C0B7419F2D08731400BAB93A /* ShopListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopListView.swift; sourceTree = "<group>"; };
 		C0B741A12D094FF700BAB93A /* LocalShopCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalShopCardView.swift; sourceTree = "<group>"; };
+		C0D090CB2D3D2E3A00611E77 /* MasonryVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryVStack.swift; sourceTree = "<group>"; };
 		C0DDB2142D04853C00528F24 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C0DDB2162D04853C00528F24 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		C0DDB2172D04853C00528F24 /* HomeViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewModel.swift; sourceTree = "<group>"; };
@@ -213,6 +215,14 @@
 			path = Manager;
 			sourceTree = "<group>";
 		};
+		C0D090CA2D3D2E2700611E77 /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				C0D090CB2D3D2E3A00611E77 /* MasonryVStack.swift */,
+			);
+			path = Components;
+			sourceTree = "<group>";
+		};
 		C0DDB2112D04853C00528F24 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,8 +241,9 @@
 			isa = PBXGroup;
 			children = (
 				C066DF0E2D339C3000CD85DB /* NaverAPIKey.swift */,
-				C0B7419E2D0848B200BAB93A /* Info.plist */,
 				C0DDB2182D04853C00528F24 /* RamenFinderApp.swift */,
+				C0B7419E2D0848B200BAB93A /* Info.plist */,
+				C0D090CA2D3D2E2700611E77 /* Components */,
 				C066DF0D2D339BD700CD85DB /* Resource */,
 				C09629E02D3004EE00AA5CD8 /* Assets */,
 				C09629CC2D2D614A00AA5CD8 /* DB */,
@@ -382,6 +393,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C09629D92D2FC6ED00AA5CD8 /* RamenShopResponse.swift in Sources */,
+				C0D090CC2D3D2E3C00611E77 /* MasonryVStack.swift in Sources */,
 				C0B741A02D08731C00BAB93A /* ShopListView.swift in Sources */,
 				C0879DE82D0D9B0900715D85 /* MapView.swift in Sources */,
 				C09629C82D2D418800AA5CD8 /* NaverSearchResponse.swift in Sources */,

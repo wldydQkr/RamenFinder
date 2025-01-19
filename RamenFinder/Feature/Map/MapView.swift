@@ -14,15 +14,14 @@ struct MapView: View {
         center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
-    
+
     @State private var equatableRegion = EquatableMKCoordinateRegion(
         region: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
     )
-
-
+    
     var body: some View {
         ZStack {
             Map(
@@ -49,22 +48,21 @@ struct MapView: View {
             }
             .edgesIgnoringSafeArea(.all)
 
-            // 내 위치 버튼
             VStack {
                 Spacer()
                 HStack {
                     Spacer()
                     Button(action: {
-                        mapViewModel.centerToUserLocation() // 내 위치로 이동
-                        if let newRegion = mapViewModel.region {
-                            region = newRegion
+                        mapViewModel.centerToUserLocation()
+                        if let updatedRegion = mapViewModel.region {
+                            region = updatedRegion
                         }
                     }) {
                         Image(systemName: "location.fill")
                             .font(.title3)
                             .padding()
-                            .background(.white)
-                            .tint(CustomColor.primary)
+                            .background(Color.white)
+                            .foregroundStyle(CustomColor.primary)
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
@@ -94,6 +92,18 @@ struct RamenIdentifiableCoordinate: Identifiable {
     let coordinate: CLLocationCoordinate2D
     let tint: Color
     let name: String
+
+    init(coordinate: CLLocationCoordinate2D, tint: Color, name: String) {
+        self.coordinate = coordinate
+        self.tint = tint
+        self.name = name
+        
+        // 경도 값 확인 로그
+        print("Creating RamenIdentifiableCoordinate:")
+        print("  Name: \(name)")
+        print("  Latitude: \(coordinate.latitude)")
+        print("  Longitude: \(coordinate.longitude)")
+    }
 }
 
 struct EquatableMKCoordinateRegion: Equatable {
