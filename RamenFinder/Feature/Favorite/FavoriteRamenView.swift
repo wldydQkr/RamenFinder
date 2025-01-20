@@ -8,6 +8,9 @@
 import SwiftUI
 import CoreData
 
+import SwiftUI
+import CoreData
+
 struct FavoriteRamenView: View {
     @StateObject private var viewModel: FavoriteRamenViewModel
     @ObservedObject var homeViewModel: HomeViewModel
@@ -18,8 +21,8 @@ struct FavoriteRamenView: View {
         self.homeViewModel = homeViewModel
     }
 
-    @State private var selectedShop: FavoriteRamen? // 선택된 매장
-    @State private var isDetailViewActive = false // DetailView로 이동 상태
+    @State private var selectedShop: FavoriteRamen?
+    @State private var isDetailViewActive = false
 
     var body: some View {
         VStack {
@@ -35,6 +38,7 @@ struct FavoriteRamenView: View {
                     ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
                         FavoriteRamenCardView(
                             shop: shop,
+                            cardWidth: calculateCardWidth(),
                             onDelete: { shopToDelete in
                                 viewModel.removeFavorite(shop: shopToDelete)
                             },
@@ -50,7 +54,7 @@ struct FavoriteRamenView: View {
                 .padding(.top, 10)
             }
 
-            // MARK: NavigationLink로 DetailView 연결
+            //MARK: NavigationLink로 DetailView 연결
             NavigationLink(
                 destination: RamenDetailView(
                     title: selectedShop?.name ?? "",
@@ -69,18 +73,25 @@ struct FavoriteRamenView: View {
         .navigationBarHidden(true)
         .edgesIgnoringSafeArea(.bottom)
     }
+
+    // MARK: - Helper Function
+    private func calculateCardWidth() -> CGFloat {
+        let screenWidth = UIScreen.main.bounds.width
+        let totalSpacing: CGFloat = 16 * (2 - 1)
+        return (screenWidth - totalSpacing) / 2
+    }
 }
 
 struct FavoriteRamenCardView: View {
     let shop: FavoriteRamen
+    let cardWidth: CGFloat
     let onDelete: (FavoriteRamen) -> Void
     @ObservedObject var homeViewModel: HomeViewModel
     let onCardTap: () -> Void
 
     @State private var showDeleteConfirmation = false
-    @State private var randomImageURL: String // 랜덤 이미지 URL 상태
+    @State private var randomImageURL: String
 
-    // 이미지 URL 리스트
     private let imageUrls = [
         "https://street-h.com/wp-content/uploads/2023/03/hanroro.jpg",
         "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-13-scaled.jpg?w=1260&cbr=1&q=90&fit=max",
@@ -89,21 +100,24 @@ struct FavoriteRamenCardView: View {
 
     init(
         shop: FavoriteRamen,
+        cardWidth: CGFloat,
         onDelete: @escaping (FavoriteRamen) -> Void,
         homeViewModel: HomeViewModel,
         onCardTap: @escaping () -> Void
     ) {
         self.shop = shop
+        self.cardWidth = cardWidth
         self.onDelete = onDelete
         self.homeViewModel = homeViewModel
         self.onCardTap = onCardTap
-        self._randomImageURL = State(initialValue: imageUrls.randomElement()!) // 초기화 시 랜덤 선택
+        self._randomImageURL = State(initialValue: imageUrls.randomElement()!)
     }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             FavoriteRamenImageSection(
                 randomImageURL: randomImageURL,
+                cardWidth: cardWidth,
                 onCardTap: onCardTap
             )
 
@@ -113,6 +127,7 @@ struct FavoriteRamenCardView: View {
                 showDeleteConfirmation: $showDeleteConfirmation
             )
         }
+        .frame(width: cardWidth)
         .background(Color.white)
         .cornerRadius(12)
     }
@@ -120,6 +135,7 @@ struct FavoriteRamenCardView: View {
 
 struct FavoriteRamenImageSection: View {
     let randomImageURL: String
+    let cardWidth: CGFloat
     let onCardTap: () -> Void
 
     var body: some View {
@@ -128,13 +144,13 @@ struct FavoriteRamenImageSection: View {
                 image
                     .resizable()
                     .scaledToFill()
-                    .frame(height: 150)
-                    .cornerRadius(12)
+                    .frame(width: cardWidth - 15)
                     .clipped()
+                    .cornerRadius(12)
             } placeholder: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.gray.opacity(0.3))
-                    .frame(height: 150)
+                    .frame(width: cardWidth - 20, height: (cardWidth - 20) * 1.5) // 비율 유지
             }
         }
         .buttonStyle(PlainButtonStyle())
@@ -157,6 +173,7 @@ struct FavoriteRamenInfoSection: View {
                 .font(.subheadline)
                 .foregroundColor(.secondary)
                 .lineLimit(1)
+                .padding(.trailing, 16)
 
             // 삭제 버튼
             HStack {
@@ -166,7 +183,7 @@ struct FavoriteRamenInfoSection: View {
                 }) {
                     Image(systemName: "ellipsis")
                         .foregroundColor(.gray)
-                        .padding(8)
+                        .padding(16)
                 }
                 .confirmationDialog("이 매장을 삭제하시겠습니까?", isPresented: $showDeleteConfirmation) {
                     Button("삭제", role: .destructive) {
@@ -176,6 +193,6 @@ struct FavoriteRamenInfoSection: View {
                 }
             }
         }
-        .padding([.horizontal, .bottom], 8)
+        .padding([.vertical], 8)
     }
 }
