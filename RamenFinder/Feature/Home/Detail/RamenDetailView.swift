@@ -45,7 +45,8 @@ struct RamenDetailView: View {
                 VStack(alignment: .leading, spacing: 20) {
                     // 이미지 섹션
                     AsyncImage(
-                        url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
+//                        url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
+                        url: URL(string: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Soy_ramen.jpg")
                     ) { image in
                         image
                             .resizable()

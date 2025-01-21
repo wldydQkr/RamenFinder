@@ -135,7 +135,8 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         LocalShopCardView(
-                            imageURL: URL(string: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.jpg"),
+//                            imageURL: URL(string: "https://flexible.img.hani.co.kr/flexible/normal/970/1445/imgdb/original/2024/0618/20240618502333.jpg"),
+                            imageURL: URL(string: "https://upload.wikimedia.org/wikipedia/commons/a/a9/돈코츠라멘.jpg"),
                             title: shop.name,
                             subtitle: shop.roadAddress,
                             link: shop.link ?? "https://naver.com",
@@ -275,7 +276,8 @@ struct HomeView: View {
                 HStack(spacing: 16) {
                     ForEach(items) { shop in
                         ShopCardView(
-                            imageURL: URL(string: "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-tw.jpg?w=1080&cbr=1&q=90&fit=max" ?? ""),
+//                            imageURL: URL(string: "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-tw.jpg?w=1080&cbr=1&q=90&fit=max"),
+                            imageURL: URL(string: "https://upload.wikimedia.org/wikipedia/ko/thumb/d/d3/Japan_ramen.JPG/1600px-Japan_ramen.JPG?20090122174202"),
                             title: shop.name,
                             subtitle: shop.roadAddress,
                             link: shop.link ?? "",

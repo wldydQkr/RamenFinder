@@ -96,11 +96,18 @@ struct FavoriteRamenCardView: View {
     @State private var showDeleteConfirmation = false
     @State private var randomImageURL: String
 
+//    private let imageUrls = [
+//        "https://street-h.com/wp-content/uploads/2023/03/hanroro.jpg",
+//        "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-13-scaled.jpg?w=1260&cbr=1&q=90&fit=max",
+//        "https://cdn.tvj.co.kr/news/photo/202406/97022_235737_1710.jpg",
+//        "https://www.halcyonmagazine.kr/bizdemo148322/component/board/board_12/u_image/806/858289651_KakaoTalk_Photo_2024-10-25-10-44-37-1.jpg"
+//    ]
+    
     private let imageUrls = [
-        "https://street-h.com/wp-content/uploads/2023/03/hanroro.jpg",
-        "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-13-scaled.jpg?w=1260&cbr=1&q=90&fit=max",
-        "https://cdn.tvj.co.kr/news/photo/202406/97022_235737_1710.jpg",
-        "https://www.halcyonmagazine.kr/bizdemo148322/component/board/board_12/u_image/806/858289651_KakaoTalk_Photo_2024-10-25-10-44-37-1.jpg"
+        "https://images.pexels.com/photos/1395319/pexels-photo-1395319.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=2",
+        "https://live.staticflickr.com/3858/32483361223_2f69a89a43_b.jpg",
+        "https://live.staticflickr.com/2870/32420535470_788d045029_b.jpg",
+        "https://upload.wikimedia.org/wikipedia/commons/a/a9/돈코츠라멘.jpg"
     ]
 
     init(

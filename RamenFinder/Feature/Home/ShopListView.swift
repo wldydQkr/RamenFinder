@@ -118,7 +118,7 @@ struct ShopRow: View {
 
     var body: some View {
         HStack {
-            AsyncImage(url: URL(string: "https://skullday.com/web/product/big/202407/8dccc59c4bb67529406836c92504b075.jpg")) { image in
+            AsyncImage(url: URL(string: "https://live.staticflickr.com/7001/26816760581_f1efc700a2_b.jpg")) { image in
                 image
                     .resizable()
                     .scaledToFill()
