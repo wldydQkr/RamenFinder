@@ -83,7 +83,7 @@ struct RamenDetailView: View {
 
                     // 맵뷰 섹션
                     ZStack(alignment: .bottomTrailing) {
-                        DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
+                        DetailMapView(region: $region, mapX: mapX, mapY: mapY, name: title, locationManager: locationManager)
                             .frame(height: 300)
 
                         Button(action: {
@@ -150,7 +150,7 @@ struct RamenDetailView: View {
                         }) {
                             Image(systemName: isLiked ? "heart.fill" : "heart")
                                 .font(.title3)
-                                .foregroundColor(.white)
+                                .foregroundColor(isLiked ? .pink : .white)
                                 .padding(10)
                                 .background(Color.black.opacity(0.5))
                                 .clipShape(Circle())

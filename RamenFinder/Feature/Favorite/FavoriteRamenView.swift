@@ -8,21 +8,14 @@
 import SwiftUI
 import CoreData
 
-import SwiftUI
-import CoreData
-
 struct FavoriteRamenView: View {
     @StateObject private var viewModel: FavoriteRamenViewModel
     @ObservedObject var homeViewModel: HomeViewModel
 
-    // MARK: - Initializer
     init(container: NSPersistentContainer, homeViewModel: HomeViewModel) {
         _viewModel = StateObject(wrappedValue: FavoriteRamenViewModel(container: container))
         self.homeViewModel = homeViewModel
     }
-
-    @State private var selectedShop: FavoriteRamen?
-    @State private var isDetailViewActive = false
 
     var body: some View {
         VStack {
@@ -33,7 +26,7 @@ struct FavoriteRamenView: View {
                 .padding(.horizontal)
                 .padding(.top, 20)
 
-            ScrollView {
+            ScrollView(showsIndicators: false) {
                 MasonryVStack(columns: 2, spacing: 16) {
                     ForEach(viewModel.favoriteRamenShops, id: \.self) { shop in
                         FavoriteRamenCardView(
@@ -44,8 +37,7 @@ struct FavoriteRamenView: View {
                             },
                             homeViewModel: homeViewModel,
                             onCardTap: {
-                                selectedShop = shop
-                                isDetailViewActive = true
+                                viewModel.cacheSelectedShopDetails(shop: shop) // 캐싱된 데이터 사용
                             }
                         )
                     }
@@ -54,27 +46,39 @@ struct FavoriteRamenView: View {
                 .padding(.top, 10)
             }
 
-            //MARK: NavigationLink로 DetailView 연결
             NavigationLink(
-                destination: RamenDetailView(
-                    title: selectedShop?.name ?? "",
-                    link: selectedShop?.link,
-                    address: selectedShop?.address ?? "",
-                    roadAddress: selectedShop?.roadAddress ?? "",
-                    mapX: selectedShop?.mapx ?? 0,
-                    mapY: selectedShop?.mapy ?? 0,
-                    viewModel: homeViewModel
-                ),
-                isActive: $isDetailViewActive
+                destination: viewModel.selectedShop.map { shop in
+                    AnyView(
+                        RamenDetailView(
+                            title: shop.name ?? "",
+                            link: shop.link,
+                            address: shop.address ?? "",
+                            roadAddress: shop.roadAddress ?? "",
+                            mapX: shop.mapx,
+                            mapY: shop.mapy,
+                            viewModel: homeViewModel
+                        )
+                    )
+                } ?? AnyView(EmptyView()),
+                isActive: Binding(
+                    get: { viewModel.selectedShop != nil },
+                    set: { isActive in
+                        if !isActive {
+                            viewModel.selectedShop = nil
+                        }
+                    }
+                )
             ) {
                 EmptyView()
             }
+        }
+        .onAppear {
+            viewModel.fetchFavorites() // 데이터 초기화
         }
         .navigationBarHidden(true)
         .edgesIgnoringSafeArea(.bottom)
     }
 
-    // MARK: - Helper Function
     private func calculateCardWidth() -> CGFloat {
         let screenWidth = UIScreen.main.bounds.width
         let totalSpacing: CGFloat = 16 * (2 - 1)
@@ -95,7 +99,8 @@ struct FavoriteRamenCardView: View {
     private let imageUrls = [
         "https://street-h.com/wp-content/uploads/2023/03/hanroro.jpg",
         "https://image-cdn.hypb.st/https%3A%2F%2Fkr.hypebeast.com%2Ffiles%2F2024%2F06%2F11%2Fstreetsnaps-han-roro-13-scaled.jpg?w=1260&cbr=1&q=90&fit=max",
-        "https://cdn.tvj.co.kr/news/photo/202406/97022_235737_1710.jpg"
+        "https://cdn.tvj.co.kr/news/photo/202406/97022_235737_1710.jpg",
+        "https://www.halcyonmagazine.kr/bizdemo148322/component/board/board_12/u_image/806/858289651_KakaoTalk_Photo_2024-10-25-10-44-37-1.jpg"
     ]
 
     init(
@@ -150,7 +155,7 @@ struct FavoriteRamenImageSection: View {
             } placeholder: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.gray.opacity(0.3))
-                    .frame(width: cardWidth - 20, height: (cardWidth - 20) * 1.5) // 비율 유지
+                    .frame(width: cardWidth - 20, height: (cardWidth - 20) * 1.5)
             }
         }
         .buttonStyle(PlainButtonStyle())
@@ -167,12 +172,12 @@ struct FavoriteRamenInfoSection: View {
             // 가게 이름과 주소
             Text(shop.name ?? "Unknown")
                 .font(.headline)
-                .lineLimit(2)
+                .lineLimit(1)
 
             Text(shop.roadAddress ?? "Unknown Address")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
-                .lineLimit(1)
+                .lineLimit(2)
                 .padding(.trailing, 16)
 
             // 삭제 버튼
@@ -193,6 +198,6 @@ struct FavoriteRamenInfoSection: View {
                 }
             }
         }
-        .padding([.vertical], 8)
+        .padding(.top, 8)
     }
 }

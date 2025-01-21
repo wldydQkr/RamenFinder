@@ -10,10 +10,11 @@ import CoreData
 
 class FavoriteRamenViewModel: ObservableObject {
     @Published var favoriteRamenShops: [FavoriteRamen] = []
+    @Published var selectedShop: FavoriteRamen?
+    private var shopCache: [UUID: FavoriteRamen] = [:] // 캐시
 
     private let container: NSPersistentContainer
 
-    // Use Dependency Injection to pass the container
     init(container: NSPersistentContainer) {
         self.container = container
         fetchFavorites()
@@ -23,23 +24,22 @@ class FavoriteRamenViewModel: ObservableObject {
         let request: NSFetchRequest<FavoriteRamen> = FavoriteRamen.fetchRequest()
         do {
             favoriteRamenShops = try container.viewContext.fetch(request)
+            cacheAllShops() // 모든 데이터를 캐싱
         } catch {
             print("Failed to fetch favorites: \(error.localizedDescription)")
         }
     }
 
-    func addFavorite(shop: RamenShop) {
-        let newFavorite = FavoriteRamen(context: container.viewContext)
-        newFavorite.id = UUID()
-        newFavorite.name = shop.name
-        newFavorite.roadAddress = shop.roadAddress
-        newFavorite.address = shop.address
-        newFavorite.link = shop.link
-        newFavorite.mapx = shop.mapx
-        newFavorite.mapy = shop.mapy
+    func cacheAllShops() {
+        for shop in favoriteRamenShops {
+            if let id = shop.id {
+                shopCache[id] = shop
+            }
+        }
+    }
 
-        saveContext()
-        fetchFavorites()
+    func cacheSelectedShopDetails(shop: FavoriteRamen) {
+        selectedShop = shopCache[shop.id ?? UUID()] ?? shop
     }
 
     func removeFavorite(shop: FavoriteRamen) {

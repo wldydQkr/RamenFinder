@@ -9,8 +9,8 @@ import SwiftUI
 
 struct ProfileView: View {
     @StateObject private var viewModel = ProfileViewModel()
-    @State private var isEditingNickname = false // 닉네임 수정 화면 상태
-    @State private var isImagePickerPresented = false // 이미지 선택 화면 상태
+    @State private var isEditingNickname = false
+    @State private var isImagePickerPresented = false
 
     var body: some View {
         NavigationView {
@@ -35,16 +35,16 @@ struct ProfileView: View {
                             .shadow(radius: 10)
                     }
                     
-                    // Name
+                    // 이름
                     Text(viewModel.nickname)
                         .font(.title2)
                         .fontWeight(.bold)
                     
-                    Text("@Allight24")
-                        .font(.subheadline)
-                        .foregroundColor(.gray)
+//                    Text("@Allight24")
+//                        .font(.subheadline)
+//                        .foregroundColor(.gray)
                     
-                    // Edit Profile Button
+                    // 프로필 수정 버튼
                     Button(action: {
                         isEditingNickname = true
                     }) {
