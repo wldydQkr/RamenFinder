@@ -162,7 +162,7 @@ struct FavoriteRamenImageSection: View {
             } placeholder: {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.gray.opacity(0.3))
-                    .frame(width: cardWidth - 20, height: (cardWidth - 20) * 1.5)
+                    .frame(width: cardWidth - 20, height: (cardWidth - 20) * 1.0)
             }
         }
         .buttonStyle(PlainButtonStyle())

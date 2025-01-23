@@ -10,7 +10,7 @@ import SwiftUI
 struct TabBar: View {
     @State private var selectedTab: Tab = .home
     @StateObject private var mapViewModel = MapViewModel()
-    @StateObject private var homeViewModel = HomeViewModel(context: PersistenceController.shared.container.viewContext) // Core Data context 전달
+    @StateObject private var homeViewModel = HomeViewModel(context: PersistenceController.shared.container.viewContext)
     @Environment(\.managedObjectContext) private var viewContext
 
     enum Tab: String, CaseIterable {
@@ -61,7 +61,7 @@ struct TabBar: View {
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
             )
         }
-        .edgesIgnoringSafeArea(.bottom) // 하단 안전 영역 제거
+        .edgesIgnoringSafeArea(.bottom)
         .onAppear {
             mapViewModel.requestInitialLocation()
         }

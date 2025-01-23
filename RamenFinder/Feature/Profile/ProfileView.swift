@@ -15,6 +15,13 @@ struct ProfileView: View {
     var body: some View {
         NavigationView {
             VStack {
+                Text("프로필 설정")
+                    .font(.largeTitle)
+                    .fontWeight(.bold)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal)
+                    .padding(.top, 20)
+                
                 //MARK: Header Section
                 VStack(spacing: 10) {
                     if let profileImage = viewModel.profileImage {
@@ -67,20 +74,21 @@ struct ProfileView: View {
                 //MARK: List Section
                 List {
                     Section {
-                        ProfileRow(icon: "heart", title: "Favourites")
-                        ProfileRow(icon: "globe", title: "Language")
-                        ProfileRow(icon: "location", title: "Location")
-                        ProfileRow(icon: "mail", title: "E-Mail")
+                        ProfileRow(icon: "heart", title: "찜한 매장")
+                        ProfileRow(icon: "globe", title: "언어")
+                        ProfileRow(icon: "location", title: "위치설정")
+                        ProfileRow(icon: "mail", title: "피드백")
+                        ProfileRow(icon: "gear", title: "앱 정보")
                     }
                     
-                    Section {
-                        ProfileRow(icon: "rectangle.portrait.and.arrow.right", title: "Log Out")
-                            .foregroundColor(.red)
-                    }
+//                    Section {
+//                        ProfileRow(icon: "rectangle.portrait.and.arrow.right", title: "Log Out")
+//                            .foregroundColor(.red)
+//                    }
                 }
                 .listStyle(PlainListStyle())
             }
-            .navigationBarTitle("My Profile", displayMode: .inline)
+//            .navigationBarTitle("My Profile", displayMode: .inline)
             .sheet(isPresented: $isImagePickerPresented) {
                 ImagePicker(selectedImage: Binding(
                     get: { viewModel.profileImage },
