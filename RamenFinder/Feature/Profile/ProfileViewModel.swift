@@ -10,7 +10,7 @@ import UIKit
 
 final class ProfileViewModel: ObservableObject {
     @Published var nickname: String = ""
-    @Published var profileImage: UIImage? = nil // 프로필 이미지를 저장할 프로퍼티
+    @Published var profileImage: UIImage? = nil
 
     init() {
         loadProfile()
