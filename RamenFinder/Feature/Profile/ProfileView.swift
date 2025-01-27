@@ -75,7 +75,9 @@ struct ProfileView: View {
                 List {
                     Section {
                         ProfileRow(icon: "heart", title: "찜한 매장")
-                        ProfileRow(icon: "globe", title: "언어")
+                        NavigationLink(destination: RamenRecommendationView()) {
+                            ProfileRow(icon: "hand.thumbsup", title: "라멘 추천 받기")
+                        }
                         ProfileRow(icon: "location", title: "위치설정")
                         ProfileRow(icon: "mail", title: "피드백")
                         ProfileRow(icon: "gear", title: "앱 정보")
@@ -115,8 +117,8 @@ struct ProfileRow: View {
             Text(title)
                 .font(.body)
             Spacer()
-            Image(systemName: "chevron.right")
-                .foregroundColor(.gray)
+//            Image(systemName: "chevron.right")
+//                .foregroundColor(.gray)
         }
         .padding(.vertical, 8)
     }

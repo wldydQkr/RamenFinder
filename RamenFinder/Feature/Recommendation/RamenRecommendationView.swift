@@ -16,11 +16,12 @@ struct RamenRecommendationView: View {
             VStack(spacing: 20) {
                 Text("라멘 추천")
                     .font(.largeTitle)
+                    .frame(alignment: .leading)
                     .bold()
 
                 // 맛 선택
                 VStack {
-                    Text("맛을 선택하세요:")
+                    Text("맛을 선택하세요")
                     HStack {
                         ForEach(["짠맛", "단맛", "신맛", "매운맛"], id: \.self) { flavor in
                             Button(action: {
@@ -30,8 +31,8 @@ struct RamenRecommendationView: View {
                                     .font(.headline)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(viewModel.selectedFlavor == flavor ? Color.blue : Color.gray.opacity(0.3))
-                                    .foregroundColor(.white)
+                                    .background(viewModel.selectedFlavor == flavor ? CustomColor.secondary : Color.gray.opacity(0.3))
+                                    .foregroundColor(CustomColor.text)
                                     .cornerRadius(10)
                             }
                         }
@@ -40,7 +41,7 @@ struct RamenRecommendationView: View {
 
                 // 국물 선택
                 VStack {
-                    Text("국물을 선택하세요:")
+                    Text("국물을 선택하세요")
                     HStack {
                         ForEach(["진함", "연함", "맑음"], id: \.self) { base in
                             Button(action: {
@@ -50,8 +51,8 @@ struct RamenRecommendationView: View {
                                     .font(.headline)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(viewModel.selectedBase == base ? Color.blue : Color.gray.opacity(0.3))
-                                    .foregroundColor(.white)
+                                    .background(viewModel.selectedBase == base ? CustomColor.secondary : Color.gray.opacity(0.3))
+                                    .foregroundColor(CustomColor.text)
                                     .cornerRadius(10)
                             }
                         }
@@ -60,7 +61,7 @@ struct RamenRecommendationView: View {
 
                 // 재료 선택
                 VStack {
-                    Text("재료를 선택하세요:")
+                    Text("재료를 선택하세요")
                     HStack {
                         ForEach(["차슈", "숙주", "김", "달걀"], id: \.self) { ingredient in
                             Button(action: {
@@ -70,13 +71,15 @@ struct RamenRecommendationView: View {
                                     .font(.headline)
                                     .padding()
                                     .frame(maxWidth: .infinity)
-                                    .background(viewModel.selectedIngredient == ingredient ? Color.blue : Color.gray.opacity(0.3))
-                                    .foregroundColor(.white)
+                                    .background(viewModel.selectedIngredient == ingredient ? CustomColor.secondary : Color.gray.opacity(0.3))
+                                    .foregroundColor(CustomColor.text)
                                     .cornerRadius(10)
                             }
                         }
                     }
                 }
+                
+                Spacer()
 
                 // 추천 버튼
                 NavigationLink(
@@ -99,7 +102,7 @@ struct RamenRecommendationView: View {
                             .font(.headline)
                             .foregroundColor(.white)
                             .padding()
-                            .background(viewModel.isSelectionComplete ? Color.blue : Color.gray)
+                            .background(viewModel.isSelectionComplete ? CustomColor.primary : Color.gray)
                             .cornerRadius(10)
                     }
                     .disabled(!viewModel.isSelectionComplete)
@@ -108,7 +111,6 @@ struct RamenRecommendationView: View {
                 Spacer()
             }
             .padding()
-            .navigationTitle("라멘 추천")
         }
     }
 }

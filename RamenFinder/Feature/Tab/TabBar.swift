@@ -31,7 +31,7 @@ struct TabBar: View {
                 case .favorites:
                     FavoriteRamenView(container: PersistenceController.shared.container, homeViewModel: homeViewModel)
                 case .profile:
-                    RamenRecommendationView()
+                    ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
