@@ -62,6 +62,5 @@ RamenFinder는 서울에 있는 라멘 매장 정보를 제공하는 iOS 애플�
    git clone https://github.com/wldydQkr/RamenFinder.git
    ```
 2. 프로젝트를 Xcode에서 엽니다.
-3. 필요한 의존성을 설치합니다:
-   - API Key 설정 필요 (Naver Search API).
+3. 필요한 의존성을 설치합니다.
 4. iOS 시뮬레이터 또는 실제 기기에서 실행합니다.
