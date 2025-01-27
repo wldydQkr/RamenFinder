@@ -7,7 +7,6 @@
 
 import SwiftUI
 import CoreLocation
-import Combine
 import MapKit
 
 struct NaverAPIResponse: Decodable {
@@ -17,9 +16,8 @@ struct NaverAPIResponse: Decodable {
 @MainActor
 final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate {
     @Published var userLocation: CLLocationCoordinate2D? // 사용자 위치 저장
-    @Published var ramenShops: [NearbyRamenShop] = [] // 파싱된 매장 데이터
     @Published var region: MKCoordinateRegion? // 맵뷰의 현재 중심 위치
-    @Published var annotationItems: [IdentifiableCoordinate] = [] // 맵 마커 리스트
+    @Published var annotationItems: [RamenIdentifiableCoordinate] = [] // 맵 마커 리스트
     @Published var showLocationError: Bool = false // 위치 권한 에러 플래그
 
     private let locationManager = CLLocationManager()
@@ -39,55 +37,49 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         guard let location = locations.last else { return }
         let coordinate = location.coordinate
         
-        if let location = locations.first {
-            DispatchQueue.main.async {
-                self.userLocation = location.coordinate
-                self.region = MKCoordinateRegion(
-                    center: location.coordinate,
-                    span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-                )
-            }
+        DispatchQueue.main.async {
+            self.userLocation = coordinate
+            self.region = MKCoordinateRegion(
+                center: coordinate,
+                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            )
+            print("위도:\(coordinate.latitude), 경도:\(coordinate.longitude)")
         }
 
-        // 현재 사용자 위치를 기준으로 맵 중앙 설정
-        region = MKCoordinateRegion(
-            center: coordinate,
-            span: MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
-        )
-        print(coordinate.latitude, coordinate.longitude)
-        // 주변 라멘 매장 데이터 가져오기
+        // 현재 사용자 위치를 기준으로 매장 데이터 검색
         fetchNearbyRamenShops(lat: coordinate.latitude, lon: coordinate.longitude)
     }
 
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         print("Failed to fetch user location: \(error.localizedDescription)")
+        DispatchQueue.main.async {
+            self.showLocationError = true
+        }
     }
 
-    /// 네이버 API로 라멘 매장 데이터 가져오기
     func fetchNearbyRamenShops(lat: Double, lon: Double) {
-        // 네이버 API 요청 URL 생성
         let baseURL = "https://openapi.naver.com/v1/search/local.json"
-        let query = "장안동 라멘"
-//        let urlString = "\(baseURL)?query=\(query)&display=5&coordinate=\(lon),\(lat)"
-        let urlString = "\(baseURL)?query=\(query)&display=5"
-        guard let url = URL(string: urlString) else {
-            print("Invalid URL.")
+        guard var components = URLComponents(string: baseURL) else {
+            print("Invalid URL components.")
             return
         }
         
-        var components = URLComponents(string: baseURL)!
         components.queryItems = [
-            URLQueryItem(name: "query", value: "라멘"),
-            URLQueryItem(name: "display", value: "10"), // 결과 갯수
-            URLQueryItem(name: "sort", value: "random"), // 정렬 방식
-//            URLQueryItem(name: "coordinate", value: "\(longitude),\(latitude)") // 경도,위도
+            URLQueryItem(name: "query", value: "합정 라멘"),
+            URLQueryItem(name: "display", value: "5"),
+            URLQueryItem(name: "coordinate", value: "\(lon),\(lat)")
         ]
 
-        var request = URLRequest(url: components.url!)
-        request.addValue("NZmzvNuQwqMF1dFh9YmL", forHTTPHeaderField: "X-Naver-Client-Id")
-        request.addValue("UL5R8sDcrz", forHTTPHeaderField: "X-Naver-Client-Secret")
+        guard let url = components.url else {
+            print("Invalid URL.")
+            return
+        }
 
-        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+        var request = URLRequest(url: url)
+        request.addValue(NaverAPIKey.clientId, forHTTPHeaderField: "X-Naver-Client-Id")
+        request.addValue(NaverAPIKey.clientSecret, forHTTPHeaderField: "X-Naver-Client-Secret")
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, _, error in
             if let error = error {
                 print("Error fetching ramen shops: \(error.localizedDescription)")
                 return
@@ -101,12 +93,11 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
             do {
                 let decoder = JSONDecoder()
                 let response = try decoder.decode(NaverAPIResponse.self, from: data)
-                print("Fetched shops: \(response.items.count)")
-                
+                print("Fetched shops: \(response.items.count)") // 확인 로그
+
                 // 메인 스레드에서 데이터 업데이트
                 DispatchQueue.main.async {
-                    self?.ramenShops = response.items
-                    self?.updateAnnotations()
+                    self?.updateAnnotations(from: response.items)
                 }
             } catch {
                 print("Failed to decode JSON: \(error.localizedDescription)")
@@ -114,24 +105,37 @@ final class MapViewModel: NSObject, ObservableObject, CLLocationManagerDelegate 
         }.resume()
     }
 
-    /// 매장 데이터를 기반으로 마커 업데이트
-    func updateAnnotations() {
-        annotationItems = ramenShops.compactMap { shop in
-            guard shop.mapx != 0, shop.mapy != 0 else {
-                print("Invalid coordinate for shop: \(shop.name)")
-                return nil
-            }
-            return IdentifiableCoordinate(
-                coordinate: CLLocationCoordinate2D(latitude: shop.mapy, longitude: shop.mapx),
-                tint: .red
+    func updateAnnotations(from shops: [NearbyRamenShop]) {
+        annotationItems = shops.compactMap { shop in
+            // 좌표값이 한 자리씩 밀려 있는 경우 보정
+            let correctedX = shop.mapx / 10.0
+            let correctedY = shop.mapy / 10.0
+            
+            print("Converting \(shop.name):")
+            print("  Original - x: \(shop.mapx), y: \(shop.mapy)")
+            print("  Corrected - x: \(correctedX), y: \(correctedY)")
+
+            // 보정된 좌표를 그대로 사용하여 마커 생성
+            return RamenIdentifiableCoordinate(
+                coordinate: CLLocationCoordinate2D(latitude: correctedY, longitude: correctedX),
+                tint: .red,
+                name: shop.name
             )
         }
         print("Updated annotations: \(annotationItems.count) items.")
     }
-}
 
-struct IdentifiableCoordinate: Identifiable {
-    let id = UUID()
-    let coordinate: CLLocationCoordinate2D
-    let tint: Color
+    func centerToUserLocation() {
+        guard let userLocation = userLocation else {
+            print("사용자 위치를 가져올 수 없습니다.")
+            return
+        }
+
+        DispatchQueue.main.async {
+            self.region = MKCoordinateRegion(
+                center: userLocation,
+                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
+            )
+        }
+    }
 }

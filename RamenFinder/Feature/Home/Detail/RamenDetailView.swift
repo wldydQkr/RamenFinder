@@ -18,58 +18,76 @@ struct RamenDetailView: View {
 
     @StateObject private var locationManager = LocationManager()
     @Environment(\.dismiss) var dismiss
+    @ObservedObject var viewModel: HomeViewModel
 
+    @State private var isLiked: Bool = false // 좋아요 상태
     @State private var region: MKCoordinateRegion
 
-    init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double) {
+    init(title: String, link: String?, address: String, roadAddress: String, mapX: Double, mapY: Double, viewModel: HomeViewModel) {
         self.title = title
         self.link = link
         self.address = address
         self.roadAddress = roadAddress
         self.mapX = mapX
         self.mapY = mapY
-        // 초기 위치를 매장 좌표로 설정
+        self.viewModel = viewModel
         _region = State(initialValue: MKCoordinateRegion(
             center: CLLocationCoordinate2D(latitude: mapY, longitude: mapX),
             span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         ))
+        
+        self._isLiked = State(initialValue: viewModel.isFavorite(title: title, roadAddress: roadAddress))
     }
 
     var body: some View {
-        topBar
-        ScrollView {
-            VStack(spacing: 20) {
-                // 상단 이미지 섹션
-                ZStack(alignment: .topLeading) {
+        ZStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // 이미지 섹션
                     AsyncImage(
-                        url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
+//                        url: URL(string: "https://img1.newsis.com/2022/10/13/NISI20221013_0001105256_web.jpg")
+                        url: URL(string: "https://upload.wikimedia.org/wikipedia/commons/f/fc/Soy_ramen.jpg")
                     ) { image in
                         image
                             .resizable()
                             .scaledToFill()
-                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 화면 너비에서 양옆 12씩 뺀 크기
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
                             .clipped()
-                            .cornerRadius(10)
+                            .cornerRadius(4)
                     } placeholder: {
                         ProgressView()
-                            .frame(width: UIScreen.main.bounds.width - 12, height: 300) // 동일한 크기
+                            .frame(width: UIScreen.main.bounds.width, height: 300)
                     }
-                }
-                .padding(.horizontal, 12)
-                
-                // 텍스트 섹션
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+
+                    // 텍스트 섹션
+                    VStack(alignment: .leading, spacing: 8) {
                         Text(title)
                             .font(.title)
                             .fontWeight(.bold)
                             .lineLimit(2)
-                            .multilineTextAlignment(.leading)
 
-                        Spacer()
+                        Text(roadAddress)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        Text(address)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+
+                        if let validLink = link, !validLink.isEmpty {
+                            Link("홈페이지 방문하기", destination: URL(string: validLink)!)
+                                .font(.subheadline)
+                                .foregroundColor(.blue)
+                        }
+                    }
+                    .padding(.horizontal)
+
+                    // 맵뷰 섹션
+                    ZStack(alignment: .bottomTrailing) {
+                        DetailMapView(region: $region, mapX: mapX, mapY: mapY, name: title, locationManager: locationManager)
+                            .frame(height: 300)
 
                         Button(action: {
-                            // 사용자 위치 버튼을 눌렀을 때만 맵 업데이트
                             if let userLocation = locationManager.userLocation {
                                 region = MKCoordinateRegion(
                                     center: userLocation,
@@ -78,116 +96,84 @@ struct RamenDetailView: View {
                             }
                         }) {
                             Image(systemName: "location.fill")
-                                .foregroundColor(.blue)
+                                .font(.title3)
+                                .foregroundColor(CustomColor.primary)
+                                .padding(10)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
                         }
-                        .padding(.trailing, 8)
+                        .padding(.bottom, 10)
+                        .padding(.trailing, 20)
                     }
 
-                    Text(roadAddress)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(1)
-
-                    Text(address)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                        .lineLimit(2)
-                    
-                    if let validLink = link, !validLink.isEmpty {
-                        Link("홈페이지 방문하기", destination: URL(string: validLink)!)
-                            .font(.subheadline)
-                            .foregroundColor(.blue)
-                    }
+                    Spacer()
                 }
-                .padding(.horizontal)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                
-                // 맵뷰 섹션
-                DetailMapView(region: $region, mapX: mapX, mapY: mapY, locationManager: locationManager)
             }
-            .padding(.bottom, 20)
-            .frame(maxWidth: .infinity)
-        }
-        .background(Color.white)
-        .navigationBarBackButtonHidden(true)
-    }
-    
-    private var topBar: some View {
-        ZStack {
-            HStack {
-                Button(action: {
-                    dismiss()
-                }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundColor(CustomColor.text)
-                        .font(.title3)
+
+            VStack {
+                HStack {
+                    Button(action: {
+                        dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .font(.title3)
+                            .foregroundColor(.white)
+                            .padding(10)
+                            .background(Color.black.opacity(0.5))
+                            .clipShape(Circle())
+                    }
+                    Spacer()
+
+                    HStack(spacing: 16) {
+                        Button(action: {
+                            // 공유 액션
+                        }) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.title3)
+                                .foregroundColor(.white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+
+                        Button(action: {
+                            // 좋아요 상태 토글 및 업데이트
+                            viewModel.toggleFavorite(
+                                title: title,
+                                address: address,
+                                roadAddress: roadAddress,
+                                link: link ?? "",
+                                mapX: mapX,
+                                mapY: mapY
+                            )
+                            isLiked.toggle() // 상태 변경
+                        }) {
+                            Image(systemName: isLiked ? "heart.fill" : "heart")
+                                .font(.title3)
+                                .foregroundColor(isLiked ? .pink : .white)
+                                .padding(10)
+                                .background(Color.black.opacity(0.5))
+                                .clipShape(Circle())
+                        }
+                    }
                 }
-                .padding(.leading)
+                .padding(.horizontal, 16)
+                .padding(.top, 50)
 
                 Spacer()
             }
-
-            Text(title)
-                .font(.title2)
-                .fontWeight(.semibold)
-                .foregroundColor(CustomColor.text)
         }
-        .frame(height: 60)
-        .background(Color.white)
-        .overlay(
-            Divider(), alignment: .bottom
-        )
-    }
-}
-
-struct DetailMapView: View {
-    @Binding var region: MKCoordinateRegion
-    let mapX: Double
-    let mapY: Double
-    @ObservedObject var locationManager: LocationManager
-
-    struct IdentifiableCoordinate: Identifiable {
-        let id = UUID()
-        let coordinate: CLLocationCoordinate2D
-        let tint: Color
-    }
-
-    var body: some View {
-        // 라멘 위치 마커
-        let shopCoordinate = CLLocationCoordinate2D(latitude: mapY, longitude: mapX)
-        let annotationItems = [
-            IdentifiableCoordinate(coordinate: shopCoordinate, tint: .red) // 가게 위치 마커
-        ]
-
-        return Map(
-            coordinateRegion: $region,
-            showsUserLocation: true, // 사용자 위치를 동그라미로 표시
-            annotationItems: annotationItems
-        ) { item in
-            // 가게 위치 마커를 표시
-            MapMarker(coordinate: item.coordinate, tint: item.tint)
+        .edgesIgnoringSafeArea(.top)
+        .navigationBarHidden(true)
+        .onAppear {
+            // 뷰가 나타날 때 좋아요 상태 동기화
+            syncLikeStatus()
         }
-        .frame(height: 300)
-        .cornerRadius(10)
-        .padding(.horizontal)
     }
-}
 
-#Preview {
-    RamenDetailView(
-        title: "무메노",
-        link: "https://naver.com",
-        address: "서울특별시 마포구 연남동",
-        roadAddress: "연남동",
-        mapX: 126.923739,
-        mapY: 37.561632
-    )
-}
-
-extension String {
-    /// 문자열을 Double로 변환하고, 1e7로 나눈 좌표값으로 반환합니다.
-    func toCoordinateDouble() -> Double? {
-        guard let doubleValue = Double(self) else { return nil }
-        return doubleValue / 1_0000000.0
+    // MARK: - 좋아요 상태 동기화 메서드
+    private func syncLikeStatus() {
+        isLiked = viewModel.isFavorite(title: title, roadAddress: roadAddress)
     }
 }

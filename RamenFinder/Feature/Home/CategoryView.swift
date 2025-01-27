@@ -15,11 +15,11 @@ struct CategoryView: View {
     var body: some View {
         Button(action: action) {
             HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .font(.title3)
-                    .foregroundColor(.white)
-                    .frame(height: 15)
-                    .fixedSize(horizontal: true, vertical: false)
+//                Image(systemName: icon)
+//                    .font(.title3)
+//                    .foregroundColor(.white)
+//                    .frame(height: 15)
+//                    .fixedSize(horizontal: true, vertical: false)
 
                 Text(title)
                     .font(.body)

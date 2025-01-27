@@ -6,27 +6,18 @@
 //
 
 import SwiftUI
-import CoreLocation
 
 struct TabBar: View {
     @State private var selectedTab: Tab = .home
     @StateObject private var mapViewModel = MapViewModel()
-    @Environment(\.managedObjectContext) private var viewContext // Core Data context
+    @StateObject private var homeViewModel = HomeViewModel(context: PersistenceController.shared.container.viewContext)
+    @Environment(\.managedObjectContext) private var viewContext
 
     enum Tab: String, CaseIterable {
-        case home = "Home"
-        case map = "Map"
-        case favorites = "Favorites"
-        case profile = "Profile"
-
-        var icon: String {
-            switch self {
-            case .home: return "house.fill"
-            case .map: return "map.fill"
-            case .favorites: return "heart.fill"
-            case .profile: return "person.fill"
-            }
-        }
+        case home = "house.fill"
+        case map = "map.fill"
+        case favorites = "heart.fill"
+        case profile = "person.fill"
     }
 
     var body: some View {
@@ -34,18 +25,18 @@ struct TabBar: View {
             ZStack {
                 switch selectedTab {
                 case .home:
-                    HomeView(context: viewContext) // 전달된 context 사용
+                    HomeView(context: viewContext)
                 case .map:
                     MapView()
                 case .favorites:
-                    FavoriteRamenView(container: PersistenceController.shared.container)
+                    FavoriteRamenView(container: PersistenceController.shared.container, homeViewModel: homeViewModel)
                 case .profile:
-                    HomeView(context: viewContext) // 동일하게 context 전달
+                    ProfileView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            // Tab Bar
+            // MARK: Tab Bar
             HStack {
                 ForEach(Tab.allCases, id: \.self) { tab in
                     Button(action: {
@@ -53,26 +44,25 @@ struct TabBar: View {
                             selectedTab = tab
                         }
                     }) {
-                        VStack {
-                            Image(systemName: tab.icon)
-                                .font(.system(size: 22))
-                                .foregroundColor(selectedTab == tab ? CustomColor.primary : Color.gray)
-                            if selectedTab == tab {
-                                Text(tab.rawValue)
-                                    .font(.footnote)
-                                    .foregroundColor(CustomColor.primary)
-                            }
+                        VStack(spacing: 0) {
+                            Image(systemName: tab.rawValue)
+                                .font(.system(size: 24))
+                                .foregroundColor(selectedTab == tab ? CustomColor.primary : .gray)
+                                .padding(.top, -8)
                         }
-                        .padding(.vertical, 10)
-                        .frame(maxWidth: 80)
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }
-            .padding(.horizontal, 16)
-            .padding(.vertical, 4)
+            .frame(height: 80)
+            .background(
+                RoundedRectangle(cornerRadius: 15)
+                    .fill(.white)
+                    .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: -2)
+            )
         }
+        .edgesIgnoringSafeArea(.bottom)
         .onAppear {
-            // 라멘 매장 데이터를 요청
             mapViewModel.requestInitialLocation()
         }
     }

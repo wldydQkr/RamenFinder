@@ -9,47 +9,41 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    @StateObject private var mapViewModel = MapViewModel()
     @State private var region: MKCoordinateRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472), // 임시 초기 값
+        center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
         span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
     )
-    @StateObject private var locationManager = LocationManager() // 사용자 위치 관리
 
-    let ramenShops: [RamenIdentifiableCoordinate] = [
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5628, longitude: 127.0635),
-            tint: .red
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5612, longitude: 127.0652),
-            tint: .red
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5605, longitude: 127.0667),
-            tint: .red
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5630, longitude: 127.0620),
-            tint: .red
-        ),
-        RamenIdentifiableCoordinate(
-            coordinate: CLLocationCoordinate2D(latitude: 37.5625, longitude: 127.0640),
-            tint: .red
+    @State private var equatableRegion = EquatableMKCoordinateRegion(
+        region: MKCoordinateRegion(
+            center: CLLocationCoordinate2D(latitude: 37.561632, longitude: 127.06472),
+            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
         )
-    ]
-
+    )
+    
     var body: some View {
         ZStack {
-            // Map 뷰
             Map(
                 coordinateRegion: $region,
                 showsUserLocation: true,
-                annotationItems: ramenShops
+                annotationItems: mapViewModel.annotationItems
             ) { item in
                 MapAnnotation(coordinate: item.coordinate) {
-                    Circle()
-                        .fill(item.tint)
-                        .frame(width: 10, height: 10)
+                    VStack {
+                        Text(item.name)
+                            .font(.caption)
+                            .padding(4)
+                            .background(Color.white)
+                            .cornerRadius(8)
+                            .shadow(radius: 4)
+
+                        Image(systemName: "fork.knife.circle.fill")
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                            .foregroundColor(item.tint)
+                            .shadow(radius: 4)
+                    }
                 }
             }
             .edgesIgnoringSafeArea(.all)
@@ -58,26 +52,31 @@ struct MapView: View {
                 Spacer()
                 HStack {
                     Spacer()
-                    // 내 위치로 돌아가는 버튼
                     Button(action: {
-                        moveToUserLocation()
+                        mapViewModel.centerToUserLocation()
+                        if let updatedRegion = mapViewModel.region {
+                            region = updatedRegion
+                        }
                     }) {
                         Image(systemName: "location.fill")
-                            .font(.system(size: 24))
+                            .font(.title3)
                             .padding()
                             .background(Color.white)
+                            .foregroundStyle(CustomColor.primary)
                             .clipShape(Circle())
                             .shadow(radius: 4)
                     }
-                    .padding(.trailing, 10)
+                    .padding([.bottom, .trailing], 12)
                 }
             }
         }
         .onAppear {
-            locationManager.requestUserLocation()
-            updateInitialRegion()
+            mapViewModel.requestInitialLocation()
         }
-        .alert(isPresented: .constant(locationManager.isAuthorizationDenied)) {
+        .onChange(of: equatableRegion) { newRegion in
+            region = newRegion.region
+        }
+        .alert(isPresented: $mapViewModel.showLocationError) {
             Alert(
                 title: Text("위치 권한이 필요합니다."),
                 message: Text("앱 설정에서 위치 접근 권한을 허용해주세요."),
@@ -85,33 +84,35 @@ struct MapView: View {
             )
         }
     }
-
-    // 초기 사용자 위치로 지도 중심 업데이트
-    private func updateInitialRegion() {
-        if let userLocation = locationManager.userLocation {
-            region = MKCoordinateRegion(
-                center: userLocation,
-                span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-            )
-        }
-    }
-
-    // 사용자 위치로 이동
-    private func moveToUserLocation() {
-        guard let userLocation = locationManager.userLocation else {
-            print("사용자 위치를 가져올 수 없습니다.")
-            return
-        }
-        region = MKCoordinateRegion(
-            center: userLocation,
-            span: MKCoordinateSpan(latitudeDelta: 0.01, longitudeDelta: 0.01)
-        )
-    }
 }
 
-// 마커 식별을 위한 IdentifiableCoordinate
+// 마커 식별을 위한 RamenIdentifiableCoordinate
 struct RamenIdentifiableCoordinate: Identifiable {
     let id = UUID()
     let coordinate: CLLocationCoordinate2D
     let tint: Color
+    let name: String
+
+    init(coordinate: CLLocationCoordinate2D, tint: Color, name: String) {
+        self.coordinate = coordinate
+        self.tint = tint
+        self.name = name
+        
+        // 경도 값 확인 로그
+        print("Creating RamenIdentifiableCoordinate:")
+        print("  Name: \(name)")
+        print("  Latitude: \(coordinate.latitude)")
+        print("  Longitude: \(coordinate.longitude)")
+    }
+}
+
+struct EquatableMKCoordinateRegion: Equatable {
+    var region: MKCoordinateRegion
+
+    static func == (lhs: EquatableMKCoordinateRegion, rhs: EquatableMKCoordinateRegion) -> Bool {
+        lhs.region.center.latitude == rhs.region.center.latitude &&
+        lhs.region.center.longitude == rhs.region.center.longitude &&
+        lhs.region.span.latitudeDelta == rhs.region.span.latitudeDelta &&
+        lhs.region.span.longitudeDelta == rhs.region.span.longitudeDelta
+    }
 }
