@@ -11,11 +11,11 @@ import CoreData
 struct LaunchScreenView: View {
     var body: some View {
         ZStack {
-            Color.white // 배경색 (변경 가능)
+            Color.white
                 .ignoresSafeArea()
 
             VStack {
-                Image("ramen") // 런치 스크린 로고
+                Image("ramen")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 100, height: 100)
