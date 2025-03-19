@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		C0D0919B2D49114200611E77 /* CustomMapAnnotation.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091592D49114200611E77 /* CustomMapAnnotation.swift */; };
 		C0D0919C2D49114200611E77 /* MasonryVStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D0915A2D49114200611E77 /* MasonryVStack.swift */; };
 		C0D0919D2D49114200611E77 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D0915C2D49114200611E77 /* PersistenceController.swift */; };
 		C0D0919E2D49114200611E77 /* RamenFinderModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = C0D0915D2D49114200611E77 /* RamenFinderModel.xcdatamodeld */; };
@@ -52,13 +51,16 @@
 		C0D091C52D49114200611E77 /* RamenFinderApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091982D49114200611E77 /* RamenFinderApp.swift */; };
 		C0D091C62D49114200611E77 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0D091572D49114200611E77 /* Assets.xcassets */; };
 		C0D091C72D49114200611E77 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C0D091932D49114200611E77 /* Preview Assets.xcassets */; };
-		C0D091C82D49114200611E77 /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C0D091962D49114200611E77 /* Info.plist */; };
+		C0D091CB2D4B939300611E77 /* ImagePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091CA2D4B938B00611E77 /* ImagePicker.swift */; };
+		C0D091CE2D4B93DB00611E77 /* RamenIdentifiableCoordinate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091CD2D4B93DA00611E77 /* RamenIdentifiableCoordinate.swift */; };
+		C0D091D02D4B941D00611E77 /* EquatableMKCoordinateRegion.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091CF2D4B941600611E77 /* EquatableMKCoordinateRegion.swift */; };
+		C0D091D22D4B947B00611E77 /* OnboardingPageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091D12D4B947600611E77 /* OnboardingPageView.swift */; };
+		C0D091D42D4B949E00611E77 /* OnboardingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0D091D32D4B949800611E77 /* OnboardingViewModel.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		C091004A2D046F8D006394C4 /* RamenFinder.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RamenFinder.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C0D091572D49114200611E77 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C0D091592D49114200611E77 /* CustomMapAnnotation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomMapAnnotation.swift; sourceTree = "<group>"; };
 		C0D0915A2D49114200611E77 /* MasonryVStack.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasonryVStack.swift; sourceTree = "<group>"; };
 		C0D0915C2D49114200611E77 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
 		C0D0915F2D49114200611E77 /* CustomColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomColor.swift; sourceTree = "<group>"; };
@@ -99,10 +101,14 @@
 		C0D091902D49114200611E77 /* RegionalCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegionalCategory.swift; sourceTree = "<group>"; };
 		C0D091912D49114200611E77 /* ShopItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopItem.swift; sourceTree = "<group>"; };
 		C0D091932D49114200611E77 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		C0D091962D49114200611E77 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C0D091972D49114200611E77 /* NaverAPIKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NaverAPIKey.swift; sourceTree = "<group>"; };
 		C0D091982D49114200611E77 /* RamenFinderApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RamenFinderApp.swift; sourceTree = "<group>"; };
 		C0D0919A2D49114200611E77 /* RamenFinderModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = RamenFinderModel.xcdatamodel; sourceTree = "<group>"; };
+		C0D091CA2D4B938B00611E77 /* ImagePicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImagePicker.swift; sourceTree = "<group>"; };
+		C0D091CD2D4B93DA00611E77 /* RamenIdentifiableCoordinate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RamenIdentifiableCoordinate.swift; sourceTree = "<group>"; };
+		C0D091CF2D4B941600611E77 /* EquatableMKCoordinateRegion.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquatableMKCoordinateRegion.swift; sourceTree = "<group>"; };
+		C0D091D12D4B947600611E77 /* OnboardingPageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingPageView.swift; sourceTree = "<group>"; };
+		C0D091D32D4B949800611E77 /* OnboardingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -143,8 +149,9 @@
 		C0D0915B2D49114200611E77 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				C0D091592D49114200611E77 /* CustomMapAnnotation.swift */,
-				C0D0915A2D49114200611E77 /* MasonryVStack.swift */,
+				C0D091D52D4B959800611E77 /* Layout */,
+				C0D091CA2D4B938B00611E77 /* ImagePicker.swift */,
+				C0D091972D49114200611E77 /* NaverAPIKey.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -198,12 +205,12 @@
 			children = (
 				C0D091672D49114200611E77 /* Detail */,
 				C0D0916A2D49114200611E77 /* Search */,
-				C0D0916B2D49114200611E77 /* CategoryView.swift */,
 				C0D0916C2D49114200611E77 /* HomeView.swift */,
 				C0D0916D2D49114200611E77 /* HomeViewModel.swift */,
 				C0D0916E2D49114200611E77 /* LocalShopCardView.swift */,
 				C0D0916F2D49114200611E77 /* ShopCardView.swift */,
 				C0D091702D49114200611E77 /* ShopListView.swift */,
+				C0D0916B2D49114200611E77 /* CategoryView.swift */,
 			);
 			path = Home;
 			sourceTree = "<group>";
@@ -229,6 +236,8 @@
 		C0D091792D49114200611E77 /* Onboarding */ = {
 			isa = PBXGroup;
 			children = (
+				C0D091D32D4B949800611E77 /* OnboardingViewModel.swift */,
+				C0D091D12D4B947600611E77 /* OnboardingPageView.swift */,
 				C0D091782D49114200611E77 /* OnboardingView.swift */,
 			);
 			path = Onboarding;
@@ -265,14 +274,14 @@
 		C0D091842D49114200611E77 /* Feature */ = {
 			isa = PBXGroup;
 			children = (
-				C0D091642D49114200611E77 /* Favorite */,
-				C0D091712D49114200611E77 /* Home */,
-				C0D091742D49114200611E77 /* Login */,
-				C0D091772D49114200611E77 /* Map */,
+				C0D091832D49114200611E77 /* Tab */,
 				C0D091792D49114200611E77 /* Onboarding */,
+				C0D091742D49114200611E77 /* Login */,
+				C0D091712D49114200611E77 /* Home */,
+				C0D091772D49114200611E77 /* Map */,
+				C0D091642D49114200611E77 /* Favorite */,
 				C0D0917D2D49114200611E77 /* Profile */,
 				C0D091812D49114200611E77 /* Recommendation */,
-				C0D091832D49114200611E77 /* Tab */,
 			);
 			path = Feature;
 			sourceTree = "<group>";
@@ -296,6 +305,7 @@
 		C0D091922D49114200611E77 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				C0D091CC2D4B93D200611E77 /* Map */,
 				C0D091882D49114200611E77 /* Onboarding */,
 				C0D091892D49114200611E77 /* LocalRamenShop.swift */,
 				C0D0918A2D49114200611E77 /* NaverSearchResponse.swift */,
@@ -334,13 +344,11 @@
 				C0D0915E2D49114200611E77 /* DB */,
 				C0D091952D49114200611E77 /* Resource */,
 				C0D0915B2D49114200611E77 /* Components */,
-				C0D091612D49114200611E77 /* Extensions */,
-				C0D091842D49114200611E77 /* Feature */,
 				C0D091862D49114200611E77 /* Manager */,
+				C0D091612D49114200611E77 /* Extensions */,
 				C0D091922D49114200611E77 /* Model */,
+				C0D091842D49114200611E77 /* Feature */,
 				C0D091942D49114200611E77 /* Preview Content */,
-				C0D091962D49114200611E77 /* Info.plist */,
-				C0D091972D49114200611E77 /* NaverAPIKey.swift */,
 			);
 			path = RamenFinder;
 			sourceTree = "<group>";
@@ -351,6 +359,23 @@
 				C0D091982D49114200611E77 /* RamenFinderApp.swift */,
 			);
 			path = APP;
+			sourceTree = "<group>";
+		};
+		C0D091CC2D4B93D200611E77 /* Map */ = {
+			isa = PBXGroup;
+			children = (
+				C0D091CF2D4B941600611E77 /* EquatableMKCoordinateRegion.swift */,
+				C0D091CD2D4B93DA00611E77 /* RamenIdentifiableCoordinate.swift */,
+			);
+			path = Map;
+			sourceTree = "<group>";
+		};
+		C0D091D52D4B959800611E77 /* Layout */ = {
+			isa = PBXGroup;
+			children = (
+				C0D0915A2D49114200611E77 /* MasonryVStack.swift */,
+			);
+			path = Layout;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -416,7 +441,6 @@
 			files = (
 				C0D091C62D49114200611E77 /* Assets.xcassets in Resources */,
 				C0D091C72D49114200611E77 /* Preview Assets.xcassets in Resources */,
-				C0D091C82D49114200611E77 /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -427,14 +451,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C0D0919B2D49114200611E77 /* CustomMapAnnotation.swift in Sources */,
 				C0D0919C2D49114200611E77 /* MasonryVStack.swift in Sources */,
 				C0D0919D2D49114200611E77 /* PersistenceController.swift in Sources */,
 				C0D0919E2D49114200611E77 /* RamenFinderModel.xcdatamodeld in Sources */,
 				C0D0919F2D49114200611E77 /* CustomColor.swift in Sources */,
 				C0D091A02D49114200611E77 /* String+.swift in Sources */,
+				C0D091D22D4B947B00611E77 /* OnboardingPageView.swift in Sources */,
 				C0D091A12D49114200611E77 /* FavoriteRamenView.swift in Sources */,
 				C0D091A22D49114200611E77 /* FavoriteRamenViewModel.swift in Sources */,
+				C0D091D02D4B941D00611E77 /* EquatableMKCoordinateRegion.swift in Sources */,
 				C0D091A32D49114200611E77 /* DetailMapView.swift in Sources */,
 				C0D091A42D49114200611E77 /* RamenDetailView.swift in Sources */,
 				C0D091A52D49114200611E77 /* SearchView.swift in Sources */,
@@ -442,7 +467,9 @@
 				C0D091A72D49114200611E77 /* CategoryView.swift in Sources */,
 				C0D091A82D49114200611E77 /* HomeView.swift in Sources */,
 				C0D091A92D49114200611E77 /* HomeViewModel.swift in Sources */,
+				C0D091CE2D4B93DB00611E77 /* RamenIdentifiableCoordinate.swift in Sources */,
 				C0D091AA2D49114200611E77 /* LocalShopCardView.swift in Sources */,
+				C0D091D42D4B949E00611E77 /* OnboardingViewModel.swift in Sources */,
 				C0D091AB2D49114200611E77 /* ShopCardView.swift in Sources */,
 				C0D091AC2D49114200611E77 /* ShopListView.swift in Sources */,
 				C0D091AD2D49114200611E77 /* GuestLoginView.swift in Sources */,
@@ -456,6 +483,7 @@
 				C0D091B52D49114200611E77 /* RamenRecommendationResultView.swift in Sources */,
 				C0D091B62D49114200611E77 /* RamenRecommendationView.swift in Sources */,
 				C0D091B72D49114200611E77 /* RamenRecommendationViewModel.swift in Sources */,
+				C0D091CB2D4B939300611E77 /* ImagePicker.swift in Sources */,
 				C0D091B82D49114200611E77 /* TabBar.swift in Sources */,
 				C0D091B92D49114200611E77 /* LocationManager.swift in Sources */,
 				C0D091BA2D49114200611E77 /* OnboardingData.swift in Sources */,
@@ -606,9 +634,9 @@
 				DEVELOPMENT_TEAM = 6NDM2TJS37;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RamenFinder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -635,9 +663,9 @@
 				DEVELOPMENT_TEAM = 6NDM2TJS37;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = RamenFinder/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (

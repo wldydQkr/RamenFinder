@@ -29,7 +29,7 @@ final class HomeViewModel: ObservableObject {
         loadProfileImage()
     }
 
-    // MARK: - 프로필 이미지 로드
+    //MARK: - 프로필 이미지 로드
     func loadProfileImage() {
         if let imageData = UserDefaults.standard.data(forKey: "profileImage"),
            let image = UIImage(data: imageData) {
@@ -39,7 +39,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
-    // MARK: - 검색 텍스트 리스너 설정
+    //MARK: - 검색 텍스트 리스너 설정
     private func setupSearchListener() {
         $searchText
             .debounce(for: .milliseconds(300), scheduler: RunLoop.main)
@@ -52,7 +52,7 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // MARK: - 라멘 가게 검색
+    //MARK: - 라멘 가게 검색
     func fetchRamenShops(query: String) {
         guard !isLoading else { return } // 중복 요청 방지
 
@@ -72,6 +72,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
 
+    //MARK: API 검색
     func fetchRamenShopsByCategory(category: String) {
         let query = "\(category) 라멘" // 카테고리 이름 + 라멘
         guard !query.isEmpty else { return }
@@ -122,7 +123,7 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // MARK: - API 검색 수행
+    //MARK: - API 검색
     private func performAPISearch(query: String, completion: @escaping (RamenSearchResponse) -> Void) {
         guard !query.isEmpty else { return }
 
@@ -161,12 +162,12 @@ final class HomeViewModel: ObservableObject {
             .store(in: &cancellables)
     }
 
-    // MARK: - 에러 처리
+    //MARK: - 에러 처리
     private func handleError(error: Error) {
         print("Network or parsing error: \(error.localizedDescription)")
     }
     
-    // MARK: - 좋아요 기능
+    //MARK: - 좋아요 기능
     func isFavorite(title: String, roadAddress: String) -> Bool {
         favoriteRamenShops.contains(where: { $0.name == title && $0.roadAddress == roadAddress })
     }
@@ -221,7 +222,7 @@ final class HomeViewModel: ObservableObject {
     }
 
 
-    // MARK: - 즐겨찾기 데이터 관리
+    //MARK: - 즐겨찾기 데이터 관리
     func fetchFavorites() {
         do {
             let request: NSFetchRequest<FavoriteRamen> = FavoriteRamen.fetchRequest()
@@ -241,7 +242,7 @@ final class HomeViewModel: ObservableObject {
         }
     }
     
-    // MARK: - 즐겨찾기 삭제
+    //MARK: - 즐겨찾기 삭제
     func deleteFavorite(shop: FavoriteRamen) {
         viewContext.delete(shop)
         do {

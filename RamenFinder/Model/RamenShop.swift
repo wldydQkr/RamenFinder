@@ -18,7 +18,7 @@ struct RamenShop: Identifiable, Equatable {
     let mapx: Double
     let mapy: Double
 
-    // Equatable 요구 사항 구현
+    // Equatable 요구 사항
     static func == (lhs: RamenShop, rhs: RamenShop) -> Bool {
         return lhs.name == rhs.name && lhs.roadAddress == rhs.roadAddress
     }

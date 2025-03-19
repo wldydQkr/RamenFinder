@@ -293,4 +293,12 @@ struct HomeView: View {
             }
         }
     }
+    
+    //MARK: 취향 라멘 섹션
+    private func customizedRamenSection() {
+        /*
+         ..someting..
+         */
+    }
+    
 }
